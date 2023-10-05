@@ -1,0 +1,48 @@
+﻿			if (ControlledBrain != null && ControlledBrain.Body.Attackers.Contains(enemy))
+				ControlledBrain.Body.RemoveAttacker(enemy);
+
+			base.EnemyKilled(enemy);
+		}
+
+
+		/// <summary>
+		/// Check this flag to see wether this living is involved in combat
+		/// </summary>
+		public override bool InCombat
+		{
+			get
+			{
+				IControlledBrain npc = ControlledBrain;
+				if (npc != null && npc.Body.InCombat)
+					return true;
+				return base.InCombat;
+			}
+		}
+
+		/// <summary>
+		/// Easy method to get the resist of a certain damage type
+		/// Good for when we add RAs
+		/// </summary>
+		/// <param name="property"></param>
+		/// <returns></returns>
+		public override int GetDamageResist(eProperty property)
+		{
+			int res = 0;
+			int classResist = 0;
+			int secondResist = 0;
+
+			//Q: Do the Magic resist bonuses from Bedazzling Aura and Empty Mind stack with each other?
+			//A: Nope.
+			switch ((eResist)property)
+			{
+				case eResist.Body:
+				case eResist.Cold:
+				case eResist.Energy:
+				case eResist.Heat:
+				case eResist.Matter:
+				case eResist.Spirit:
+					res += BaseBuffBonusCategory[(int)eProperty.MagicAbsorption];
+					break;
+				default:
+					break;
+			}

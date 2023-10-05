@@ -1,0 +1,42 @@
+﻿					{
+						Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.XP_RATE), ZoneBonus.eZoneBonusType.XP),
+						                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						GainExperience(eXPSource.Other, (long)(zoneBonus * ServerProperties.Properties.XP_RATE), 0, 0, 0, false, false, false);
+					}
+				}
+
+
+				if (this.CurrentRegion.IsRvR)
+					expTotal = (long)(expTotal * ServerProperties.Properties.RvR_XP_RATE);
+				else
+					expTotal = (long)(expTotal * ServerProperties.Properties.XP_RATE);
+
+				// [Freya] Nidel: ToA Xp Bonus
+				long xpBonus = GetModified(eProperty.XpPoints);
+				if (xpBonus != 0)
+				{
+					expTotal += (expTotal * xpBonus) / 100;
+				}
+
+				long hardXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_HARDCAP_PERCENT / 100);
+
+				if (expTotal > hardXPCap)
+					expTotal = hardXPCap;
+
+				expTotal += expOutpostBonus;
+				expTotal += expGroupBonus;
+				expTotal += expCampBonus;
+
+			}
+
+			// Get Champion Experience too
+			GainChampionExperience(expTotal);
+
+			//catacombs characters get 50% boost if they are elligable for slash level
+			switch ((eCharacterClass)CharacterClass.ID)
+			{
+				case eCharacterClass.Heretic:
+				case eCharacterClass.Valkyrie:
+				case eCharacterClass.Warlock:
+				case eCharacterClass.Bainshee:
+				case eCharacterClass.Vampiir:

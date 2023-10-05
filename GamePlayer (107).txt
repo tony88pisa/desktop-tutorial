@@ -1,0 +1,40 @@
+﻿				if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+				{
+					int zoneBonus = (((int)amount * ZoneBonus.GetBPBonus(this)) / 100);
+					if (zoneBonus > 0)
+					{
+						Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.BP_RATE), ZoneBonus.eZoneBonusType.BP),
+						                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						GainBountyPoints((long)(zoneBonus * ServerProperties.Properties.BP_RATE), false, false, false);
+					}
+				}
+
+				//[Freya] Nidel: ToA Bp Bonus
+				long bpBonus = GetModified(eProperty.BountyPoints);
+
+				if (bpBonus > 0)
+				{
+					amount += (amount * bpBonus) / 100;
+				}
+			}
+
+			if (notify)
+				base.GainBountyPoints(amount);
+
+			Wallet.AddMoney(Currency.BountyPoints.Mint(amount));
+
+			if (m_guild != null && Client.Account.PrivLevel == 1)
+				m_guild.BountyPoints += amount;
+
+			if(sendMessage == true)
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainBountyPoints.YouGet", amount.ToString()), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
+
+		/// <summary>
+		/// Holds realm points needed for special realm level
+		/// </summary>
+		public static readonly long[] REALMPOINTS_FOR_LEVEL =
+		{
+			0,	// for level 0
+			0,	// for level 1
+			25,	// for level 2

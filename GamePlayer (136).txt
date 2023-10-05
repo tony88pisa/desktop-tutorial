@@ -1,0 +1,37 @@
+﻿					else Endurance -= RANGE_ATTACK_ENDURANCE;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Starts a melee attack with this player
+		/// </summary>
+		/// <param name="attackTarget">the target to attack</param>
+		public override void StartAttack(GameObject attackTarget)
+		{
+
+			if (!IsAlive)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.YouCantCombat"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			// Necromancer with summoned pet cannot attack
+			if (ControlledBody is NecromancerPet)
+			{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.CantInShadeMode"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (IsStunned)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.CantAttackStunned"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (IsMezzed)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.CantAttackmesmerized"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			long vanishTimeout = TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);

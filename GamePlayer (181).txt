@@ -1,0 +1,42 @@
+﻿		/// The chance for a critical hit
+		/// </summary>
+		/// <param name="weapon">attack weapon</param>
+		public override int AttackCriticalChance(InventoryItem weapon)
+		{
+			if (weapon != null && weapon.Item_Type == Slot.RANGED && RangedAttackType == eRangedAttackType.Critical)
+				return 0; // no crit damage for crit shots
+
+			// check for melee attack
+			if (weapon != null && weapon.Item_Type != Slot.RANGED)
+			{
+				return GetModified(eProperty.CriticalMeleeHitChance);
+			}
+
+			// check for ranged attack
+			if (weapon != null && weapon.Item_Type == Slot.RANGED)
+			{
+				return GetModified(eProperty.CriticalArcheryHitChance);
+			}
+
+			// base 10% chance of critical for all with melee weapons
+			return 10;
+		}
+
+		/// <summary>
+		/// Returns the damage type of the current attack
+		/// </summary>
+		/// <param name="weapon">attack weapon</param>
+		public override eDamageType AttackDamageType(InventoryItem weapon)
+		{
+			if (weapon == null)
+				return eDamageType.Natural;
+			switch ((eObjectType)weapon.Object_Type)
+			{
+				case eObjectType.Crossbow:
+				case eObjectType.Longbow:
+				case eObjectType.CompositeBow:
+				case eObjectType.RecurvedBow:
+				case eObjectType.Fired:
+					InventoryItem ammo = RangeAttackAmmo;
+					if (ammo == null)
+						return (eDamageType)weapon.Type_Damage;

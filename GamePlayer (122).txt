@@ -1,0 +1,36 @@
+﻿		{
+			return Math.Min((byte)50, Level);
+		}
+
+		/// <summary>
+		/// Is this player in second stage of current level
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual bool IsLevelSecondStage
+		{
+			get { return DBCharacter != null ? DBCharacter.IsLevelSecondStage : false; }
+			set { if (DBCharacter != null) DBCharacter.IsLevelSecondStage = value; }
+		}
+
+		/// <summary>
+		/// Called when this player levels
+		/// </summary>
+		/// <param name="previouslevel"></param>
+		public virtual void OnLevelUp(int previouslevel)
+		{
+			IsLevelSecondStage = false;
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouRaise", Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouAchieved", Level), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			Out.SendPlayerFreeLevelUpdate();
+			if (FreeLevelState == 2)
+			{
+				Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.FreeLevelEligible"));
+			}
+
+			if (Level == MaxLevel)
+			{
+				if (CanGenerateNews)
+				{
+					string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.Reached", Name, Level, LastPositionUpdateZone.Description);
+string newsmessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.Reached", Name, Level, LastPositionUpdateZone.Description);

@@ -1,0 +1,35 @@
+﻿						    && target is GameSiegeWeapon == false)
+						{
+							int perc = Convert.ToInt32(((double)(ad.Damage + ad.CriticalDamage) / 100) * (55 - this.Level));
+							perc = (perc < 1) ? 1 : ((perc > 15) ? 15 : perc);
+							this.Mana += Convert.ToInt32(Math.Ceiling(((Decimal)(perc * this.MaxMana) / 100)));
+						}
+
+						//only miss when strafing when attacking a player
+						//30% chance to miss
+						if (IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
+						{
+							ad.AttackResult = eAttackResult.Missed;
+							Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.StrafMiss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+							break;
+						}
+						break;
+					}
+			}
+
+			switch (ad.AttackResult)
+			{
+				case eAttackResult.Blocked:
+				case eAttackResult.Fumbled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+				case eAttackResult.Missed:
+				case eAttackResult.Parried:
+					//Condition percent can reach 70%
+					//durability percent can reach zero
+					// if item durability reachs 0, item is useless and become broken item
+
+					if (weapon != null && weapon is GameInventoryItem)
+					{
+						(weapon as GameInventoryItem).OnStrikeTarget(this, target);
+					}

@@ -1,0 +1,48 @@
+﻿		public long DisabledCastingTimeout
+		{
+			get { return m_disabledCastingTimeout; }
+			set { m_disabledCastingTimeout = value; }
+		}
+
+		/// <summary>
+		/// Grey out some skills on client for specified duration
+		/// </summary>
+		/// <param name="skill">the skill to disable</param>
+		/// <param name="duration">duration of disable in milliseconds</param>
+		public override void DisableSkill(Skill skill, int duration)
+		{
+			if (this.Client.Account.PrivLevel > 1)
+				return;
+
+			base.DisableSkill(skill, duration);
+			
+			var disables = new List<Tuple<Skill, int>>();
+			disables.Add(new Tuple<Skill, int>(skill, duration));
+
+			Out.SendDisableSkill(disables);
+		}
+		
+		/// <summary>
+		/// Grey out collection of skills on client for specified duration
+		/// </summary>
+		/// <param name="skill">the skill to disable</param>
+		/// <param name="duration">duration of disable in milliseconds</param>
+		public override void DisableSkill(ICollection<Tuple<Skill, int>> skills)
+		{
+			if (this.Client.Account.PrivLevel > 1)
+				return;
+
+			base.DisableSkill(skills);
+			
+			Out.SendDisableSkill(skills);
+		}
+		
+		/// <summary>
+		/// The next spell
+		/// </summary>
+		protected Spell m_nextSpell;
+		/// <summary>
+		/// The next spell line
+		/// </summary>
+		protected SpellLine m_nextSpellLine;
+		/// <summary>

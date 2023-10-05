@@ -1,0 +1,45 @@
+﻿						}
+					}
+					break;
+			}
+			return ad;
+		}
+
+
+		/// <summary>
+		/// Try and execute a weapon style
+		/// </summary>
+		/// <param name="style"></param>
+		public virtual void ExecuteWeaponStyle(Style style)
+		{
+			StyleProcessor.TryToUseStyle(this, style);
+		}
+
+		/// <summary>
+		/// Calculates melee critical damage of this player
+		/// </summary>
+		/// <param name="ad">The attack data</param>
+		/// <param name="weapon">The weapon used</param>
+		/// <returns>The amount of critical damage</returns>
+		public override int GetMeleeCriticalDamage(AttackData ad, InventoryItem weapon)
+		{
+			if (Util.Chance(AttackCriticalChance(weapon)))
+			{
+				// triple wield prevents critical hits
+				if (ad.Target.EffectList.GetOfType<TripleWieldEffect>() != null) return 0;
+
+				int critMin;
+				int critMax;
+				BerserkEffect berserk = EffectList.GetOfType<BerserkEffect>();
+
+				if (berserk != null)
+				{
+					int level = GetAbilityLevel(Abilities.Berserk);
+					// According to : http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
+					// Zerk 1 = 1-25%
+					// Zerk 2 = 1-50%
+					// Zerk 3 = 1-75%
+					// Zerk 4 = 1-99%
+					critMin = (int)(0.01 * ad.Damage);
+					critMax = (int)(Math.Min(0.99, (level * 0.25)) * ad.Damage);
+				}

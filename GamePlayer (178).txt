@@ -1,0 +1,43 @@
+﻿
+				// apply damage cap before quality
+				// http://www.classesofcamelot.com/faq.asp?mode=view&cat=10
+				int cap = 12 + 3 * Level;
+				if (RealmLevel > 39)
+					cap += 3;
+
+				if (DPS > cap)
+				{
+					DPS = cap;
+				}
+				//(1.0 + BuffBonusCategory1[(int)eProperty.DPS]/100.0 - BuffBonusCategory3[(int)eProperty.DPS]/100.0)
+				DPS = (int)(DPS * (1 + (GetModified(eProperty.DPS) * 0.01)));
+				// beware to use always ConditionPercent, because Condition is abolute value
+				//				return (int) ((DPS/10.0)*(weapon.Quality/100.0)*(weapon.Condition/(double)weapon.MaxCondition)*100.0);
+				double wdamage = (0.001 * DPS * weapon.Quality * weapon.Condition) / weapon.MaxCondition;
+				return wdamage;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// Max. Damage possible without style
+		/// </summary>
+		/// <param name="weapon">attack weapon</param>
+		public override double UnstyledDamageCap(InventoryItem weapon)
+		{
+			if (weapon != null)
+			{
+				int DPS = weapon.DPS_AF;
+				int cap = 12 + 3 * Level;
+				if (RealmLevel > 39)
+					cap += 3;
+				if (DPS > cap)
+					DPS = cap;
+
+				double result = DPS * weapon.SPD_ABS * 0.03 * (0.94 + 0.003 * weapon.SPD_ABS);
+
+				if (weapon.Hand == 1) //2h
+				{

@@ -1,0 +1,43 @@
+﻿										eObjectType findType = eObjectType.Arrow;
+										if (weapon.Object_Type == (int)eObjectType.Crossbow)
+											findType = eObjectType.Bolt;
+
+										ammo = Inventory.GetFirstItemByObjectType((int)findType, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+										break;
+								}
+							} break;
+					}
+				}
+
+				return ammo;
+			}
+			set { m_rangeAttackAmmo.Target = value; }
+		}
+
+		/// <summary>
+		/// Holds the target for next range attack
+		/// </summary>
+		protected WeakReference m_rangeAttackTarget;
+
+		/// <summary>
+		/// Gets/Sets the target for current ranged attack
+		/// </summary>
+		/// <returns></returns>
+		protected override GameObject RangeAttackTarget
+		{
+			get
+			{
+				GameObject target = (GameObject)m_rangeAttackTarget.Target;
+				if (target == null || target.ObjectState != eObjectState.Active)
+					target = TargetObject;
+				return target;
+			}
+			set { m_rangeAttackTarget.Target = value; }
+		}
+
+		/// <summary>
+		/// Check the range attack state and decides what to do
+		/// Called inside the AttackTimerCallback
+		/// </summary>
+		/// <returns></returns>

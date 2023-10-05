@@ -1,0 +1,44 @@
+﻿			get
+			{
+				return DBCharacter != null ? DBCharacter.IsHelmInvisible : base.IsHelmInvisible;
+			}
+			set
+			{
+				DBCharacter.IsHelmInvisible = value;
+
+				Out.SendInventoryItemsUpdate(null);
+				UpdateEquipmentAppearance();
+
+				if (value)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsHelmInvisible.Invisible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsHelmInvisible.Visible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the players SpellQueue option
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual bool SpellQueue
+		{
+			get { return DBCharacter != null ? DBCharacter.SpellQueue : false; }
+			set { if (DBCharacter != null) DBCharacter.SpellQueue = value; }
+		}
+
+
+		/// <summary>
+		/// Switches the active weapon to another one
+		/// </summary>
+		/// <param name="slot">the new eActiveWeaponSlot</param>
+		public override void SwitchWeapon(eActiveWeaponSlot slot)
+		{
+			//When switching weapons, attackmode is removed!
+			if (AttackState)
+				StopAttack();
+
+			if (CurrentSpellHandler != null)

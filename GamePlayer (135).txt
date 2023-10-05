@@ -1,0 +1,42 @@
+﻿			}
+
+			if (ObjectState == eObjectState.Active)
+			{
+				//Send new wield info, no items updated
+				Out.SendInventorySlotsUpdate(null);
+				// Update active weapon appearence (has to be done with all
+				// equipment in the packet else player is naked)
+				UpdateEquipmentAppearance();
+				//Send new weapon stats
+				Out.SendUpdateWeaponAndArmorStats();
+			}
+		}
+
+		/// <summary>
+		/// Removes ammo and endurance on range attack
+		/// </summary>
+		/// <param name="e"></param>
+		/// <param name="sender"></param>
+		/// <param name="arguments"></param>
+		protected virtual void RangeAttackHandler(DOLEvent e, object sender, EventArgs arguments)
+		{
+			AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
+			if (args == null) return;
+
+			switch (args.AttackData.AttackResult)
+			{
+				case eAttackResult.HitUnstyled:
+				case eAttackResult.Missed:
+				case eAttackResult.Blocked:
+				case eAttackResult.Parried:
+				case eAttackResult.Evaded:
+				case eAttackResult.HitStyle:
+				case eAttackResult.Fumbled:
+					// remove an arrow and endurance
+					InventoryItem ammo = RangeAttackAmmo;
+					Inventory.RemoveCountFromStack(ammo, 1);
+
+					if (RangedAttackType == eRangedAttackType.Critical)
+						Endurance -= CRITICAL_SHOT_ENDURANCE;
+					else if (RangedAttackType == eRangedAttackType.RapidFire && GetAbilityLevel(Abilities.RapidFire) == 1)
+						Endurance -= 2 * RANGE_ATTACK_ENDURANCE;

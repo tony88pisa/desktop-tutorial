@@ -1,0 +1,43 @@
+﻿					case eObjectType.HandToHand:
+						return (GetModified(eProperty.Strength) + GetModified(eProperty.Dexterity)) >> 1;
+				}
+			}
+			// STR modifier for others
+			return GetModified(eProperty.Strength);
+		}
+
+		/// <summary>
+		/// calculate item armor factor influenced by quality, con and duration
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <returns></returns>
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			if (slot == eArmorSlot.NOTSET) return 0;
+			InventoryItem item = Inventory.GetItem((eInventorySlot)slot);
+			if (item == null) return 0;
+			double eaf = item.DPS_AF + BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base AF buff
+
+			int itemAFcap = Level;
+			if (RealmLevel > 39)
+				itemAFcap++;
+			if (item.Object_Type != (int)eObjectType.Cloth)
+			{
+				itemAFcap <<= 1;
+			}
+
+			eaf = Math.Min(eaf, itemAFcap);
+			eaf *= 4.67; // compensate *4.67 in damage formula
+
+			// my test shows that qual is added after AF buff
+			eaf *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
+
+			eaf += GetModified(eProperty.ArmorFactor);
+
+			/*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
+			if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
+			{
+				eaf -= (int)(effect.SpellHandler as VampiirArmorDebuff).Spell.Value;
+			}*/
+			return eaf;
+		}

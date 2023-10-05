@@ -1,0 +1,44 @@
+﻿		protected override Style GetStyleToUse()
+		{
+			InventoryItem weapon;
+			if (NextCombatStyle == null) return null;
+			if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
+				weapon = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			else weapon = AttackWeapon;
+
+			if (StyleProcessor.CanUseStyle(this, NextCombatStyle, weapon))
+				return NextCombatStyle;
+
+			if (NextCombatBackupStyle == null) return NextCombatStyle;
+
+			return NextCombatBackupStyle;
+		}
+
+		/// <summary>
+		/// Gets/Sets safety flag
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual bool SafetyFlag
+		{
+			get { return DBCharacter != null ? DBCharacter.SafetyFlag : false; }
+			set { if (DBCharacter != null) DBCharacter.SafetyFlag = value; }
+		}
+
+		/// <summary>
+		/// Sets/gets the living's cloak hood state
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public override bool IsCloakHoodUp
+		{
+			get { return DBCharacter != null ? DBCharacter.IsCloakHoodUp : base.IsCloakHoodUp; }
+			set
+			{
+				//base.IsCloakHoodUp = value; // only needed if some special code will be added in base-property in future
+				DBCharacter.IsCloakHoodUp = value;
+
+				Out.SendInventoryItemsUpdate(null);
+				UpdateEquipmentAppearance();
+
+				if (value)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

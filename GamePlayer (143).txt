@@ -1,0 +1,35 @@
+﻿				{
+					ActiveQuiverSlot = eActiveQuiverSlot.None;
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NoMoreAmmo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				Out.SendInventorySlotsUpdate(new int[] { (int)updatedSlot });
+			}
+			else
+			{
+				if (Inventory.GetItem(eInventorySlot.FirstQuiver) != null)
+					SwitchQuiver(eActiveQuiverSlot.First, true);
+				else if (Inventory.GetItem(eInventorySlot.SecondQuiver) != null)
+					SwitchQuiver(eActiveQuiverSlot.Second, true);
+				else if (Inventory.GetItem(eInventorySlot.ThirdQuiver) != null)
+					SwitchQuiver(eActiveQuiverSlot.Third, true);
+				else if (Inventory.GetItem(eInventorySlot.FourthQuiver) != null)
+					SwitchQuiver(eActiveQuiverSlot.Fourth, true);
+				else
+				{
+					ActiveQuiverSlot = eActiveQuiverSlot.None;
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NotUseQuiver"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				Out.SendInventorySlotsUpdate(null);
+			}
+		}
+
+		/// <summary>
+		/// Check the selected range ammo and decides if it's compatible with select weapon
+		/// </summary>
+		/// <returns>True if compatible, false if not</returns>
+		protected virtual bool CheckRangedAmmoCompatibilityWithActiveWeapon()
+		{
+			InventoryItem weapon = AttackWeapon;
+			if (weapon != null)
+			{

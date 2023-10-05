@@ -1,0 +1,43 @@
+﻿
+		/// <summary>
+		/// Gets the attack damage
+		/// </summary>
+		/// <param name="weapon">the weapon used for attack</param>
+		/// <returns>the weapon damage</returns>
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			if (weapon == null)
+				return 0;
+
+			double effectiveness = 1.00;
+			double damage = WeaponDamage(weapon) * weapon.SPD_ABS * 0.1;
+
+			if (weapon.Hand == 1) // two-hand
+			{
+				// twohanded used weapons get 2H-Bonus = 10% + (Skill / 2)%
+				int spec = WeaponSpecLevel(weapon) - 1;
+				damage *= 1.1 + spec * 0.005;
+			}
+
+			if (weapon.Item_Type == Slot.RANGED)
+			{
+				//ammo damage bonus
+				if (RangeAttackAmmo != null)
+				{
+					switch ((RangeAttackAmmo.SPD_ABS) & 0x3)
+					{
+							case 0: damage *= 0.85; break; //Blunt       (light) -15%
+							//case 1: damage *= 1;	break; //Bodkin     (medium)   0%
+							case 2: damage *= 1.15; break; //doesn't exist on live
+							case 3: damage *= 1.25; break; //Broadhead (X-heavy) +25%
+					}
+				}
+				//Ranged damage buff,debuff,Relic,RA
+				effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
+			}
+			else if (weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
+			{
+				//Melee damage buff,debuff,Relic,RA
+				effectiveness += GetModified(eProperty.MeleeDamage) * 0.01;
+			}
+			damage *= effectiveness;

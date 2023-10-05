@@ -1,0 +1,43 @@
+﻿		public override int EffectiveOverallAF
+		{
+			get
+			{
+				int eaf = 0;
+				int abs = 0;
+				foreach (InventoryItem item in Inventory.VisibleItems)
+				{
+					double factor = 0;
+					switch (item.Item_Type)
+					{
+						case Slot.TORSO:
+							factor = 2.2;
+							break;
+						case Slot.LEGS:
+							factor = 1.3;
+							break;
+						case Slot.ARMS:
+							factor = 0.75;
+							break;
+						case Slot.HELM:
+							factor = 0.5;
+							break;
+						case Slot.HANDS:
+							factor = 0.25;
+							break;
+						case Slot.FEET:
+							factor = 0.25;
+							break;
+					}
+
+					int itemAFCap = Level << 1;
+					if (RealmLevel > 39)
+						itemAFCap += 2;
+					switch ((eObjectType)item.Object_Type)
+					{
+						case eObjectType.Cloth:
+							abs = 0;
+							itemAFCap >>= 1;
+							break;
+						case eObjectType.Leather:
+							abs = 10;
+							break;

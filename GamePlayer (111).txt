@@ -1,0 +1,46 @@
+﻿			if (realmPoints == 0)
+				return 0;
+
+			int i;
+
+			for (i = REALMPOINTS_FOR_LEVEL.Length - 1; i > 0; i--)
+			{
+				if (REALMPOINTS_FOR_LEVEL[i] <= realmPoints)
+					break;
+			}
+
+			return i;
+		}
+
+		/// <summary>
+		/// Realm point value of this player
+		/// </summary>
+		public override int RealmPointsValue
+		{
+			get
+			{
+				// http://www.camelotherald.com/more/2275.shtml
+				// new 1.81D formula
+				// Realm point value = (level - 20)squared + (realm rank level x 5) + (champion level x 10) + (master level (squared)x 5)
+				//we use realm level 1L0 = 0, mythic uses 1L0 = 10, so we + 10 the realm level
+				int level = Math.Max(0, Level - 20);
+				if (level == 0)
+					return Math.Max(1, (RealmLevel + 10) * 5);
+
+				return Math.Max(1, level * level + (RealmLevel + 10) * 5);
+			}
+		}
+
+		/// <summary>
+		/// Bounty point value of this player
+		/// </summary>
+		public override int BountyPointsValue
+		{
+			// TODO: correct formula!
+			get { return (int)(1 + Level * 0.6); }
+		}
+
+		/// <summary>
+		/// Returns the amount of experience this player is worth
+		/// </summary>
+		public override long ExperienceValue

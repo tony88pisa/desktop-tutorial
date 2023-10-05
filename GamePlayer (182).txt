@@ -1,0 +1,41 @@
+﻿					return (eDamageType)ammo.Type_Damage;
+				case eObjectType.Shield:
+					return eDamageType.Crush; // TODO: shields do crush damage (!) best is if Type_Damage is used properly
+				default:
+					return (eDamageType)weapon.Type_Damage;
+			}
+		}
+
+		/// <summary>
+		/// Returns the AttackRange of this living
+		/// </summary>
+		public override int AttackRange
+		{
+			/* tested with:
+			staff					= 125-130
+			sword			   		= 126-128.06
+			shield (Numb style)		= 127-129
+			polearm	(Impale style)	= 127-130
+			mace (Daze style)		= 127.5-128.7
+
+			Think it's safe to say that it never changes; different with mobs. */
+
+			get
+			{
+				GameLiving livingTarget = TargetObject as GameLiving;
+
+				//TODO change to real distance of bows!
+				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				{
+					InventoryItem weapon = AttackWeapon;
+					if (weapon == null)
+						return 0;
+
+					double range;
+					InventoryItem ammo = RangeAttackAmmo;
+
+					switch ((eObjectType)weapon.Object_Type)
+					{
+							case eObjectType.Longbow: range = 1760; break;
+							case eObjectType.RecurvedBow: range = 1680; break;
+							case eObjectType.CompositeBow: range = 1600; break;

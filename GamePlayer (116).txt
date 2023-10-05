@@ -1,0 +1,44 @@
+﻿		{
+			get
+			{
+				return GetExperienceNeededForLevel(Level);
+			}
+		}
+
+		/// <summary>
+		/// Returns the xp that is needed for the second stage of current level
+		/// </summary>
+		public virtual long ExperienceForCurrentLevelSecondStage
+		{
+			get { return 1 + ExperienceForCurrentLevel + (ExperienceForNextLevel - ExperienceForCurrentLevel) / 2; }
+		}
+
+		/// <summary>
+		/// Returns how far into the level we have progressed
+		/// A value between 0 and 1000 (1 bubble = 100)
+		/// </summary>
+		public virtual ushort LevelPermill
+		{
+			get
+			{
+				//No progress if we haven't even reached current level!
+				if (Experience < ExperienceForCurrentLevel)
+					return 0;
+				//No progess after maximum level
+				if (Level > MaxLevel)
+					return 0;
+				return (ushort)(1000 * (Experience - ExperienceForCurrentLevel) / (ExperienceForNextLevel - ExperienceForCurrentLevel));
+			}
+		}
+
+		/// <summary>
+		/// Called whenever this player gains experience
+		/// </summary>
+		/// <param name="expTotal"></param>
+		/// <param name="expCampBonus"></param>
+		/// <param name="expGroupBonus"></param>
+		/// <param name="expOutpostBonus"></param>
+		/// <param name="sendMessage"></param>
+		public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage)
+		{
+			GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, true);

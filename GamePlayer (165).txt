@@ -1,0 +1,31 @@
+﻿
+if (ad.CriticalDamage > 0)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYouCritical",
+ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC)), ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+}
+else
+{
+if (hitLocName != null)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYour", ad.Attacker.GetName(0, true), hitLocName, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYou", ad.Attacker.IsAlive ? ad.Attacker.GetName(0, true) : "A dead enemy", ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+
+if (ad.CriticalDamage > 0)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYouCritical", ad.Attacker.GetName(0, true), ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+}
+
+
+						#endregion
+
+						// decrease condition of hitted armor piece
+						if (ad.ArmorHitLocation != eArmorSlot.NOTSET)
+						{
+							InventoryItem item = Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
+
+							if (item != null)
+							{
+								TryReactiveEffect(item, ad.Attacker);
+
+								if (item is GameInventoryItem)
+								{
+									(item as GameInventoryItem).OnStruckByEnemy(this, ad.Attacker);

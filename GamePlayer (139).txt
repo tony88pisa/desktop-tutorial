@@ -1,0 +1,37 @@
+﻿						}
+
+						if (effect is RapidFireEffect)
+						{
+							RangedAttackType = eRangedAttackType.RapidFire;
+							break;
+						}
+
+						if (effect is TrueshotEffect)
+						{
+							RangedAttackType = eRangedAttackType.Long;
+							break;
+						}
+					}
+				}
+
+				if (RangedAttackType == eRangedAttackType.Critical && Endurance < CRITICAL_SHOT_ENDURANCE)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.TiredShot"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					return;
+				}
+
+				if (Endurance < RANGE_ATTACK_ENDURANCE)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.TiredUse", AttackWeapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					return;
+				}
+
+				if (IsStealthed)
+				{
+					// -Chance to unstealth while nocking an arrow = stealth spec / level
+					// -Chance to unstealth nocking a crit = stealth / level  0.20
+					int stealthSpec = GetModifiedSpecLevel(Specs.Stealth);
+					int stayStealthed = stealthSpec * 100 / Level;
+					if (RangedAttackType == eRangedAttackType.Critical)
+						stayStealthed -= 20;
+

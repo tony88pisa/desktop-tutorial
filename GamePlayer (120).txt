@@ -1,0 +1,33 @@
+﻿"GamePlayer.GainExperience.CampBonus", expCampBonus.ToString("N0", format));
+				}
+				if (expGroupBonus > 0)
+				{
+					expGroupBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.GroupBonus", expGroupBonus.ToString("N0", format));
+				}
+				if (expOutpostBonus > 0)
+				{
+					expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", expOutpostBonus.ToString("N0", format));
+				}
+
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+
+			Experience += expTotal;
+
+			if (expTotal >= 0)
+			{
+				//Level up
+				if (Level >= 5 && !CharacterClass.HasAdvancedFromBaseClass())
+				{
+					if (expTotal > 0)
+					{
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.CannotRaise"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.TalkToTrainer"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
+				}
+				else if (Level >= 40 && Level < MaxLevel && !IsLevelSecondStage && Experience >= ExperienceForCurrentLevelSecondStage)
+				{
+					OnLevelSecondStage();
+					Notify(GamePlayerEvent.LevelSecondStage, this);
+				}
+				else if (Level < MaxLevel && Experience >= ExperienceForNextLevel)

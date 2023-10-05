@@ -1,0 +1,38 @@
+﻿			InventoryItem distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+
+			// save old active weapons
+			// simple active slot logic:
+			// 0=right hand, 1=left hand, 2=two-hand, 3=range, F=none
+			switch (VisibleActiveWeaponSlots & 0x0F)
+			{
+					case 0: oldActiveSlots[0] = rightHandSlot; break;
+					case 2: oldActiveSlots[2] = twoHandSlot; break;
+					case 3: oldActiveSlots[3] = distanceSlot; break;
+			}
+			if ((VisibleActiveWeaponSlots & 0xF0) == 0x10) oldActiveSlots[1] = leftHandSlot;
+
+
+			base.SwitchWeapon(slot);
+
+
+			// save new active slots
+			switch (VisibleActiveWeaponSlots & 0x0F)
+			{
+					case 0: newActiveSlots[0] = rightHandSlot; break;
+					case 2: newActiveSlots[2] = twoHandSlot; break;
+					case 3: newActiveSlots[3] = distanceSlot; break;
+			}
+			if ((VisibleActiveWeaponSlots & 0xF0) == 0x10) newActiveSlots[1] = leftHandSlot;
+
+			// unequip changed items
+			for (int i = 0; i < 4; i++)
+			{
+				if (oldActiveSlots[i] != null && newActiveSlots[i] == null)
+					Notify(PlayerInventoryEvent.ItemUnequipped, Inventory, new ItemUnequippedArgs(oldActiveSlots[i], oldActiveSlots[i].SlotPosition));
+			}
+
+			// equip new active items
+			for (int i = 0; i < 4; i++)
+			{
+				if (newActiveSlots[i] != null && oldActiveSlots[i] == null)
+					Notify(PlayerInventoryEvent.ItemEquipped, Inventory, new ItemEquippedArgs(newActiveSlots[i], newActiveSlots[i].SlotPosition));

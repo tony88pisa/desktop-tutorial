@@ -1,0 +1,40 @@
+﻿				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					player.Out.SendEmoteAnimation(this, eEmote.LvlUp);
+				}
+			}
+
+			// Reset taskDone per level.
+			if (Task != null)
+			{
+				Task.TasksDone = 0;
+				Task.SaveIntoDatabase();
+			}
+			
+			// Level up pets and subpets
+			if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER &&
+				ControlledBrain is ControlledNpcBrain brain && brain.Body is GamePet pet)
+			{
+				if (pet.SetPetLevel())
+				{
+					if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0 && pet.Spells.Count > 0)
+						pet.SortSpells();
+
+					brain.UpdatePetWindow();
+				}
+
+				// subpets
+				if (pet.ControlledNpcList != null)
+					foreach (ABrain subBrain in pet.ControlledNpcList)
+						if (subBrain != null && subBrain.Body is GamePet subPet)
+							if (subPet.SetPetLevel()) // Levels up subpet
+								if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+									subPet.SortSpells();
+			}
+
+			// save player to database
+			SaveIntoDatabase();
+		}
+
+		/// <summary>

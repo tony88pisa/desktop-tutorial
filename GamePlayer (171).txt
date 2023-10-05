@@ -1,0 +1,36 @@
+﻿						case eObjectType.Reinforced:
+							abs = 19;
+							break;
+						case eObjectType.Studded:
+							abs = 19;
+							break;
+						case eObjectType.Scale:
+							abs = 27;
+							break;
+						case eObjectType.Chain:
+							abs = 27;
+							break;
+						case eObjectType.Plate:
+							abs = 34;
+							break;
+					}
+
+					if (factor > 0)
+					{
+						int af = item.DPS_AF;
+						if (af > itemAFCap)
+							af = itemAFCap;
+						double piece_eaf = af * item.Quality / 100.0 * item.ConditionPercent / 100.0 * (1 + abs / 100.0);
+						eaf += (int)(piece_eaf * factor);
+					}
+				}
+
+				// Overall AF CAP = 10 * level * (1 + abs%/100)
+				int bestLevel = -1;
+				bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.AlbArmor));
+				bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.HibArmor));
+				bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.MidArmor));
+				switch (bestLevel)
+				{
+						default: abs = 0; break; // cloth etc
+						case ArmorLevel.Leather: abs = 10; break;

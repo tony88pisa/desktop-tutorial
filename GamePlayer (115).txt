@@ -1,0 +1,51 @@
+﻿			849999950, // xp to level 31
+			1119999950, // xp to level 32
+			1469999950, // xp to level 33
+			1929999950, // xp to level 34
+			2529999950, // xp to level 35
+			3319999950, // xp to level 36
+			4299999950, // xp to level 37
+			5499999950, // xp to level 38
+			6899999950, // xp to level 39
+			8599999950, // xp to level 40
+			12899999950, // xp to level 41
+			20699999950, // xp to level 42
+			29999999950, // xp to level 43
+			40799999950, // xp to level 44
+			53999999950, // xp to level 45
+			69599999950, // xp to level 46
+			88499999950, // xp to level 47
+			110999999950, // xp to level 48
+			137999999950, // xp to level 49
+			169999999950, // xp to level 50
+			999999999950, // xp to level 51
+		};
+
+		/// <summary>
+		/// Gets or sets the current xp of this player
+		/// </summary>
+		public virtual long Experience
+		{
+			get { return DBCharacter != null ? DBCharacter.Experience : 0; }
+			set
+			{
+				if (DBCharacter != null)
+					DBCharacter.Experience = value;
+			}
+		}
+
+		/// <summary>
+		/// Returns the xp that are needed for the next level
+		/// </summary>
+		public virtual long ExperienceForNextLevel
+		{
+			get
+			{
+				return GetExperienceNeededForLevel(Level + 1);
+			}
+		}
+
+		/// <summary>
+		/// Returns the xp that were needed for the current level
+		/// </summary>
+		public virtual long ExperienceForCurrentLevel

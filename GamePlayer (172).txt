@@ -1,0 +1,41 @@
+﻿						case ArmorLevel.Studded: abs = 19; break;
+						case ArmorLevel.Chain: abs = 27; break;
+						case ArmorLevel.Plate: abs = 34; break;
+				}
+
+				eaf += BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base buff before cap
+				int eafcap = (int)(10 * Level * (1 + abs * 0.01));
+				if (eaf > eafcap)
+					eaf = eafcap;
+				eaf += (int)Math.Min(Level * 1.875, SpecBuffBonusCategory[(int)eProperty.ArmorFactor])
+					- DebuffCategory[(int)eProperty.ArmorFactor]
+					+ BuffBonusCategory4[(int)eProperty.ArmorFactor]
+					+ Math.Min(Level, ItemBonus[(int)eProperty.ArmorFactor]);
+
+				eaf = (int)(eaf * BuffBonusMultCategory1.Get((int)eProperty.ArmorFactor));
+
+				return eaf;
+			}
+		}
+		/// <summary>
+		/// Calc Armor hit location when player is hit by enemy
+		/// </summary>
+		/// <returns>slotnumber where enemy hits</returns>
+		/// attackdata(ad) changed
+		public virtual eArmorSlot CalculateArmorHitLocation(AttackData ad)
+		{
+			if (ad.Style != null)
+			{
+				if (ad.Style.ArmorHitLocation != eArmorSlot.NOTSET)
+					return ad.Style.ArmorHitLocation;
+			}
+			int chancehit = Util.Random(1, 100);
+			if (chancehit <= 40)
+			{
+				return eArmorSlot.TORSO;
+			}
+			else if (chancehit <= 65)
+			{
+				return eArmorSlot.LEGS;
+			}
+			else if (chancehit <= 80)

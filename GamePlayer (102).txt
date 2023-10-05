@@ -1,0 +1,45 @@
+﻿					return GlobalConstants.REALM_RANK_NAMES[(int)Realm - 1, (int)Gender - 1, (RealmLevel / 10)];
+				}
+				catch
+				{
+					return "Unknown Rank"; // why aren't all the realm ranks defined above?
+				}
+			}
+		}
+
+		/// <summary>
+		/// Called when this player gains realm points
+		/// </summary>
+		/// <param name="amount">The amount of realm points gained</param>
+		public override void GainRealmPoints(long amount)
+		{
+			GainRealmPoints(amount, true, true);
+		}
+
+		/// <summary>
+		/// Called when this living gains realm points
+		/// </summary>
+		/// <param name="amount">The amount of realm points gained</param>
+		public void GainRealmPoints(long amount, bool modify)
+		{
+			GainRealmPoints(amount, modify, true);
+		}
+
+		/// <summary>
+		/// Called when this player gains realm points
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <param name="modify"></param>
+		/// <param name="sendMessage"></param>
+		public void GainRealmPoints(long amount, bool modify, bool sendMessage)
+		{
+			GainRealmPoints(amount, modify, true, true);
+		}
+
+		/// <summary>
+		/// Called when this player gains realm points
+		/// </summary>
+		/// <param name="amount">The amount of realm points gained</param>
+		/// <param name="modify">Should we apply the rp modifer</param>
+		/// <param name="sendMessage">Wether to send a message like "You have gained N realmpoints"</param>
+		/// <param name="notify"></param>

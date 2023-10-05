@@ -1,0 +1,41 @@
+﻿// if this is the first death in level, you lose only half the penalty
+switch (DeathCount)
+{
+case 0:
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeathN1"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+xpLossPercent /= 3;
+break;
+case 1:
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeathN2"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+xpLossPercent = xpLossPercent * 2 / 3;
+break;
+}
+
+DeathCount++;
+m_deathtype = eDeathType.PvE;
+long xpLoss = (ExperienceForNextLevel - ExperienceForCurrentLevel) * xpLossPercent / 1000;
+GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, false, true);
+TempProperties.setProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
+}
+
+if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL)
+{
+int conLoss = DeathCount;
+if (conLoss > 3)
+conLoss = 3;
+else if (conLoss < 1)
+conLoss = 1;
+TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conLoss);
+}
+				}
+				GameEventMgr.AddHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
+			}
+
+			if (this.ControlledBrain != null)
+				CommandNpcRelease();
+
+			if (this.SiegeWeapon != null)
+				SiegeWeapon.ReleaseControl();
+
+			// sent after buffs drop
+			// GamePlayer.Die.CorpseLies:		{0} just died. {1} corpse lies on the ground.

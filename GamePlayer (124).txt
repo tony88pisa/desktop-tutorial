@@ -1,0 +1,38 @@
+﻿
+			GameServer.ServerRules.OnPlayerLevelUp(this, previouslevel);
+			RefreshSpecDependantSkills(true);
+
+			// Echostorm - Code for display of new title on level up
+			// Get old and current rank titles
+			string currenttitle = CharacterClass.GetTitle(this, Level);
+
+			// check for difference
+			if (CharacterClass.GetTitle(this, previouslevel) != currenttitle)
+			{
+				// Inform player of new title.
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.AttainedRank", currenttitle), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+
+			// spec points
+			int specpoints = 0;
+			for (int i = Level; i > previouslevel; i--)
+			{
+				if (i <= 5) specpoints += i; //start levels
+				else specpoints += CharacterClass.SpecPointsMultiplier * i / 10; //spec levels
+			}
+			if (specpoints > 0)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouGetSpec", specpoints), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+
+			// old hp
+			int oldhp = CalculateMaxHealth(previouslevel, GetBaseStat(eStat.CON));
+
+			// old power
+			int oldpow = 0;
+			if (CharacterClass.ManaStat != eStat.UNDEFINED)
+			{
+				oldpow = CalculateMaxMana(previouslevel, GetBaseStat(CharacterClass.ManaStat));
+			}
+
+			// hp upgrade

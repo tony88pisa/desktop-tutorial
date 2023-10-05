@@ -1,0 +1,38 @@
+﻿				}
+
+				if (m_quitTimer != null)
+				{
+					m_quitTimer.Stop();
+					m_quitTimer = null;
+				}
+				m_automaticRelease = m_releaseType == eReleaseType.Duel;
+				m_releasePhase = 0;
+				m_deathTick = Environment.TickCount; // we use realtime, because timer window is realtime
+
+				Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
+				m_releaseTimer = new RegionTimer(this);
+				m_releaseTimer.Callback = new RegionTimerCallback(ReleaseTimerCallback);
+				m_releaseTimer.Start(1000);
+
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.ReleaseToReturn"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+
+				// clear target object so no more actions can used on this target, spells, styles, attacks...
+				TargetObject = null;
+
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					player.Out.SendPlayerDied(this, killer);
+				}
+
+				// first penalty is 5% of expforlevel, second penalty comes from release
+				int xpLossPercent;
+				if (Level < 40)
+				{
+					xpLossPercent = MaxLevel - Level;
+				}
+				else
+				{
+					xpLossPercent = MaxLevel - 40;
+				}
+

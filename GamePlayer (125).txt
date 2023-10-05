@@ -1,0 +1,42 @@
+﻿			int newhp = CalculateMaxHealth(Level, GetBaseStat(eStat.CON));
+			if (oldhp > 0 && oldhp < newhp)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.HitsRaise", (newhp - oldhp)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+
+			// power upgrade
+			if (CharacterClass.ManaStat != eStat.UNDEFINED)
+			{
+				int newpow = CalculateMaxMana(Level, GetBaseStat(CharacterClass.ManaStat));
+				if (newpow > 0 && oldpow < newpow)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.PowerRaise", (newpow - oldpow)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+			}
+
+			if (IsAlive)
+			{
+				// workaround for starting regeneration
+				StartHealthRegeneration();
+				StartPowerRegeneration();
+			}
+
+			DeathCount = 0;
+
+			if (Group != null)
+			{
+				Group.UpdateGroupWindow();
+			}
+			Out.SendUpdatePlayer(); // Update player level
+			Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
+			Out.SendCharResistsUpdate();
+			Out.SendUpdatePlayerSkills();
+			Out.SendUpdatePoints();
+			UpdatePlayerStatus();
+
+			// not sure what package this is, but it triggers the mob color update
+			Out.SendLevelUpSound();
+
+			// update color on levelup
+			if (ObjectState == eObjectState.Active)
+			{

@@ -1,0 +1,41 @@
+﻿		/// Called when this player reaches second stage of the current level
+		/// </summary>
+		public virtual void OnLevelSecondStage()
+		{
+			IsLevelSecondStage = true;
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.SecondStage", Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+			// spec points
+			int specpoints = CharacterClass.SpecPointsMultiplier * Level / 20;
+			if (specpoints > 0)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouGetSpec", specpoints), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+
+			//death penalty reset on mini-ding
+			DeathCount = 0;
+
+			if (Group != null)
+			{
+				Group.UpdateGroupWindow();
+			}
+			Out.SendUpdatePlayer(); // Update player level
+			Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
+			Out.SendUpdatePlayerSkills();
+			Out.SendUpdatePoints();
+			UpdatePlayerStatus();
+			// save player to database
+			SaveIntoDatabase();
+		}
+
+		/// <summary>
+		/// Calculate the Autotrain points.
+		/// </summary>
+		/// <param name="spec">Specialization</param>
+		/// <param name="mode">various AT related calculations (amount of points, level of AT...)</param>
+		public virtual int GetAutoTrainPoints(Specialization spec, int Mode)
+		{
+			int max_autotrain = Level / 4;
+			if (max_autotrain == 0) max_autotrain = 1;
+

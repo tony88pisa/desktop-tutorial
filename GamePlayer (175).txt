@@ -1,0 +1,44 @@
+﻿			{
+				return 0;
+			}
+
+			var baseRangedWeaponRange = 440;
+			double classbase =
+				(weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon
+				 ? baseRangedWeaponRange
+				 : CharacterClass.WeaponSkillBase);
+
+			//added for WS Poisons
+			double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
+
+			//return ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * PlayerEffectiveness);
+			return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
+		}
+
+		/// <summary>
+		/// calculates weapon stat
+		/// </summary>
+		/// <param name="weapon"></param>
+		/// <returns></returns>
+		public override int GetWeaponStat(InventoryItem weapon)
+		{
+			if (weapon != null)
+			{
+				switch ((eObjectType)weapon.Object_Type)
+				{
+						// DEX modifier
+					case eObjectType.Staff:
+					case eObjectType.Fired:
+					case eObjectType.Longbow:
+					case eObjectType.Crossbow:
+					case eObjectType.CompositeBow:
+					case eObjectType.RecurvedBow:
+					case eObjectType.Thrown:
+					case eObjectType.Shield:
+						return GetModified(eProperty.Dexterity);
+
+						// STR+DEX modifier
+					case eObjectType.ThrustWeapon:
+					case eObjectType.Piercing:
+					case eObjectType.Spear:
+					case eObjectType.Flexible:

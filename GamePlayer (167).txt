@@ -1,0 +1,33 @@
+﻿		protected virtual void TryReactiveEffect(InventoryItem reactiveItem, GameLiving target)
+		{
+			if (reactiveItem != null)
+			{
+				int requiredLevel = reactiveItem.Template.LevelRequirement > 0 ? reactiveItem.Template.LevelRequirement : Math.Min(MaxLevel, reactiveItem.Level);
+
+				if (requiredLevel <= Level)
+				{
+					SpellLine reactiveEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+
+					if (reactiveEffectLine != null)
+					{
+						if (reactiveItem.ProcSpellID != 0)
+						{
+							Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID, reactiveEffectLine);
+
+							if (spell != null)
+							{
+								int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
+
+								if (Util.Chance(chance))
+								{
+									ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
+									if (spellHandler != null)
+									{
+										spellHandler.StartSpell(target, reactiveItem);
+									}
+								}
+							}
+						}
+
+						if (reactiveItem.ProcSpellID1 != 0)
+						{

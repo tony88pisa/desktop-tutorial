@@ -1,0 +1,42 @@
+﻿					}
+				}
+				else if (weapon.Item_Type == Slot.RANGED)
+				{
+					//Ranged damage buff,debuff,Relic,RA
+					result += GetModified(eProperty.RangedDamage) * 0.01;
+				}
+				else if (weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
+				{
+					result += GetModified(eProperty.MeleeDamage) * 0.01;
+				}
+				
+				return result;
+			}
+			else
+			{ // TODO: whats the damage cap without weapon?
+				return AttackDamage(weapon) * 3 * (1 + (AttackSpeed(weapon) * 0.001 - 2) * .03);
+			}
+		}
+
+		/// <summary>
+		/// Can this player cast the given spell while in combat?
+		/// </summary>
+		/// <param name="spell"></param>
+		/// <returns></returns>
+		public override bool CanCastInCombat(Spell spell)
+		{
+			if (spell == null || spell.IsInstantCast)
+				return true;
+
+			if( (CharacterClass.Equals(GS.CharacterClass.Vampiir)
+					|| CharacterClass.Equals(GS.CharacterClass.MaulerAlb)
+					|| CharacterClass.Equals(GS.CharacterClass.MaulerHib)
+					|| CharacterClass.Equals(GS.CharacterClass.MaulerMid)))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>

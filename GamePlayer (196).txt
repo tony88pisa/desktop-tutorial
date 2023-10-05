@@ -1,0 +1,51 @@
+﻿			return (int)((res + classResist) - 0.01 * secondResist * (res + classResist) + secondResist);
+		}
+
+		#endregion
+
+		#region Duel
+		/// <summary>
+		/// Gets the duel target of this player
+		/// </summary>
+		public GamePlayer DuelTarget { get { return Duel != null ? Duel.Target : null; }}
+		
+		/// <summary>
+		/// Get the GameDuel of this player
+		/// </summary>
+		protected GameDuel Duel { get; set; }
+
+		/// <summary>
+		/// Starts the duel
+		/// </summary>
+		/// <param name="duelTarget">The duel target</param>
+		public virtual void DuelStart(GamePlayer duelTarget)
+		{
+			if (Duel != null)
+				return;
+
+			Duel = new GameDuel(this, duelTarget);
+			Duel.Start();
+		}
+
+		/// <summary>
+		/// Stops the duel if it is running
+		/// </summary>
+		public void DuelStop()
+		{
+			if (Duel == null)
+				return;
+			
+			Duel.Stop();
+			Duel = null;
+		}
+		#endregion
+
+		#region Spell cast
+
+		/// <summary>
+		/// The time someone can not cast
+		/// </summary>
+		protected long m_disabledCastingTimeout = 0;
+		/// <summary>
+		/// Time when casting is allowed again (after interrupt from enemy attack)
+		/// </summary>

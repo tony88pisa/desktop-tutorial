@@ -1,0 +1,42 @@
+﻿					else
+					{
+						playerMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
+publicMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
+					}
+				}
+			}
+
+			DuelStop();
+
+			eChatType messageType;
+			if (m_releaseType == eReleaseType.Duel)
+				messageType = eChatType.CT_Emote;
+			else if (killer == null)
+			{
+				messageType = eChatType.CT_PlayerDied;
+			}
+			else
+			{
+				switch ((eRealm)killer.Realm)
+				{
+						case eRealm.Albion: messageType = eChatType.CT_KilledByAlb; break;
+						case eRealm.Midgard: messageType = eChatType.CT_KilledByMid; break;
+						case eRealm.Hibernia: messageType = eChatType.CT_KilledByHib; break;
+						default: messageType = eChatType.CT_PlayerDied; break; // killed by mob
+				}
+			}
+
+			if (killer is GamePlayer && killer != this)
+			{
+				((GamePlayer)killer).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)killer).Client.Account.Language, "GamePlayer.Die.YouKilled", GetName(0, false)), eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+			}
+
+			ArrayList players = new ArrayList();
+			if (messageDistance == 0)
+			{
+				foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+				{
+					players.Add(client.Player);
+				}
+			}
+			else

@@ -1,0 +1,37 @@
+﻿			Message.SystemToOthers2(this, eChatType.CT_PlayerDied, "GamePlayer.Die.CorpseLies", GetName(0, true), GetPronoun(this.Client, 1, true));
+
+			if (m_releaseType == eReleaseType.Duel)
+			{
+Message.SystemToOthers(this, killer.Name + "GamePlayer.Die.DuelWinner", eChatType.CT_Emote);
+}
+
+			// deal out exp and realm points based on server rules
+			// no other way to keep correct message order...
+			GameServer.ServerRules.OnPlayerKilled(this, killer);
+			if (m_releaseType != eReleaseType.Duel)
+				DeathTime = PlayedTime;
+
+			IsSwimming = false;
+		}
+
+		public override void EnemyKilled(GameLiving enemy)
+		{
+			if (Group != null)
+			{
+				foreach (GamePlayer player in Group.GetPlayersInTheGroup())
+				{
+					if (player == this) continue;
+					if (enemy.Attackers.Contains(player)) continue;
+					if (this.IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					{
+						Notify(GameLivingEvent.EnemyKilled, player, new EnemyKilledEventArgs(enemy));
+					}
+
+					if (player.Attackers.Contains(enemy))
+						player.RemoveAttacker(enemy);
+
+					if (player.ControlledBrain != null && player.ControlledBrain.Body.Attackers.Contains(enemy))
+						player.ControlledBrain.Body.RemoveAttacker(enemy);
+				}
+			}
+

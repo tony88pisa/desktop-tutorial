@@ -1,0 +1,38 @@
+﻿					if (nextSpell.IsSecondary)
+					{
+						GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "Powerless");
+						if (effect == null)
+							effect = SpellHandler.FindEffectOnTarget(this, "Range");
+						if (effect == null)
+							effect = SpellHandler.FindEffectOnTarget(this, "Uninterruptable");
+
+						if (effect != null)
+							effect.Cancel(false);
+					}
+
+				}
+				m_runningSpellHandler = null;
+				m_nextSpell = null;			// avoid restarting nextspell by reentrance from spellhandler
+				m_nextSpellLine = null;
+				m_nextSpellTarget = null;
+
+				if (nextSpell != null)
+					m_runningSpellHandler = ScriptMgr.CreateSpellHandler(this, nextSpell, nextSpellLine);
+			}
+			if (m_runningSpellHandler != null)
+			{
+				m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+				if(m_nextSpellTarget!=null)
+					m_runningSpellHandler.CastSpell(m_nextSpellTarget);
+				else
+					m_runningSpellHandler.CastSpell();
+			}
+		}
+
+		/// <summary>
+		/// Cast a specific spell from given spell line
+		/// </summary>
+		/// <param name="spell">spell to cast</param>
+		/// <param name="line">Spell line of the spell (for bonus calculations)</param>
+		/// <returns>Whether the spellcast started successfully</returns>
+		public override bool CastSpell(Spell spell, SpellLine line)

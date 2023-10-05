@@ -1,0 +1,34 @@
+﻿							Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID1, reactiveEffectLine);
+
+							if (spell != null)
+							{
+								int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
+
+								if (Util.Chance(chance))
+								{
+									ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
+									if (spellHandler != null)
+									{
+										spellHandler.StartSpell(target, reactiveItem);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Does needed interrupt checks and interrupts if needed
+		/// </summary>
+		/// <param name="attacker">the attacker that is interrupting</param>
+		/// <param name="attackType">The attack type</param>
+		/// <returns>true if interrupted successfully</returns>
+		protected override bool OnInterruptTick(GameLiving attacker, AttackData.eAttackType attackType)
+		{
+			if (base.OnInterruptTick(attacker, attackType))
+			{
+				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				{
+					string attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Type.Shot");

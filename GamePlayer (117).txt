@@ -1,0 +1,44 @@
+﻿		}
+
+		/// <summary>
+		/// Called whenever this player gains experience
+		/// </summary>
+		/// <param name="expTotal"></param>
+		/// <param name="expCampBonus"></param>
+		/// <param name="expGroupBonus"></param>
+		/// <param name="expOutpostBonus"></param>
+		/// <param name="sendMessage"></param>
+		/// <param name="allowMultiply"></param>
+		public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
+		{
+			GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, true);
+		}
+
+		/// <summary>
+		/// Called whenever this player gains experience
+		/// </summary>
+		/// <param name="expTotal"></param>
+		/// <param name="expCampBonus"></param>
+		/// <param name="expGroupBonus"></param>
+		/// <param name="expOutpostBonus"></param>
+		/// <param name="sendMessage"></param>
+		/// <param name="allowMultiply"></param>
+		/// <param name="notify"></param>
+		public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
+		{
+			if (!GainXP && expTotal > 0)
+				return;
+
+			//xp rate modifier
+			if (allowMultiply)
+			{
+				//we only want to modify the base rate, not the group or camp bonus
+				expTotal -= expGroupBonus;
+				expTotal -= expCampBonus;
+				expTotal -= expOutpostBonus;
+
+				//[StephenxPimentel] - Zone Bonus XP Support
+				if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+				{
+					int zoneBonus = (((int)expTotal * ZoneBonus.GetXPBonus(this)) / 100);
+					if (zoneBonus > 0)

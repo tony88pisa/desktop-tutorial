@@ -1,0 +1,35 @@
+﻿		/// <param name="dualWield"></param>
+		/// <returns></returns>
+		protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+		{
+			if (IsCrafting)
+			{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				CraftTimer.Stop();
+				CraftTimer = null;
+				Out.SendCloseTimerWindow();
+			}
+
+			AttackData ad = base.MakeAttack(target, weapon, style, effectiveness * Effectiveness, interruptDuration, dualWield);
+
+			//Clear the styles for the next round!
+			NextCombatStyle = null;
+			NextCombatBackupStyle = null;
+
+			switch (ad.AttackResult)
+			{
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+					{
+						//keep component
+						if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameSiegeWeapon) && ad.Attacker is GamePlayer && ad.Attacker.GetModified(eProperty.KeepDamage) > 0)
+						{
+							int keepdamage = (int)Math.Floor((double)ad.Damage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
+							int keepstyle = (int)Math.Floor((double)ad.StyleDamage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
+							ad.Damage += keepdamage;
+							ad.StyleDamage += keepstyle;
+						}
+						// vampiir
+						if (CharacterClass.Equals(GS.CharacterClass.Vampiir)
+						    && target is GameKeepComponent == false
+						    && target is GameKeepDoor == false

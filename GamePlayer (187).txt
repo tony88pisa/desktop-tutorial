@@ -1,0 +1,47 @@
+﻿			return damage;
+		}
+
+		/// <summary>
+		/// Stores the amount of realm points gained by other players on last death
+		/// </summary>
+		protected long m_lastDeathRealmPoints;
+
+		/// <summary>
+		/// Gets/sets the amount of realm points gained by other players on last death
+		/// </summary>
+		public long LastDeathRealmPoints
+		{
+			get { return m_lastDeathRealmPoints; }
+			set { m_lastDeathRealmPoints = value; }
+		}
+
+		/// <summary>
+		/// Called when the player dies
+		/// </summary>
+		/// <param name="killer">the killer</param>
+		public override void Die(GameObject killer)
+		{
+			// ambiant talk
+			if (killer is GameNPC)
+				(killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, this);
+
+			bool realmDeath = killer != null && killer.Realm != eRealm.None;
+
+			TargetObject = null;
+			Diving(waterBreath.Normal);
+			if (IsOnHorse)
+				IsOnHorse = false;
+
+			// cancel task if active
+			if (Task != null && Task.TaskActive)
+				Task.ExpireTask();
+
+			string playerMessage;
+			string publicMessage;
+			ushort messageDistance = WorldMgr.DEATH_MESSAGE_DISTANCE;
+			m_releaseType = eReleaseType.Normal;
+
+			string location = "";
+			if (CurrentAreas.Count > 0 && (CurrentAreas[0] is Area.BindArea) == false)
+				location = (CurrentAreas[0] as AbstractArea).Description;
+			else

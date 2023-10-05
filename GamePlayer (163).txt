@@ -1,0 +1,33 @@
+﻿break;
+				case eAttackResult.Evaded:
+if (ad.Attacker is GameNPC)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evade", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evade", ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+break;
+				case eAttackResult.Fumbled:
+if (ad.Attacker is GameNPC)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumbled", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumbled", ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+break;
+				case eAttackResult.Missed:
+					if (ad.AttackType == AttackData.eAttackType.Spell)
+						break;
+if (ad.Attacker is GameNPC)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Missed", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Missed", ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+					break;
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+					{
+						if (ad.Damage == -1)
+							break;
+
+						#region Messages
+
+						string hitLocName = null;
+						switch (ad.ArmorHitLocation)
+						{
+								//GamePlayer.Attack.Location.Feet:	feet

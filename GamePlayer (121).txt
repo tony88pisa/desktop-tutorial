@@ -1,0 +1,48 @@
+﻿				{
+					Level++;
+				}
+			}
+			Out.SendUpdatePoints();
+		}
+
+		/// <summary>
+		/// Gets or sets the level of the player
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public override byte Level
+		{
+			get { return DBCharacter != null ? (byte)DBCharacter.Level : base.Level; }
+			set
+			{
+				int oldLevel = Level;
+				base.Level = value;
+				if (DBCharacter != null)
+					DBCharacter.Level = value;
+				if (oldLevel > 0)
+				{
+					if (value > oldLevel)
+					{
+						OnLevelUp(oldLevel);
+						Notify(GamePlayerEvent.LevelUp, this);
+					}
+					else
+					{
+						//update the mob colours
+						Out.SendLevelUpSound();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// What is the base, unmodified level of this character.
+		/// </summary>
+		public override byte BaseLevel
+		{
+			get { return DBCharacter != null ? (byte)DBCharacter.Level : base.BaseLevel; }
+		}
+
+		/// <summary>
+		/// What level is displayed to another player
+		/// </summary>
+		public override byte GetDisplayLevel(GamePlayer player)

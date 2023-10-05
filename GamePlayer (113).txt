@@ -1,0 +1,48 @@
+﻿			33411,//43
+			36308,//44
+			39438,//45
+			42812,//46
+			46454,//47
+			50385,//48
+			54625,//49
+			59195,//50
+		};
+
+		/// <summary>
+		/// Money value of this player
+		/// </summary>
+		public override long MoneyValue
+		{
+			get
+			{
+				return 3 * prcRestore[Level < GamePlayer.prcRestore.Length ? Level : GamePlayer.prcRestore.Length - 1];
+			}
+		}
+
+		#endregion
+
+		#region Level/Experience
+
+		/// <summary>
+		/// What is the maximum level a player can achieve?
+		/// To alter this in a custom GamePlayer class you must override this method and
+		/// provide your own XPForLevel array with MaxLevel + 1 entries
+		/// </summary>
+		public virtual byte MaxLevel
+		{
+			get { return 50; }
+		}
+
+		/// <summary>
+		/// How much experience is needed for a given level?
+		/// </summary>
+		public virtual long GetExperienceNeededForLevel(int level)
+		{
+			if (level > MaxLevel)
+				return GetExperienceAmountForLevel(MaxLevel);
+
+			if (level <= 0)
+				return GetExperienceAmountForLevel(0);
+
+			return GetExperienceAmountForLevel(level - 1);
+		}

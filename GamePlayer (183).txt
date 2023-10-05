@@ -1,0 +1,40 @@
+﻿							default: range = 1200; break; // shortbow, xbow, throwing
+					}
+
+					range = Math.Max(32, range * GetModified(eProperty.ArcheryRange) * 0.01);
+
+					if (ammo != null)
+						switch ((ammo.SPD_ABS >> 2) & 0x3)
+					{
+							case 0: range *= 0.85; break; //Clout -15%
+							//						case 1:                break; //(none) 0%
+							case 2: range *= 1.15; break; //doesn't exist on live
+							case 3: range *= 1.25; break; //Flight +25%
+					}
+					if (livingTarget != null) range += Math.Min((Z - livingTarget.Z) / 2.0, 500);
+					if (range < 32) range = 32;
+
+					return (int)(range);
+				}
+
+				int meleerange = 128;
+				GameKeepComponent keepcomponent = livingTarget as GameKeepComponent; // TODO better component melee attack range check
+				if (keepcomponent != null)
+					meleerange += 150;
+				else
+				{
+					if (livingTarget != null && livingTarget.IsMoving)
+						meleerange += 32;
+					if (IsMoving)
+						meleerange += 32;
+				}
+				return meleerange;
+			}
+			set { }
+		}
+
+		/// <summary>
+		/// Gets the current attackspeed of this living in milliseconds
+		/// </summary>
+		/// <param name="weapons">attack weapons</param>
+		/// <returns>effective speed of the attack. average if more than one weapon.</returns>

@@ -1,0 +1,39 @@
+﻿				else
+				{
+					//think min crit dmage is 10% of damage
+					critMin = ad.Damage / 10;
+					// Critical damage to players is 50%, low limit should be around 20% but not sure
+					// zerkers in Berserk do up to 99%
+					if (ad.Target is GamePlayer)
+						critMax = ad.Damage >> 1;
+					else
+						critMax = ad.Damage;
+				}
+				critMin = Math.Max(critMin, 0);
+				critMax = Math.Max(critMin, critMax);
+
+				return Util.Random(critMin, critMax);
+			}
+			return 0;
+		}
+
+		/// <summary>
+		/// This method is called at the end of the attack sequence to
+		/// notify objects if they have been attacked/hit by an attack
+		/// </summary>
+		/// <param name="ad">information about the attack</param>
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
+			if (IsOnHorse && ad.IsHit)
+				IsOnHorse = false;
+			base.OnAttackedByEnemy(ad);
+
+			switch (ad.AttackResult)
+			{
+				// is done in game living because of guard
+				//case eAttackResult.Blocked : Out.SendMessage(ad.Attacker.GetName(0, true) + " attacks you and you block the blow!", eChatType.CT_Missed, eChatLoc.CL_SystemWindow); break;
+				case eAttackResult.Parried:
+if (ad.Attacker is GameNPC)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parry", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parry", ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);

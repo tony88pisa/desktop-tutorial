@@ -1,0 +1,37 @@
+﻿		{
+			NextCombatStyle = null;
+			NextCombatBackupStyle = null;
+			base.StopAttack(forced);
+			if (IsAlive)
+			{
+				Out.SendAttackMode(AttackState);
+			}
+		}
+
+
+		/// <summary>
+		/// Switches the active quiver slot to another one
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <param name="forced"></param>
+		public virtual void SwitchQuiver(eActiveQuiverSlot slot, bool forced)
+		{
+			if (slot != eActiveQuiverSlot.None)
+			{
+				eInventorySlot updatedSlot = eInventorySlot.Invalid;
+				if ((slot & eActiveQuiverSlot.Fourth) > 0)
+					updatedSlot = eInventorySlot.FourthQuiver;
+				else if ((slot & eActiveQuiverSlot.Third) > 0)
+					updatedSlot = eInventorySlot.ThirdQuiver;
+				else if ((slot & eActiveQuiverSlot.Second) > 0)
+					updatedSlot = eInventorySlot.SecondQuiver;
+				else if ((slot & eActiveQuiverSlot.First) > 0)
+					updatedSlot = eInventorySlot.FirstQuiver;
+
+				if (Inventory.GetItem(updatedSlot) != null && (ActiveQuiverSlot != slot || forced))
+				{
+					ActiveQuiverSlot = slot;
+					//GamePlayer.SwitchQuiver.ShootWith:		You will shoot with: {0}.
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.ShootWith", Inventory.GetItem(updatedSlot).GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else

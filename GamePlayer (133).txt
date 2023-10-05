@@ -1,0 +1,33 @@
+﻿			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				StopCurrentSpellcast();
+			}
+
+			switch (slot)
+			{
+				case eActiveWeaponSlot.Standard:
+					// remove endurance remove handler
+					if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+						GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
+					break;
+
+				case eActiveWeaponSlot.TwoHanded:
+					// remove endurance remove handler
+					if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+						GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
+					break;
+
+				case eActiveWeaponSlot.Distance:
+					// add endurance remove handler
+					if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+						GameEventMgr.AddHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
+					break;
+			}
+
+
+
+			InventoryItem[] oldActiveSlots = new InventoryItem[4];
+			InventoryItem[] newActiveSlots = new InventoryItem[4];
+			InventoryItem rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+			InventoryItem leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			InventoryItem twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);

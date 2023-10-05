@@ -1,0 +1,29 @@
+﻿				else if (!TargetInView)  // TODO : wrong, must be checked with the target parameter and not with the targetObject
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else if (!IsObjectInFront(target, 90))
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NotInView", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else if (RangeAttackAmmo == null)
+				{
+					//another check for ammo just before firing
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				}
+				else if (!CheckRangedAmmoCompatibilityWithActiveWeapon())
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				}
+				else if (GameServer.ServerRules.IsAllowedToAttack(this, (GameLiving)target, false))
+				{
+					GameLiving living = target as GameLiving;
+					if (RangedAttackType == eRangedAttackType.Critical && living != null
+					    && (living.CurrentSpeed > 90 //walk speed == 85, hope that's what they mean
+					        || (living.AttackState && living.InCombat) //maybe not 100% correct
+					        || SpellHandler.FindEffectOnTarget(living, "Mesmerize") != null
+					       ))
+					{
+						/*
+						 * http://rothwellhome.org/guides/archery.htm
+						 * Please note that critical shot will work against targets that are:

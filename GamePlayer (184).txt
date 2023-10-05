@@ -1,0 +1,43 @@
+﻿		public override int AttackSpeed(params InventoryItem[] weapons)
+		{
+			if (weapons == null || weapons.Length < 1)
+				return 0;
+
+			int count = 0;
+			double speed = 0;
+			bool bowWeapon = true;
+
+			for (int i = 0; i < weapons.Length; i++)
+			{
+				if (weapons[i] != null)
+				{
+					speed += weapons[i].SPD_ABS;
+					count++;
+
+					switch (weapons[i].Object_Type)
+					{
+						case (int)eObjectType.Fired:
+						case (int)eObjectType.Longbow:
+						case (int)eObjectType.Crossbow:
+						case (int)eObjectType.RecurvedBow:
+						case (int)eObjectType.CompositeBow:
+							break;
+						default:
+							bowWeapon = false;
+							break;
+					}
+				}
+			}
+
+			if (count < 1)
+				return 0;
+
+			speed /= count;
+
+			int qui = Math.Min(250, Quickness); //250 soft cap on quickness
+
+			if (bowWeapon)
+			{
+				if (ServerProperties.Properties.ALLOW_OLD_ARCHERY)
+				{
+					//Draw Time formulas, there are very many ...

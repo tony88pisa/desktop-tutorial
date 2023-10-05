@@ -1,0 +1,25 @@
+﻿
+								if (listAvailableTargets.Count > 1)
+								{
+									while (extraTargets.Count < numTargetsCanHit)
+									{
+										random = Util.Random(listAvailableTargets.Count - 1);
+										if (!extraTargets.Contains(listAvailableTargets[random]))
+											extraTargets.Add(listAvailableTargets[random] as GameObject);
+									}
+									foreach (GameObject obj in extraTargets)
+									{
+										if (obj is GamePlayer && ((GamePlayer)obj).IsSitting)
+										{
+											effectiveness *= 2;
+										}
+										new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
+									}
+								}
+							}
+							else // shield swipe
+							{
+								foreach (GameNPC npc in GetNPCsInRadius(false, (ushort)AttackRange))
+								{
+									if (GameServer.ServerRules.IsAllowedToAttack(this, npc, true))
+									{

@@ -1,0 +1,35 @@
+﻿			if (vanishTimeout > 0 && vanishTimeout > CurrentRegion.Time)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain", (vanishTimeout - CurrentRegion.Time + 1000) / 1000), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			long VanishTick = this.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+			long changeTime = this.CurrentRegion.Time - VanishTick;
+			if (changeTime < 30000 && VanishTick > 0)
+			{
+				this.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.YouMustWait", ((30000 - changeTime) / 1000).ToString()), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (IsOnHorse)
+				IsOnHorse = false;
+
+			if (IsDisarmed)
+			{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.CantDisarmed"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (IsSitting)
+			{
+				Sit(false);
+			}
+			if (AttackWeapon == null)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.CannotWithoutWeapon"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (AttackWeapon.Object_Type == (int)eObjectType.Instrument)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

@@ -1,0 +1,26 @@
+﻿										listAvailableTargets.Add(npc);
+									}
+								}
+
+								listAvailableTargets.Remove(target);
+								numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);
+
+								if (listAvailableTargets.Count > 1)
+								{
+									while (extraTargets.Count < numTargetsCanHit)
+									{
+										random = Util.Random(listAvailableTargets.Count - 1);
+										if (!extraTargets.Contains(listAvailableTargets[random]))
+										{
+											extraTargets.Add(listAvailableTargets[random] as GameObject);
+										}
+									}
+									foreach (GameNPC obj in extraTargets)
+									{
+										if (obj != ad.Target)
+										{
+											this.MakeAttack(obj, attackWeapon, null, 1, ServerProperties.Properties.SPELL_INTERRUPT_DURATION, false, false);
+										}
+									}
+								}
+							}

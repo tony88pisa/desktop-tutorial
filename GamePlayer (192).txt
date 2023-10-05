@@ -1,0 +1,29 @@
+﻿				if (realmDeath) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
+				{
+					int conpenalty = 0;
+					switch (GameServer.Instance.Configuration.ServerType)
+					{
+						case eGameServerType.GST_Normal:
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+								xpLossPercent = 0;
+								m_deathtype = eDeathType.RvR;
+								break;
+								
+						case eGameServerType.GST_PvP:
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+								xpLossPercent = 0;
+								m_deathtype = eDeathType.PvP;
+								if (ServerProperties.Properties.PVP_DEATH_CON_LOSS)
+								{
+									conpenalty = 3;
+									TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conpenalty);
+								}
+								break;
+				 	}
+					
+				}
+				else
+				{
+if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL)
+{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.LoseExperience"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);

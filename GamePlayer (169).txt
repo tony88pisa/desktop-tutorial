@@ -1,0 +1,36 @@
+﻿					if (AttackWeapon != null && AttackWeapon.Object_Type == (int)eObjectType.Thrown)
+						attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Type.Throw");
+if (attacker is GameNPC)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, Client.Account.Language, (attacker as GameNPC)), attackTypeMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), attackTypeMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				}
+				return true;
+			}
+			return false;
+		}
+
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+
+			#region PVP DAMAGE
+
+			if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null))
+			{
+				if (Realm != source.Realm && source.Realm != 0)
+					DamageRvRMemory += (long)(damageAmount + criticalAmount);
+			}
+
+			#endregion PVP DAMAGE
+
+			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+			if(this.HasAbility(Abilities.DefensiveCombatPowerRegeneration))
+			{
+				this.Mana += (int)((damageAmount + criticalAmount) * 0.25);
+			}
+		}
+
+		/// <summary>
+		/// Gets the effective AF of this living.  This is used for the overall AF display
+		/// on the character but not used in any damage equations.
+		/// </summary>

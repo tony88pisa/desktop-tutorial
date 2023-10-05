@@ -1,0 +1,42 @@
+﻿			{
+				foreach (GamePlayer player in GetPlayersInRadius(messageDistance))
+				{
+					if (player == null) continue;
+					players.Add(player);
+				}
+			}
+
+			foreach (GamePlayer player in players)
+			{
+				// on normal server type send messages only to the killer and dead players realm
+				// check for gameplayer is needed because killers realm don't see deaths by guards
+				if (
+					(player != killer) && (
+						(killer != null && killer is GamePlayer && GameServer.ServerRules.IsSameRealm((GamePlayer)killer, player, true))
+						|| (GameServer.ServerRules.IsSameRealm(this, player, true))
+						|| ServerProperties.Properties.DEATH_MESSAGES_ALL_REALMS)
+				)
+					if (player == this)
+						player.Out.SendMessage(playerMessage, messageType, eChatLoc.CL_SystemWindow);
+				else player.Out.SendMessage(publicMessage, messageType, eChatLoc.CL_SystemWindow);
+			}
+
+			//Dead ppl. dismount ...
+			if (Steed != null)
+				DismountSteed(true);
+			//Dead ppl. don't sit ...
+			if (IsSitting)
+			{
+				IsSitting = false;
+				UpdatePlayerStatus();
+			}
+
+			// then buffs drop messages
+			base.Die(killer);
+
+			lock (m_LockObject)
+			{
+				if (m_releaseTimer != null)
+				{
+					m_releaseTimer.Stop();
+					m_releaseTimer = null;

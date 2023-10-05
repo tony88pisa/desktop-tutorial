@@ -1,0 +1,30 @@
+﻿		protected override eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
+		{
+			long holdStart = TempProperties.getProperty<long>(RANGE_ATTACK_HOLD_START);
+			if (holdStart == 0)
+			{
+				holdStart = CurrentRegion.Time;
+				TempProperties.setProperty(RANGE_ATTACK_HOLD_START, holdStart);
+			}
+			//DOLConsole.WriteLine("Holding.... ("+holdStart+") "+(Environment.TickCount - holdStart));
+			if ((CurrentRegion.Time - holdStart) > 15000 && AttackWeapon.Object_Type != (int)eObjectType.Crossbow)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return eCheckRangeAttackStateResult.Stop; //Stop the attack
+			}
+
+			//This state is set when the player wants to fire!
+			if (RangedAttackState == eRangedAttackState.Fire
+			    || RangedAttackState == eRangedAttackState.AimFire
+			    || RangedAttackState == eRangedAttackState.AimFireReload)
+			{
+				RangeAttackTarget = null; // clean the RangeAttackTarget at the first shot try even if failed
+
+				if (target == null || !(target is GameLiving))
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else if (!this.IsWithinRadius(target, AttackRange))
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.TooFarAway", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}

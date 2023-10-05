@@ -1,0 +1,36 @@
+﻿"GamePlayer.StartAttack.CannotMelee"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			{
+				if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+				{
+					if ((eCharacterClass)CharacterClass.ID == eCharacterClass.Scout || (eCharacterClass)CharacterClass.ID == eCharacterClass.Hunter || (eCharacterClass)CharacterClass.ID == eCharacterClass.Ranger)
+					{
+						// There is no feedback on live when attempting to fire a bow with arrows
+						return;
+					}
+				}
+
+				// Check arrows for ranged attack
+				if (RangeAttackAmmo == null)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.SelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				// Check if selected ammo is compatible for ranged attack
+				if (!CheckRangedAmmoCompatibilityWithActiveWeapon())
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					return;
+				}
+
+				lock (EffectList)
+				{
+					foreach (IGameEffect effect in EffectList) // switch to the correct range attack type
+					{
+						if (effect is SureShotEffect)
+						{
+							RangedAttackType = eRangedAttackType.SureShot;
+							break;

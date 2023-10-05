@@ -1,0 +1,44 @@
+﻿		/// </summary>
+		/// <param name="amount">The amount of bounty points</param>
+		public override void GainBountyPoints(long amount)
+		{
+			GainBountyPoints(amount, true, true);
+		}
+
+		/// <summary>
+		/// Player gains bounty points
+		/// </summary>
+		/// <param name="amount">The amount of bounty points</param>
+		public void GainBountyPoints(long amount, bool modify)
+		{
+			GainBountyPoints(amount, modify, true);
+		}
+
+		/// <summary>
+		/// Called when player gains bounty points
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <param name="modify"></param>
+		/// <param name="sendMessage"></param>
+		public void GainBountyPoints(long amount, bool modify, bool sendMessage)
+		{
+			GainBountyPoints(amount, modify, true, true);
+		}
+
+
+		/// <summary>
+		/// Called when player gains bounty points
+		/// </summary>
+		/// <param name="amount">The amount of bounty points gained</param>
+		/// <param name="multiply">Should this amount be multiplied by the BP Rate</param>
+		/// <param name="sendMessage">Wether to send a message like "You have gained N bountypoints"</param>
+		public virtual void GainBountyPoints(long amount, bool modify, bool sendMessage, bool notify)
+		{
+			if (modify)
+			{
+				//bp rate modifier
+				double modifier = ServerProperties.Properties.BP_RATE;
+				if (modifier != -1)
+					amount = (long)(amount * modifier);
+
+				//[StephenxPimente]: Zone Bonus Support

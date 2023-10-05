@@ -1,0 +1,27 @@
+﻿								case 384: numTargetsCanHit = 3; break; //Totemic Sacrifice:   Hits 4 targets
+								case 600: numTargetsCanHit = 255; break; //Shield Swipe: No Cap on Targets
+								default: numTargetsCanHit = 0; break; //For others;
+						}
+						if (numTargetsCanHit > 0)
+						{
+							if (style.ID != 600) // Not Shield Swipe
+							{
+								foreach (GamePlayer pl in GetPlayersInRadius(false, (ushort)AttackRange))
+								{
+									if (pl == null) continue;
+									if (GameServer.ServerRules.IsAllowedToAttack(this, pl, true))
+									{
+										listAvailableTargets.Add(pl);
+									}
+								}
+								foreach (GameNPC npc in GetNPCsInRadius(false, (ushort)AttackRange))
+								{
+									if (GameServer.ServerRules.IsAllowedToAttack(this, npc, true))
+									{
+										listAvailableTargets.Add(npc);
+									}
+								}
+
+								// remove primary target
+								listAvailableTargets.Remove(target);
+								numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);

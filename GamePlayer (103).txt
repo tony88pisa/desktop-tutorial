@@ -1,0 +1,41 @@
+﻿		public virtual void GainRealmPoints(long amount, bool modify, bool sendMessage, bool notify)
+		{
+			if (!GainRP)
+				return;
+
+			if (modify)
+			{
+				//rp rate modifier
+				double modifier = ServerProperties.Properties.RP_RATE;
+				if (modifier != -1)
+					amount = (long)(amount * modifier);
+
+				//[StephenxPimente]: Zone Bonus Support
+				if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+				{
+					int zoneBonus = (((int)amount * ZoneBonus.GetRPBonus(this)) / 100);
+					if (zoneBonus > 0)
+					{
+						Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.RP_RATE), ZoneBonus.eZoneBonusType.RP),
+						                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						GainRealmPoints((long)(zoneBonus * ServerProperties.Properties.RP_RATE), false, false, false);
+					}
+				}
+
+				//[Freya] Nidel: ToA Rp Bonus
+				long rpBonus = GetModified(eProperty.RealmPoints);
+				if (rpBonus > 0)
+				{
+					amount += (amount * rpBonus) / 100;
+				}
+			}
+
+			if (notify)
+				base.GainRealmPoints(amount);
+
+			RealmPoints += amount;
+
+			if (m_guild != null && Client.Account.PrivLevel == 1)
+				m_guild.RealmPoints += amount;
+
+			if (sendMessage == true && amount > 0)

@@ -1,0 +1,32 @@
+﻿		protected WeakReference m_rangeAttackAmmo;
+
+		/// <summary>
+		/// Gets/Sets the item that is used for ranged attack
+		/// </summary>
+		/// <returns>Item that will be used for range/accuracy/damage modifications</returns>
+		protected override InventoryItem RangeAttackAmmo
+		{
+			get
+			{
+				//TODO: ammo should be saved on start of every range attack and used here
+				InventoryItem ammo = null;//(InventoryItem)m_rangeAttackArrows.Target;
+
+				InventoryItem weapon = AttackWeapon;
+				if (weapon != null)
+				{
+					switch (weapon.Object_Type)
+					{
+							case (int)eObjectType.Thrown: ammo = Inventory.GetItem(eInventorySlot.DistanceWeapon); break;
+						case (int)eObjectType.Crossbow:
+						case (int)eObjectType.Longbow:
+						case (int)eObjectType.CompositeBow:
+						case (int)eObjectType.RecurvedBow:
+						case (int)eObjectType.Fired:
+							{
+								switch (ActiveQuiverSlot)
+								{
+										case eActiveQuiverSlot.First: ammo = Inventory.GetItem(eInventorySlot.FirstQuiver); break;
+										case eActiveQuiverSlot.Second: ammo = Inventory.GetItem(eInventorySlot.SecondQuiver); break;
+										case eActiveQuiverSlot.Third: ammo = Inventory.GetItem(eInventorySlot.ThirdQuiver); break;
+										case eActiveQuiverSlot.Fourth: ammo = Inventory.GetItem(eInventorySlot.FourthQuiver); break;
+									case eActiveQuiverSlot.None:

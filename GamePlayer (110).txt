@@ -1,0 +1,44 @@
+﻿			25871988,	// for level 111
+			28717906,	// for level 112
+			31876876,	// for level 113
+			35383333,	// for level 114
+			39275499,	// for level 115
+			43595804,	// for level 116
+			48391343,	// for level 117
+			53714390,	// for level 118
+			59622973,	// for level 119
+			66181501,	// for level 120
+			73461466,	// for level 121
+			81542227,	// for level 122
+			90511872,	// for level 123
+			100468178,	// for level 124
+			111519678,	// for level 125
+			123786843,	// for level 126
+			137403395,	// for level 127
+			152517769,	// for level 128
+			169294723,	// for level 129
+			187917143,	// for level 130
+
+		};
+
+		/// <summary>
+		/// Calculates amount of RealmPoints needed for special realm level
+		/// </summary>
+		/// <param name="realmLevel">realm level</param>
+		/// <returns>amount of realm points</returns>
+		protected virtual long CalculateRPsFromRealmLevel(int realmLevel)
+		{
+			if (realmLevel < REALMPOINTS_FOR_LEVEL.Length)
+				return REALMPOINTS_FOR_LEVEL[realmLevel];
+
+			// thanks to Linulo from http://daoc.foren.4players.de/viewtopic.php?t=40839&postdays=0&postorder=asc&start=0
+			return (long)(25.0 / 3.0 * (realmLevel * realmLevel * realmLevel) - 25.0 / 2.0 * (realmLevel * realmLevel) + 25.0 / 6.0 * realmLevel);
+		}
+
+		/// <summary>
+		/// Calculates realm level from realm points. SLOW.
+		/// </summary>
+		/// <param name="realmPoints">amount of realm points</param>
+		/// <returns>realm level: RR5L3 = 43, RR1L2 = 2</returns>
+		protected virtual int CalculateRealmLevelFromRPs(long realmPoints)
+		{

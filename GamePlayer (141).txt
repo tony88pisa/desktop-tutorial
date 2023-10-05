@@ -1,0 +1,38 @@
+﻿				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+			}
+
+			//Clear styles
+			NextCombatStyle = null;
+			NextCombatBackupStyle = null;
+
+			if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+			{
+				Out.SendAttackMode(AttackState);
+			}
+			else
+			{
+				TempProperties.setProperty(RANGE_ATTACK_HOLD_START, 0L);
+
+				string typeMsg = "shot";
+				if (AttackWeapon.Object_Type == (int)eObjectType.Thrown)
+					typeMsg = "throw";
+
+				string targetMsg = "";
+				if (attackTarget != null)
+				{
+					if (this.IsWithinRadius(attackTarget, AttackRange))
+						targetMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.TargetInRange");
+					else
+						targetMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.TargetOutOfRange");
+				}
+
+				int speed = AttackSpeed(AttackWeapon) / 100;
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+			}
+		}
+
+		/// <summary>
+		/// Stops all attacks this player is making
+		/// </summary>
+		/// <param name="forced">Is this a forced stop or is the client suggesting we stop?</param>
+		public override void StopAttack(bool forced)

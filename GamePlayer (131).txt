@@ -1,0 +1,43 @@
+﻿"GamePlayer.IsCloakHoodUp.NowWear"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsCloakHoodUp.NoLongerWear"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets/gets the living's cloak visible state
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public override bool IsCloakInvisible
+		{
+			get
+			{
+				return DBCharacter != null ? DBCharacter.IsCloakInvisible : base.IsCloakInvisible;
+			}
+			set
+			{
+				DBCharacter.IsCloakInvisible = value;
+
+				Out.SendInventoryItemsUpdate(null);
+				UpdateEquipmentAppearance();
+
+				if (value)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsCloakInvisible.Invisible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsCloakInvisible.Visible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets/gets the living's helm visible state
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public override bool IsHelmInvisible
+		{

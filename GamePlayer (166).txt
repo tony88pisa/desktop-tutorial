@@ -1,0 +1,43 @@
+﻿								}
+							}
+						}
+						break;
+					}
+				case eAttackResult.Blocked:
+					{
+						InventoryItem reactiveItem = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+						if (reactiveItem != null && reactiveItem.Object_Type == (int)eObjectType.Shield)
+						{
+							TryReactiveEffect(reactiveItem, ad.Attacker);
+
+							if (reactiveItem is GameInventoryItem)
+							{
+								(reactiveItem as GameInventoryItem).OnStruckByEnemy(this, ad.Attacker);
+							}
+						}
+						break;
+					}
+			}
+			// vampiir
+			if (CharacterClass.Equals(GS.CharacterClass.Vampiir))
+			{
+				GameSpellEffect removeEffect = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
+				if (removeEffect != null)
+					removeEffect.Cancel(false);
+			}
+
+			if (IsCrafting)
+			{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				CraftTimer.Stop();
+				CraftTimer = null;
+				Out.SendCloseTimerWindow();
+			}
+		}
+
+
+		/// <summary>
+		/// Launch any reactive effect on an item
+		/// </summary>
+		/// <param name="reactiveItem"></param>
+		/// <param name="target"></param>

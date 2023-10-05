@@ -1,0 +1,46 @@
+﻿		/// The next spell target
+		/// </summary>
+		protected GameLiving m_nextSpellTarget;
+		/// <summary>
+		/// A lock for the spellqueue
+		/// </summary>
+		protected object m_spellQueueAccessMonitor = new object();
+
+		/// <summary>
+		/// Clears the spell queue when a player is interrupted
+		/// </summary>
+		public void ClearSpellQueue()
+		{
+			lock (m_spellQueueAccessMonitor)
+			{
+				m_nextSpell = null;
+				m_nextSpellLine = null;
+				m_nextSpellTarget = null;
+			}
+		}
+
+		/// <summary>
+		/// Callback after spell execution finished and next spell can be processed
+		/// </summary>
+		/// <param name="handler"></param>
+		public override void OnAfterSpellCastSequence(ISpellHandler handler)
+		{
+			InventoryItem lastUsedItem = TempProperties.getProperty<InventoryItem>(LAST_USED_ITEM_SPELL, null);
+			if (lastUsedItem != null)
+			{
+				if (handler.StartReuseTimer)
+				{
+					lastUsedItem.CanUseAgainIn = lastUsedItem.CanUseEvery;
+				}
+
+				TempProperties.removeProperty(LAST_USED_ITEM_SPELL);
+			}
+
+			lock (m_spellQueueAccessMonitor)
+			{
+				Spell nextSpell = m_nextSpell;
+				SpellLine nextSpellLine = m_nextSpellLine;
+				GameLiving nextSpellTarget = m_nextSpellTarget;
+				// warlock
+				if (nextSpell != null)
+				{
