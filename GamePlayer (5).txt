@@ -1,0 +1,44 @@
+﻿		/// What was the last time this player logged in?
+		/// </summary>
+		public DateTime PreviousLoginDate
+		{
+			get { return m_previousLoginDate; }
+			set { m_previousLoginDate = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the anonymous flag for this player
+		/// (delegate to property in PlayerCharacter)
+		/// </summary>
+		public bool IsAnonymous
+		{
+			get { return DBCharacter != null ? DBCharacter.IsAnonymous && (ServerProperties.Properties.ANON_MODIFIER != -1) : false; }
+			set
+			{
+				var old = IsAnonymous;
+				if (DBCharacter != null)
+					DBCharacter.IsAnonymous = value;
+				
+				if (old != IsAnonymous)
+					GameEventMgr.Notify(GamePlayerEvent.ChangeAnonymous, this);
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the player can be attacked.
+		/// </summary>
+		public override bool IsAttackable { get { return (Client.Account.PrivLevel <= (uint)ePrivLevel.Player && base.IsAttackable); }}
+
+		/// <summary>
+		/// Is this player PvP enabled
+		/// </summary>
+		public virtual bool IsPvP { get { return GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP; }}
+
+		/// <summary>
+		/// Can this player use cross realm items
+		/// </summary>
+		public virtual bool CanUseCrossRealmItems { get { return ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS; }}
+
+		protected bool m_canUseSlashLevel = false;
+		public bool CanUseSlashLevel { get { return m_canUseSlashLevel; }}
+

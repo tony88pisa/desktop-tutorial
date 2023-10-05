@@ -1,0 +1,45 @@
+﻿"GamePlayer.Release.WillReleaseIn", 10), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_releasePhase = 2;
+			}
+			if (m_releasePhase == 0 && diffToRelease <= 30 && diffToRelease >= 28)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.WillReleaseIn", 30), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_releasePhase = 1;
+			}
+			return 1000;
+		}
+		
+		/// <summary>
+		/// Death types ingame
+		/// </summary>
+		public enum eDeathType
+		{
+			PvE,
+			RvR,
+			PvP,
+			None,
+		}
+		
+		/// <summary>
+		/// The current death type
+		/// </summary>
+		protected eDeathType m_deathtype;
+
+		/// <summary>
+		/// Gets the player's current death type.
+		/// </summary>
+		public eDeathType DeathType
+		{
+			get { return m_deathtype; }
+			set { m_deathtype = value; }
+		}
+		/// <summary>
+		/// Called when player revive
+		/// </summary>
+		public virtual void OnRevive(DOLEvent e, object sender, EventArgs args)
+		{
+			GamePlayer player = (GamePlayer)sender;
+						
+			if (player.IsUnderwater && player.CanBreathUnderWater == false)
+				player.Diving(waterBreath.Holding);
+			//We need two different sickness spells because RvR sickness is not curable by Healer NPC -Unty

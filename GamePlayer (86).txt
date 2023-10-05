@@ -1,0 +1,44 @@
+﻿		/// <summary>
+		/// Calculates how many times left hand swings
+		/// </summary>
+		public override int CalculateLeftHandSwingCount()
+		{
+			if (CanUseLefthandedWeapon == false)
+				return 0;
+
+			if (GetBaseSpecLevel(Specs.Left_Axe) > 0)
+				return 1; // always use left axe
+
+			int specLevel = Math.Max(GetModifiedSpecLevel(Specs.Celtic_Dual), GetModifiedSpecLevel(Specs.Dual_Wield));
+			specLevel = Math.Max(specLevel, GetModifiedSpecLevel(Specs.Fist_Wraps));
+			if (specLevel > 0)
+			{
+				return Util.Chance(25 + (specLevel - 1) * 68 / 100) ? 1 : 0;
+			}
+
+			// HtH chance
+			specLevel = GetModifiedSpecLevel(Specs.HandToHand);
+			InventoryItem attackWeapon = AttackWeapon;
+			InventoryItem leftWeapon = (Inventory == null) ? null : Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			if (specLevel > 0 && ActiveWeaponSlot == eActiveWeaponSlot.Standard
+			    && attackWeapon != null && attackWeapon.Object_Type == (int)eObjectType.HandToHand &&
+			    leftWeapon != null && leftWeapon.Object_Type == (int)eObjectType.HandToHand)
+			{
+				specLevel--;
+				int randomChance = Util.Random(99);
+				int hitChance = specLevel >> 1;
+				if (randomChance < hitChance)
+					return 1; // 1 hit = spec/2
+
+				hitChance += specLevel >> 2;
+				if (randomChance < hitChance)
+					return 2; // 2 hits = spec/4
+
+				hitChance += specLevel >> 4;
+				if (randomChance < hitChance)
+					return 3; // 3 hits = spec/16
+
+				return 0;
+			}
+
+			return 0;

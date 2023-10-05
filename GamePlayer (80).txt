@@ -1,0 +1,44 @@
+﻿
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				
+				if (caseSensitive && m_specialization.ContainsKey(name))
+					spec = m_specialization[name];
+				
+				foreach (KeyValuePair<string, Specialization> entry in m_specialization)
+				{
+					if (entry.Key.ToLower().Equals(name.ToLower()))
+					{
+					    spec = entry.Value;
+					    break;
+					}
+				}
+			}
+
+			return spec;
+		}
+
+		/// <summary>
+		/// The best armor level this player can use.
+		/// </summary>
+		public virtual int BestArmorLevel
+		{
+			get
+			{
+				int bestLevel = -1;
+				bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.AlbArmor));
+				bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.HibArmor));
+				bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.MidArmor));
+				return bestLevel;
+			}
+		}
+
+		#region Abilities
+
+		/// <summary>
+		/// Adds a new Ability to the player
+		/// </summary>
+		/// <param name="ability"></param>
+		/// <param name="sendUpdates"></param>
+		public override void AddAbility(Ability ability, bool sendUpdates)
+		{

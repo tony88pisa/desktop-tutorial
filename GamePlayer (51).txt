@@ -1,0 +1,41 @@
+﻿		/// <summary>
+		/// Sets or gets the model of the player. If the player is
+		/// active in the world, the modelchange will be visible
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		/// <remarks>
+		/// The model of a GamePlayer is a 16-bit unsigned integer.
+		/// The leftmost 3 bits are related to hair color.
+		/// The next 2 bits are for the size: 01 = short, 10 = average, 11 = tall (00 appears to be average as well)
+		/// The remaining 11 bits are for the model (see monsters.csv in gamedata.mpk)
+		/// </remarks>
+		public override ushort Model
+		{
+			get
+			{
+				return base.Model;
+			}
+			set
+			{
+				if (base.Model != value)
+				{
+					base.Model = value;
+
+					// Only GM's can persist model changes - Tolakram
+					if (Client.Account.PrivLevel > (int)ePrivLevel.Player && DBCharacter != null && DBCharacter.CurrentModel != base.Model)
+					{
+						DBCharacter.CurrentModel = base.Model;
+					}
+
+					if (ObjectState == eObjectState.Active)
+					{
+						Notify(GamePlayerEvent.ModelChanged, this);
+
+						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						{
+							if (player == null) continue;
+							player.Out.SendModelChange(this, Model);
+						}
+					}
+				}
+			}

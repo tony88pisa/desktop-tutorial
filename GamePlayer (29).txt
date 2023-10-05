@@ -1,0 +1,35 @@
+﻿"GamePlayer.Bind.CantHere"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					else
+					{
+						bound = true;
+						double angle = house.Heading * ((Math.PI * 2) / 360); // angle*2pi/360;
+						int outsideX = (int)(house.X + (0 * Math.Cos(angle) + 500 * Math.Sin(angle)));
+						int outsideY = (int)(house.Y - (500 * Math.Cos(angle) - 0 * Math.Sin(angle)));
+						ushort outsideHeading = (ushort)((house.Heading < 180 ? house.Heading + 180 : house.Heading - 180) / 0.08789);
+						BindHouseRegion = CurrentRegionID;
+						BindHouseHeading = outsideHeading;
+						BindHouseXpos = outsideX;
+						BindHouseYpos = outsideY;
+						BindHouseZpos = house.Z;
+						if (DBCharacter != null)
+							GameServer.Database.SaveObject(DBCharacter);
+					}
+				}
+			}
+			
+			if (bound)
+			{
+				if (!IsMoving)
+				{
+					eEmote bindEmote = eEmote.Bind;
+					switch (Realm)
+					{
+							case eRealm.Albion: bindEmote = eEmote.BindAlb; break;
+							case eRealm.Midgard: bindEmote = eEmote.BindMid; break;
+							case eRealm.Hibernia: bindEmote = eEmote.BindHib; break;
+					}
+					
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					{

@@ -1,0 +1,40 @@
+﻿			if (Client.ClientState != GameClient.eClientState.Playing)
+				return PowerRegenerationPeriod;
+			int interval = base.PowerRegenerationTimerCallback(selfRegenerationTimer);
+			return interval;
+		}
+
+		/// <summary>
+		/// Override EnduranceRegenTimer because if we are not connected anymore
+		/// we DON'T regenerate endurance, even if we are not garbage collected yet!
+		/// </summary>
+		/// <param name="selfRegenerationTimer">the timer</param>
+		/// <returns>the new time</returns>
+		protected override int EnduranceRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+		{
+			if (Client.ClientState != GameClient.eClientState.Playing)
+				return EnduranceRegenerationPeriod;
+
+			bool sprinting = IsSprinting;
+
+			if (Endurance < MaxEndurance || sprinting)
+			{
+				int regen = GetModified(eProperty.EnduranceRegenerationRate);  //default is 1
+				int endchant = GetModified(eProperty.FatigueConsumption);      //Pull chant/buff value
+
+				int longwind = 5;
+				if (sprinting && IsMoving)
+				{
+					//TODO : cache LongWind level when char is loaded and on train ability
+					LongWindAbility ra = GetAbility<LongWindAbility>();
+					if (ra != null)
+						longwind = 5 - (ra.GetAmountForLevel(CalculateSkillLevel(ra)) * 5 / 100);
+
+					regen -= longwind;
+					
+					if (endchant > 1) regen = (int)Math.Ceiling(regen * endchant * 0.01);
+					if (Endurance + regen > MaxEndurance - longwind)
+					{
+						regen -= (Endurance + regen) - (MaxEndurance - longwind);
+					}
+				}

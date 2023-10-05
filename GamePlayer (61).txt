@@ -1,0 +1,44 @@
+﻿
+				if (regen != 0)
+				{
+					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
+				}
+			}
+			if (!sprinting)
+			{
+				if (Endurance >= MaxEndurance) return 0;
+			}
+			else
+			{
+				long lastmove = TempProperties.getProperty<long>(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
+				if ((lastmove > 0 && lastmove + 5000 < CurrentRegion.Time) //cancel sprint after 5sec without moving?
+				    || Endurance - 5 <= 0)
+					Sprint(false);
+			}
+
+			return 500 + Util.Random(EnduranceRegenerationPeriod);
+		}
+
+		/// <summary>
+		/// Gets/sets the object health
+		/// </summary>
+		public override int Health
+		{
+			get { return DBCharacter != null ? DBCharacter.Health : base.Health; }
+			set
+			{
+				value = value.Clamp(0, MaxHealth);
+				//If it is already set, don't do anything
+				if (Health == value)
+				{
+					base.Health = value; //needed to start regeneration
+					return;
+				}
+
+				int oldPercent = HealthPercent;
+				if (DBCharacter != null)
+					DBCharacter.Health = value;
+				base.Health = value;
+				if (oldPercent != HealthPercent)
+				{
+					if (Group != null)

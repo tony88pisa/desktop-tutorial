@@ -1,0 +1,46 @@
+﻿		}
+
+		/// <summary>
+		/// Gets or sets the gain XP flag for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool GainXP
+		{
+			get { return DBCharacter != null ? DBCharacter.GainXP : true; }
+			set { if (DBCharacter != null) DBCharacter.GainXP = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the gain RP flag for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool GainRP
+		{
+			get { return (DBCharacter != null ? DBCharacter.GainRP : true); }
+			set { if (DBCharacter != null) DBCharacter.GainRP = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the roleplay flag for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool RPFlag
+		{
+			get { return (DBCharacter != null ? DBCharacter.RPFlag : true); }
+			set { if (DBCharacter != null) DBCharacter.RPFlag = value; }
+		}
+
+		/// <summary>
+		/// gets or sets the guildnote for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public string GuildNote
+		{
+			get { return DBCharacter != null ? DBCharacter.GuildNote : String.Empty; }
+			set { if (DBCharacter != null) DBCharacter.GuildNote = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the autoloot flag for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>

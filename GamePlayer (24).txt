@@ -1,0 +1,38 @@
+﻿				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+
+				if (CurrentRegion.IsInstance)
+				{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitInInstance"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+
+				if (Statistics != null)
+				{
+					string stats = Statistics.GetStatisticsMessage();
+					if (stats != "")
+					{
+						Out.SendMessage(stats, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+				}
+
+				if (!IsSitting)
+				{
+					Sit(true);
+				}
+				int secondsleft = QuitTime;
+
+				if (m_quitTimer == null)
+				{
+					m_quitTimer = new RegionTimer(this);
+					m_quitTimer.Callback = new RegionTimerCallback(QuitTimerCallback);
+					m_quitTimer.Start(1);
+				}
+
+				if (secondsleft > 20)
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.YouWillQuit2", secondsleft), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			else

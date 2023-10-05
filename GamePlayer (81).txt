@@ -1,0 +1,43 @@
+﻿			if (ability == null)
+				return;
+			
+			base.AddAbility(ability, sendUpdates);
+		}
+
+		/// <summary>
+		/// Adds a Realm Ability to the player
+		/// </summary>
+		/// <param name="ability"></param>
+		/// <param name="sendUpdates"></param>
+		public virtual void AddRealmAbility(RealmAbility ability, bool sendUpdates)
+		{
+			if (ability == null)
+				return;
+			
+			m_realmAbilities.FreezeWhile(list => {
+			                             	int index = list.FindIndex(ab => ab.KeyName == ability.KeyName);
+			                             	if (index > -1)
+			                             	{
+			                             		list[index].Level = ability.Level;
+			                             	}
+			                             	else
+			                             	{
+			                             		list.Add(ability);
+			                             	}
+			                             });
+			
+			RefreshSpecDependantSkills(true);
+		}
+
+		#endregion Abilities
+
+		public virtual void RemoveAllAbilities()
+		{
+			lock (m_lockAbilities)
+			{
+				m_abilities.Clear();
+			}
+		}
+		
+		public virtual void RemoveAllSpecs()
+		{

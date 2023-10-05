@@ -1,0 +1,45 @@
+﻿		/// <summary>
+		/// if player uses debug before (to prevent hack client fly mode for players using debug and then turning it off)
+		/// </summary>
+		protected bool m_canFly;
+
+		/// <summary>
+		/// Is this player allowed to fly?
+		/// This should only be set in debug command handler.  If player is flying but this flag is false then fly hack is detected
+		/// </summary>
+		public bool IsAllowedToFly
+		{
+			get { return m_canFly; }
+			set { m_canFly = value; }
+		}
+		
+		private bool m_statsAnon = false;
+
+		/// <summary>
+		/// Gets or sets the stats anon flag for the command /statsanon
+		/// (delegate to property in PlayerCharacter)
+		/// </summary>
+		public bool StatsAnonFlag
+		{
+			get { return m_statsAnon; }
+			set { m_statsAnon = value; }
+		}
+		
+		#region DoorCache
+		protected Dictionary<int, eDoorState> m_doorUpdateList = null;
+
+		protected ushort m_doorUpdateRegionID;
+
+		/// <summary>
+		/// Send a door state to this client
+		/// </summary>
+		/// <param name="door">the door</param>
+		/// <param name="forceUpdate">force a send of the door state regardless of status</param>
+		public void SendDoorUpdate(IDoor door, bool forceUpdate = false)
+		{
+			Out.SendObjectCreate(door as GameObject);
+
+			if (m_doorUpdateList == null || m_doorUpdateRegionID != CurrentRegionID)
+			{
+				m_doorUpdateList = new Dictionary<int,eDoorState>();
+				m_doorUpdateRegionID = CurrentRegionID;

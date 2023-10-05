@@ -1,0 +1,43 @@
+﻿				base.MaxEndurance = value;
+				DBMaxEndurance = value;
+				UpdatePlayerStatus();
+			}
+		}
+
+		/// <summary>
+		/// Gets the concentration left
+		/// </summary>
+		public override int Concentration
+		{
+			get { return MaxConcentration - ConcentrationEffects.UsedConcentration; }
+		}
+
+		/// <summary>
+		/// Gets the maximum concentration for this player
+		/// </summary>
+		public override int MaxConcentration
+		{
+			get { return GetModified(eProperty.MaxConcentration); }
+		}
+
+		#region Calculate Fall Damage
+
+		/// <summary>
+		/// Calculates fall damage taking fall damage reduction bonuses into account
+		/// </summary>
+		/// <returns></returns>
+		public virtual double CalcFallDamage(int fallDamagePercent)
+		{
+			if (fallDamagePercent <= 0)
+				return 0;
+
+			int safeFallLevel = GetAbilityLevel(Abilities.SafeFall);
+			int mythSafeFall = GetModified(eProperty.MythicalSafeFall);
+
+			if (mythSafeFall > 0 & mythSafeFall < fallDamagePercent)
+			{
+				Client.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "PlayerPositionUpdateHandler.MythSafeFall"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				fallDamagePercent = mythSafeFall;
+			}
+			if (safeFallLevel > 0 & mythSafeFall == 0)
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

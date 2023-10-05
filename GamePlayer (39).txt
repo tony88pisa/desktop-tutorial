@@ -1,0 +1,24 @@
+﻿									}
+									break;
+								}
+								//nf
+							case 163:
+								{
+									if (BindRegion != 163)
+									{
+										relRegion = 163;
+										switch (Realm)
+										{
+											case eRealm.Albion:
+												{
+													GameServer.KeepManager.GetBorderKeepLocation(1, out relX, out relY, out relZ, out relHeading);
+													break;
+												}
+											case eRealm.Midgard:
+												{
+													GameServer.KeepManager.GetBorderKeepLocation(3, out relX, out relY, out relZ, out relHeading);
+													break;
+												}
+											case eRealm.Hibernia:
+												{
+													GameServer.KeepManager.GetBorderKeepLocation(5, out relX, out relY, out relZ, out relHeading);

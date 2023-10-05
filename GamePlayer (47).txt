@@ -1,0 +1,41 @@
+﻿		/// </summary>
+		protected virtual ushort PrayDelay { get { return 5000; }}
+		/// <summary>
+		/// Gets the praying-state of this living
+		/// </summary>
+		public virtual bool IsPraying
+		{
+			get { return m_prayAction != null && m_prayAction.IsAlive; }
+		}
+
+		/// <summary>
+		/// Prays on a gravestone for XP!
+		/// </summary>
+		public virtual void Pray()
+		{
+			string cantPrayMessage = string.Empty;
+			GameGravestone gravestone = TargetObject as GameGravestone;
+			
+			if (!IsAlive)
+				cantPrayMessage = "GamePlayer.Pray.CantPrayNow";
+			else if (IsRiding)
+				cantPrayMessage = "GamePlayer.Pray.CantPrayRiding";
+			else if (gravestone == null)
+				cantPrayMessage = "GamePlayer.Pray.NeedTarget";
+			else if (!gravestone.InternalID.Equals(InternalID))
+				cantPrayMessage = "GamePlayer.Pray.SelectGrave";
+			else if (!IsWithinRadius(gravestone, 2000))
+				cantPrayMessage = "GamePlayer.Pray.MustGetCloser";
+			else if (IsMoving)
+				cantPrayMessage = "GamePlayer.Pray.MustStandingStill";
+			else if (IsPraying)
+				cantPrayMessage = "GamePlayer.Pray.AlreadyPraying";
+			
+			if (cantPrayMessage != string.Empty)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, cantPrayMessage), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (m_prayAction != null)
+				m_prayAction.Stop();

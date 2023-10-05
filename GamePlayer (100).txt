@@ -1,0 +1,46 @@
+﻿
+		/// <summary>
+		/// Gets/sets player realm points
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual long RealmPoints
+		{
+			get { return DBCharacter != null ? DBCharacter.RealmPoints : 0; }
+			set { if (DBCharacter != null) DBCharacter.RealmPoints = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets player skill specialty points
+		/// </summary>
+		public virtual int SkillSpecialtyPoints
+		{
+			get { return VerifySpecPoints(); }
+		}
+
+		/// <summary>
+		/// Gets/sets player realm specialty points
+		/// </summary>
+		public virtual int RealmSpecialtyPoints
+		{
+			get { return GameServer.ServerRules.GetPlayerRealmPointsTotal(this)
+					- GetRealmAbilities().Where(ab => !(ab is RR5RealmAbility))
+					.Sum(ab => Enumerable.Range(0, ab.Level).Sum(i => ab.CostForUpgrade(i))); }
+		}
+
+		/// <summary>
+		/// Gets/sets player realm rank
+		/// </summary>
+		public virtual int RealmLevel
+		{
+			get { return DBCharacter != null ? DBCharacter.RealmLevel : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.RealmLevel = value;
+			}
+		}
+
+		/// <summary>
+		/// Returns the translated realm rank title of the player.
+		/// </summary>
+		/// <param name="language"></param>
+		/// <returns></returns>

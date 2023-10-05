@@ -1,0 +1,46 @@
+﻿				return (int)(60 - (CurrentRegion.Time - lastCombatAction + 500) / 1000); // 500 is for rounding
+			}
+			set
+			{ }
+		}
+		
+		#endregion
+
+		#region Player Linking Dead
+		/// <summary>
+		/// Callback method, called when the player went linkdead and now he is
+		/// allowed to be disconnected
+		/// </summary>
+		/// <param name="callingTimer">the timer</param>
+		/// <returns>0</returns>
+		protected int LinkdeathTimerCallback(RegionTimer callingTimer)
+		{
+			//If we died during our callback time we release
+			try
+			{
+				if (!IsAlive)
+				{
+					Release(m_releaseType, true);
+					if (log.IsInfoEnabled)
+						log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
+				}
+
+				SaveIntoDatabase();
+			}
+			finally
+			{
+				Client.Quit();
+			}
+
+			return 0;
+		}
+		
+		public void OnLinkdeath()
+		{
+			if (log.IsInfoEnabled)
+				log.InfoFormat("Player {0}({1}) went linkdead!", Name, Client.Account.Name);
+
+			// LD Necros need to be "Unshaded"
+			if (IsShade)
+			{
+				Shade(false);

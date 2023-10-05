@@ -1,0 +1,34 @@
+﻿						relRegion = (ushort)BindHouseRegion;
+						relX = BindHouseXpos;
+						relY = BindHouseYpos;
+						relZ = BindHouseZpos;
+						relHeading = (ushort)BindHouseHeading;
+						break;
+					}
+					
+				case eReleaseType.City:
+					{
+						if (Realm == eRealm.Hibernia)
+						{
+							relRegion = 201; // Tir Na Nog
+							relX = 8192 + 15780;
+							relY = 8192 + 22727;
+							relZ = 7060;
+						}
+						else if (Realm == eRealm.Midgard)
+						{
+							relRegion = 101; // Jordheim
+							relX = 8192 + 24664;
+							relY = 8192 + 21402;
+							relZ = 8759;
+						}
+						else
+						{
+							relRegion = 10; // City of Camelot
+							relX = 8192 + 26315;
+							relY = 8192 + 21177;
+							relZ = 8256;
+						}
+						relHeading = 2048;
+						break;
+					}

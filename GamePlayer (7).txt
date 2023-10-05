@@ -1,0 +1,43 @@
+﻿				m_doorUpdateList.Add(door.ObjectID, door.State);
+				Out.SendDoorState(CurrentRegion, door);
+			}
+			else if (forceUpdate || m_doorUpdateList.ContainsKey(door.ObjectID) == false || m_doorUpdateList[door.ObjectID] != door.State)
+			{
+				Out.SendDoorState(CurrentRegion, door);
+				m_doorUpdateList[door.ObjectID] = door.State;
+			}
+
+			Out.SendObjectUpdate(door as GameObject);
+		}
+		#endregion
+		
+		#region Database Accessor
+
+		/// <summary>
+		/// Gets or sets the Database ObjectId for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public string ObjectId
+		{
+			get { return DBCharacter != null ? DBCharacter.ObjectId : InternalID; }
+			set { if (DBCharacter != null) DBCharacter.ObjectId = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the no help flag for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool NoHelp
+		{
+			get { return DBCharacter != null ? DBCharacter.NoHelp : false; }
+			set { if (DBCharacter != null) DBCharacter.NoHelp = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the show guild logins flag for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool ShowGuildLogins
+		{
+			get { return DBCharacter != null ? DBCharacter.ShowGuildLogins : false; }
+			set { if (DBCharacter != null) DBCharacter.ShowGuildLogins = value; }

@@ -1,0 +1,46 @@
+﻿		public virtual SpellLine GetSpellLine(string keyname)
+		{
+			lock (lockSpellLinesList)
+			{
+				foreach (SpellLine line in m_spellLines)
+				{
+					if (line.KeyName == keyname)
+						return line;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Gets a list of available styles
+		/// This creates a copy
+		/// </summary>
+		public virtual IList GetStyleList()
+		{
+			List<Style> list = new List<Style>();
+			lock (lockStyleList)
+			{
+				list = m_styles.Values.OrderBy(x => x.SpecLevelRequirement).ThenBy(y => y.ID).ToList();
+			}
+			return list;
+		}
+		
+		/// <summary>
+		/// Skill cache, maintained for network order on "skill use" request...
+		/// Second item is for "Parent" Skill if applicable
+		/// </summary>
+		protected ReaderWriterList<Tuple<Skill, Skill>> m_usableSkills = new ReaderWriterList<Tuple<Skill, Skill>>();
+		
+		/// <summary>
+		/// List Cast cache, maintained for network order on "spell use" request...
+		/// Second item is for "Parent" SpellLine if applicable
+		/// </summary>
+		protected ReaderWriterList<Tuple<SpellLine, List<Skill>>> m_usableListSpells = new ReaderWriterList<Tuple<SpellLine, List<Skill>>>();
+		
+		/// <summary>
+		/// Get All Usable Spell for a list Caster.
+		/// </summary>
+		/// <param name="update"></param>
+		/// <returns></returns>
+		public virtual List<Tuple<SpellLine, List<Skill>>> GetAllUsableListSpells(bool update = false)
+		{

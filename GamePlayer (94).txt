@@ -1,0 +1,38 @@
+﻿					results = new List<Tuple<Skill, Skill>>(m_usableSkills);
+				
+				// return results if cache is valid.
+				if (results.Count > 0)
+					return results;
+			}
+			
+			// need to lock for all update.
+			m_usableSkills.FreezeWhile(innerList => {
+
+				IList<Specialization> specs = GetSpecList();
+				List<Tuple<Skill, Skill>> copylist = new List<Tuple<Skill, Skill>>(innerList);
+								
+				// Add Spec
+				foreach (Specialization spec in specs.Where(item => item.Trainable))
+				{
+					int index = innerList.FindIndex(e => (e.Item1 is Specialization) && ((Specialization)e.Item1).KeyName == spec.KeyName);
+					
+					if (index < 0)
+					{
+						// Specs must be appended to spec list
+						innerList.Insert(innerList.Count(e => e.Item1 is Specialization), new Tuple<Skill, Skill>(spec, spec));
+					}
+					else
+					{
+						copylist.Remove(innerList[index]);
+						// Replace...
+						innerList[index] = new Tuple<Skill, Skill>(spec, spec);
+					}
+				}
+								
+				// Add Abilities (Realm ability should be a custom spec)
+				// Abilities order should be saved to db and loaded each time								
+				foreach (Specialization spec in specs)
+				{
+					foreach (Ability abv in spec.GetAbilitiesForLiving(this))
+					{
+						// We need the Instantiated Ability Object for Displaying Correctly According to Player "Activation" Method (if Available)

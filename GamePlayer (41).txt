@@ -1,0 +1,37 @@
+﻿								}
+						}
+						break;
+					}
+			}
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.YouRelease"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+			Out.SendCloseTimerWindow();
+			if (m_releaseTimer != null)
+			{
+				m_releaseTimer.Stop();
+				m_releaseTimer = null;
+			}
+
+			if (Realm != eRealm.None)
+			{
+				if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL)
+				{
+					// actual lost exp, needed for 2nd stage deaths
+					long lostExp = Experience;
+					long lastDeathExpLoss = TempProperties.getProperty<long>(DEATH_EXP_LOSS_PROPERTY);
+					TempProperties.removeProperty(DEATH_EXP_LOSS_PROPERTY);
+
+					GainExperience(GameLiving.eXPSource.Other, -lastDeathExpLoss);
+					lostExp -= Experience;
+
+					// raise only the gravestone if xp has to be stored in it
+					if (lostExp > 0)
+					{
+						// find old gravestone of player and remove it
+						if (character.HasGravestone)
+						{
+							Region reg = WorldMgr.GetRegion((ushort)character.GravestoneRegion);
+							if (reg != null)
+							{
+								GameGravestone oldgrave = reg.FindGraveStone(this);
+								if (oldgrave != null)

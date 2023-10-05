@@ -1,0 +1,41 @@
+﻿		/// <param name="sendMessages">sends "you learn" messages if true</param>
+		public virtual void RefreshSpecDependantSkills(bool sendMessages)
+		{
+			// refresh specs
+			LoadClassSpecializations(sendMessages);
+			
+			// lock specialization while refreshing...
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				foreach (Specialization spec in m_specialization.Values)
+				{
+					// check for new Abilities
+					foreach (Ability ab in spec.GetAbilitiesForLiving(this))
+					{
+						if (!HasAbility(ab.KeyName) || GetAbility(ab.KeyName).Level < ab.Level)
+							AddAbility(ab, sendMessages);
+					}
+					
+					// check for new Styles
+					foreach (Style st in spec.GetStylesForLiving(this))
+					{
+						AddStyle(st, sendMessages);
+					}
+					
+					// check for new SpellLine
+					foreach (SpellLine sl in spec.GetSpellLinesForLiving(this))
+					{
+						AddSpellLine(sl, sendMessages);
+					}
+					
+				}
+			}
+		}
+
+		/// <summary>
+		/// Called by trainer when specialization points were added to a skill
+		/// </summary>
+		/// <param name="skill"></param>
+		public void OnSkillTrained(Specialization skill)
+		{
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

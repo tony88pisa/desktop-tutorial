@@ -1,0 +1,42 @@
+﻿						case eStat.STR: character.Strength = newstat; break;
+						case eStat.DEX: character.Dexterity = newstat; break;
+						case eStat.CON: character.Constitution = newstat; break;
+						case eStat.QUI: character.Quickness = newstat; break;
+						case eStat.INT: character.Intelligence = newstat; break;
+						case eStat.PIE: character.Piety = newstat; break;
+						case eStat.EMP: character.Empathy = newstat; break;
+						case eStat.CHR: character.Charisma = newstat; break;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets player's constitution
+		/// </summary>
+		public int Constitution
+		{
+			get { return GetModified(eProperty.Constitution); }
+		}
+
+		/// <summary>
+		/// Gets player's dexterity
+		/// </summary>
+		public int Dexterity
+		{
+			get { return GetModified(eProperty.Dexterity); }
+		}
+
+		/// <summary>
+		/// Gets player's strength
+		/// </summary>
+		public int Strength
+		{
+			get { return GetModified(eProperty.Strength); }
+		}
+
+		/// <summary>
+		/// Gets player's quickness
+		/// </summary>
+		public int Quickness
+		{
+			get { return GetModified(eProperty.Quickness); }

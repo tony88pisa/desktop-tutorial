@@ -1,0 +1,44 @@
+﻿						if (player == null)
+							return;
+						
+						if ((int)player.Client.Version < (int)GameClient.eClientVersion.Version187)
+							player.Out.SendEmoteAnimation(this, eEmote.Bind);
+						else
+							player.Out.SendEmoteAnimation(this, bindEmote);
+					}
+				}
+				
+				TempProperties.setProperty(LAST_BIND_TICK, CurrentRegion.Time);
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.Bound"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.CantHere"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+		}
+		#endregion
+
+		#region Releasing
+		/// <summary>
+		/// tick when player is died
+		/// </summary>
+		protected int m_deathTick;
+
+		/// <summary>
+		/// choosed the player to release as soon as possible?
+		/// </summary>
+		protected bool m_automaticRelease = false;
+
+		/// <summary>
+		/// The release timer for this player
+		/// </summary>
+		protected RegionTimer m_releaseTimer;
+
+		/// <summary>
+		/// Stops release timer and closes timer window
+		/// </summary>
+		public void StopReleaseTimer()
+		{
+			Out.SendCloseTimerWindow();
+			if (m_releaseTimer != null)
+			{

@@ -1,0 +1,48 @@
+﻿			}
+			return true;
+}
+
+		/// <summary>
+		/// Hold all player face custom attibutes
+		/// </summary>
+		protected byte[] m_customFaceAttributes = new byte[(int)eCharFacePart._Last + 1];
+
+		/// <summary>
+		/// Get the character face attribute you want
+		/// </summary>
+		/// <param name="part">face part</param>
+		/// <returns>attribute</returns>
+		public byte GetFaceAttribute(eCharFacePart part)
+		{
+			return m_customFaceAttributes[(int)part];
+		}
+
+		#endregion
+
+		#region Spells/Skills/Abilities/Effects
+
+		/// <summary>
+		/// Holds the player choosen list of Realm Abilities.
+		/// </summary>
+		protected readonly ReaderWriterList<RealmAbility> m_realmAbilities = new ReaderWriterList<RealmAbility>();
+		
+		/// <summary>
+		/// Holds the player specializable skills and style lines
+		/// (KeyName -> Specialization)
+		/// </summary>
+		protected readonly Dictionary<string, Specialization> m_specialization = new Dictionary<string, Specialization>();
+
+		/// <summary>
+		/// Holds the Spell lines the player can use
+		/// </summary>
+		protected readonly List<SpellLine> m_spellLines = new List<SpellLine>();
+
+		/// <summary>
+		/// Object to use when locking the SpellLines list
+		/// </summary>
+		protected readonly Object lockSpellLinesList = new Object();
+
+		/// <summary>
+		/// Holds all styles of the player
+		/// </summary>
+		protected readonly Dictionary<int, Style> m_styles = new Dictionary<int, Style>();

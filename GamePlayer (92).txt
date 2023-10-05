@@ -1,0 +1,39 @@
+﻿			List<Tuple<SpellLine, List<Skill>>> results = new List<Tuple<SpellLine, List<Skill>>>();
+			
+			if (!update)
+			{
+				if (m_usableListSpells.Count > 0)
+					results = new List<Tuple<SpellLine, List<Skill>>>(m_usableListSpells);
+				
+				// return results if cache is valid.
+				if (results.Count > 0)
+					return results;
+				
+			}
+
+			// lock during all update, even if replace only take place at end...
+			m_usableListSpells.FreezeWhile(innerList => {
+
+				List<Tuple<SpellLine, List<Skill>>> finalbase = new List<Tuple<SpellLine, List<Skill>>>();
+				List<Tuple<SpellLine, List<Skill>>> finalspec = new List<Tuple<SpellLine, List<Skill>>>();
+							
+				// Add Lists spells ordered.
+				foreach (Specialization spec in GetSpecList().Where(item => !item.HybridSpellList))
+				{
+					var spells = spec.GetLinesSpellsForLiving(this);
+
+					foreach (SpellLine sl in spec.GetSpellLinesForLiving(this))
+					{
+						List<Tuple<SpellLine, List<Skill>>> working;
+						if (sl.IsBaseLine)
+						{
+							working = finalbase;
+						}
+						else
+						{
+							working = finalspec;
+						}
+						
+						List<Skill> sps = new List<Skill>();
+						SpellLine key = spells.Keys.FirstOrDefault(el => el.KeyName == sl.KeyName);
+						

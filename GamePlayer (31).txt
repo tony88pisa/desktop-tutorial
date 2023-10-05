@@ -1,0 +1,50 @@
+﻿				m_releaseTimer.Stop();
+				m_releaseTimer = null;
+			}
+		}
+
+		/// <summary>
+		/// minimum time to wait before release is possible in seconds
+		/// </summary>
+		protected const int RELEASE_MINIMUM_WAIT = 10;
+
+		/// <summary>
+		/// max time before auto release in seconds
+		/// </summary>
+		protected const int RELEASE_TIME = 900;
+
+		/// <summary>
+		/// The property name that is set when releasing to another region
+		/// </summary>
+		public const string RELEASING_PROPERTY = "releasing";
+
+		/// <summary>
+		/// The current after-death player release type
+		/// </summary>
+		public enum eReleaseType
+		{
+			/// <summary>
+			/// Normal release to the bind point using /release command and 10sec delay after death
+			/// </summary>
+			Normal,
+			/// <summary>
+			/// Release to the players home city
+			/// </summary>
+			City,
+			/// <summary>
+			/// Release to the current location
+			/// </summary>
+			Duel,
+			/// <summary>
+			/// Release to your bind point
+			/// </summary>
+			Bind,
+			/// <summary>
+			/// Release in a battleground or the frontiers
+			/// </summary>
+			RvR,
+			/// <summary>
+			/// Release to players house
+			/// </summary>
+			House,
+		}

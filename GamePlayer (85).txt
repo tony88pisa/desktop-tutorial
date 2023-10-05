@@ -1,0 +1,47 @@
+﻿							}
+						}
+	
+						if (!Util.IsEmpty(message))
+							Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Retrieve this player Realm Abilities.
+		/// </summary>
+		/// <returns></returns>
+		public virtual List<RealmAbility> GetRealmAbilities()
+		{
+			return m_realmAbilities.ToList();
+		}
+		
+		/// <summary>
+		/// Asks for existance of specific specialization
+		/// </summary>
+		/// <param name="keyName"></param>
+		/// <returns></returns>
+		public virtual bool HasSpecialization(string keyName)
+		{
+			bool hasit = false;
+			
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				hasit = m_specialization.ContainsKey(keyName);
+			}
+			
+			return hasit;
+		}
+
+		/// <summary>
+		/// Checks whether Living has ability to use lefthanded weapons
+		/// </summary>
+		public override bool CanUseLefthandedWeapon
+		{
+			get
+			{
+				return CharacterClass.CanUseLefthandedWeapon;
+			}
+		}
+

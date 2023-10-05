@@ -1,0 +1,44 @@
+﻿
+			return RemoveSpellLine(line);
+		}
+
+		/// <summary>
+		/// Reset this player to level 1, respec all skills, remove all spec points, and reset stats
+		/// </summary>
+		public virtual void Reset()
+		{
+			byte originalLevel = Level;
+			Level = 1;
+			Experience = 0;
+			RespecAllLines();
+
+			if (Level < originalLevel && originalLevel > 5)
+			{
+				for (int i = 6; i <= originalLevel; i++)
+				{
+					if (CharacterClass.PrimaryStat != eStat.UNDEFINED)
+					{
+						ChangeBaseStat(CharacterClass.PrimaryStat, -1);
+					}
+					if (CharacterClass.SecondaryStat != eStat.UNDEFINED && ((i - 6) % 2 == 0))
+					{
+						ChangeBaseStat(CharacterClass.SecondaryStat, -1);
+					}
+					if (CharacterClass.TertiaryStat != eStat.UNDEFINED && ((i - 6) % 3 == 0))
+					{
+						ChangeBaseStat(CharacterClass.TertiaryStat, -1);
+					}
+				}
+			}
+		}
+
+		public virtual bool RespecAll()
+		{
+			if(RespecAllLines())
+			{
+				// Wipe skills and styles.
+				RespecAmountAllSkill--; // Decriment players respecs available.
+				if (Level == 5)
+					IsLevelRespecUsed = true;
+				
+				return true;

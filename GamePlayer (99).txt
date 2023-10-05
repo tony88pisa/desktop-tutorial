@@ -1,0 +1,43 @@
+﻿"GamePlayer.OnSkillTrained.YouSpend", skill.Level, skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.YouHave", SkillSpecialtyPoints), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.TrainsInVarious", GetName(0, true)), eChatType.CT_System);
+			RefreshSpecDependantSkills(true);
+
+			Out.SendUpdatePlayerSkills();
+		}
+
+		/// <summary>
+		/// effectiveness of the player (resurrection illness)
+		/// Effectiveness is used in physical/magic damage (exept dot), in weapon skill and max concentration formula
+		/// </summary>
+		protected double m_playereffectiveness = 1.0;
+
+		/// <summary>
+		/// get / set the player's effectiveness.
+		/// Effectiveness is used in physical/magic damage (exept dot), in weapon skill and max concentration
+		/// </summary>
+		public override double Effectiveness
+		{
+			get { return m_playereffectiveness; }
+			set { m_playereffectiveness = value; }
+		}
+
+		/// <summary>
+		/// Creates new effects list for this living.
+		/// </summary>
+		/// <returns>New effects list instance</returns>
+		protected override GameEffectList CreateEffectsList()
+		{
+			return new GameEffectPlayerList(this);
+		}
+
+#endregion
+
+#region Realm-/Region-/Bount-/Skillpoints...
+		[Obsolete("Use GetBalance(Currency.BountyPoints).Amount instead. "
+			+ "The setter is going to be removed without replacement. Use Wallet.AddMoney/RemoveMoney instead.")]
+public virtual long BountyPoints
+{
+get { return BountyPointBalance; }
+set { Wallet.SetBalance(Currency.BountyPoints.Mint(value)); }
+}

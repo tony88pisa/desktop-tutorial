@@ -1,0 +1,44 @@
+﻿			if (line == null)
+				return;
+
+			SpellLine oldline = GetSpellLine(line.KeyName);
+			if (oldline == null)
+			{
+				lock (lockSpellLinesList)
+				{
+					m_spellLines.Add(line);
+				}
+				
+				if (notify)
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpellLine.YouLearn", line.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				// message to player
+				if (notify && oldline.Level < line.Level)
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateSpellLine.GainPower", line.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				oldline.Level = line.Level;
+			}
+		}
+
+		/// <summary>
+		/// return a list of spell lines in the order they were added
+		/// this is a copy only.
+		/// </summary>
+		/// <returns></returns>
+		public virtual List<SpellLine> GetSpellLines()
+		{
+			List<SpellLine> list = new List<SpellLine>();
+			lock (lockSpellLinesList)
+			{
+				list = new List<SpellLine>(m_spellLines);
+			}
+			
+			return list;
+		}
+
+		/// <summary>
+		/// find a spell line on player and return them
+		/// </summary>
+		/// <param name="keyname"></param>
+		/// <returns></returns>

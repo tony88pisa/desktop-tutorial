@@ -1,0 +1,38 @@
+﻿								log.Debug("On Disconnection found but was not saved (not a long value): " + p + " with value: " + v.ToString() + " for player: " + Name);
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					log.Debug("Error in TempProproperties Manager when saving TempProp: " + e.ToString());
+				}
+			}
+
+			#endregion TempPropertiesManager LookUp
+		}
+
+		/// <summary>
+		/// This function saves the character and sends a message to all others
+		/// that the player has quit the game!
+		/// </summary>
+		/// <param name="forced">true if Quit can not be prevented!</param>
+		public virtual bool Quit(bool forced)
+		{
+			if (!forced)
+			{
+				if (!IsAlive)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+				if (Steed != null || IsOnHorse)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+				if (IsMoving && !ServerProperties.Properties.DISABLE_QUIT_TIMER)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitStanding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+				if (CraftTimer != null && CraftTimer.IsAlive)

@@ -1,0 +1,36 @@
+﻿"GamePlayer.Release.WillReleaseAutoCity", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+						case eReleaseType.RvR:
+							{
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReleaseToPortalKeep", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+						case eReleaseType.House:
+							{
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReleaseToHouse", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+					}
+				}
+			}
+			else
+			{
+				m_releaseType = releaseCommand;
+			}
+
+			int relX = 0, relY = 0, relZ = 0;
+			ushort relRegion = 0, relHeading = 0;
+			switch (m_releaseType)
+			{
+				case eReleaseType.Duel:
+					{
+						relRegion = (ushort)character.Region;
+						relX = character.Xpos;
+						relY = character.Ypos;
+						relZ = character.Zpos;
+						relHeading = 2048;
+						break;
+					}
+				case eReleaseType.House:
+					{

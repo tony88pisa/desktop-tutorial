@@ -1,0 +1,46 @@
+﻿
+		/// <summary>
+		/// Formats this players statistics.
+		/// </summary>
+		/// <returns>List of strings.</returns>
+		public virtual IList<string> FormatStatistics()
+		{
+			return GameServer.ServerRules.FormatPlayerStatistics(this);
+		}
+
+		#endregion
+
+		#region Health/Mana/Endurance/Regeneration
+
+		/// <summary>
+		/// Starts the health regeneration.
+		/// Overriden. No lazy timers for GamePlayers.
+		/// </summary>
+		public override void StartHealthRegeneration()
+		{
+			if (ObjectState != eObjectState.Active) return;
+			if (m_healthRegenerationTimer.IsAlive) return;
+			m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
+		}
+		/// <summary>
+		/// Starts the power regeneration.
+		/// Overriden. No lazy timers for GamePlayers.
+		/// </summary>
+		public override void StartPowerRegeneration()
+		{
+			if (ObjectState != eObjectState.Active) return;
+			if (m_powerRegenerationTimer.IsAlive) return;
+			m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
+		}
+		/// <summary>
+		/// Starts the endurance regeneration.
+		/// Overriden. No lazy timers for GamePlayers.
+		/// </summary>
+		public override void StartEnduranceRegeneration()
+		{
+			if (ObjectState != eObjectState.Active) return;
+			if (m_enduRegenerationTimer.IsAlive) return;
+			m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
+		}
+		/// <summary>
+		/// Stop the health regeneration.

@@ -1,0 +1,45 @@
+﻿				
+				TimeSpan t = new TimeSpan((long)(DateTime.Now.Ticks - LastFreeLeveled.Ticks));
+				if (t.Days >= freelevel_days)
+				{
+					if (Level >= LastFreeLevel + 2)
+						return 2;
+					else return 5;
+				}
+				else
+				{
+					if (Level >= LastFreeLevel + 2)
+						return 3;
+					else return 4;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the player efficacy percent
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual int TotalConstitutionLostAtDeath
+		{
+			get { return DBCharacter != null ? DBCharacter.ConLostAtDeath : 0; }
+			set { if (DBCharacter != null) DBCharacter.ConLostAtDeath = value; }
+		}
+
+		/// <summary>
+		/// Change a stat value
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		/// <param name="stat">The stat to change</param>
+		/// <param name="val">The new value</param>
+		public override void ChangeBaseStat(eStat stat, short val)
+		{
+			int oldstat = GetBaseStat(stat);
+			base.ChangeBaseStat(stat, val);
+			int newstat = GetBaseStat(stat);
+			DOLCharacters character = DBCharacter; // to call it only once, if in future there will be some special code to get the character
+			// Graveen: always positive and not null. This allows /player stats to substract values safely
+			if (newstat < 1) newstat = 1;
+			if (character != null && oldstat != newstat)
+			{
+				switch (stat)
+				{

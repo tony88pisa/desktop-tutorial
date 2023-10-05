@@ -1,0 +1,41 @@
+﻿
+		/// <summary>
+		/// The current release type
+		/// </summary>
+		protected eReleaseType m_releaseType = eReleaseType.Normal;
+
+		/// <summary>
+		/// Gets the player's current release type.
+		/// </summary>
+		public eReleaseType ReleaseType
+		{
+			get { return m_releaseType; }
+		}
+
+		/// <summary>
+		/// Releases this player after death ... subtracts xp etc etc...
+		/// </summary>
+		/// <param name="releaseCommand">The type of release used for this player</param>
+		/// <param name="forced">if true, will release even if not dead</param>
+		public virtual void Release(eReleaseType releaseCommand, bool forced)
+		{
+			DOLCharacters character = DBCharacter;
+			if (character == null) return;
+			
+			// check if valid housebind
+			if (releaseCommand == eReleaseType.House && character.BindHouseRegion < 1)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.NoValidBindpoint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				releaseCommand = eReleaseType.Bind;
+			}
+			
+			//battlegrounds caps
+			Battleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+			if (bg != null && releaseCommand == eReleaseType.RvR)
+			{
+				if (Level > bg.MaxLevel)
+					releaseCommand = eReleaseType.Normal;
+			}
+
+			if (IsAlive)
+			{

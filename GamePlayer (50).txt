@@ -1,0 +1,42 @@
+﻿			set
+			{ }
+		}
+
+		/// <summary>
+		/// Gets or sets the name of the player
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public override string Name
+		{
+			get { return DBCharacter != null ? DBCharacter.Name : base.Name; }
+			set
+			{
+				var oldname = base.Name;
+				base.Name = value;
+				
+				if (DBCharacter != null)
+					DBCharacter.Name = value;
+				
+				if (oldname != value)
+				{
+					//update name for all players if client is playing
+					if (ObjectState == eObjectState.Active)
+					{
+						Out.SendUpdatePlayer();
+						if (Group != null)
+							Out.SendGroupWindowUpdate();
+						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						{
+							if (player == null) continue;
+							if (player != this)
+							{
+								player.Out.SendObjectRemove(this);
+								player.Out.SendPlayerCreate(this);
+								player.Out.SendLivingEquipmentUpdate(this);
+							}
+						}
+					}
+				}
+			}
+		}
+

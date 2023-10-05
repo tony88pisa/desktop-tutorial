@@ -1,0 +1,41 @@
+﻿						if (CharacterClass.ID == (int)eCharacterClass.Reaver || CharacterClass.ID == (int)eCharacterClass.Heretic)
+							level = GetModifiedSpecLevel(Specs.Flexible);
+						if (CharacterClass.ID == (int)eCharacterClass.Valewalker)
+							level = GetModifiedSpecLevel(Specs.Scythe);
+						if (CharacterClass.ID == (int)eCharacterClass.Savage)
+							level = GetModifiedSpecLevel(Specs.Savagery);
+					}
+	
+					level = 0;
+				}
+			}
+			
+			if (spec != null)
+			{
+				level = spec.Level;
+				// TODO: should be all in calculator later, right now
+				// needs specKey -> eProperty conversion to find calculator and then
+				// needs eProperty -> specKey conversion to find how much points player has spent
+				eProperty skillProp = SkillBase.SpecToSkill(keyName);
+				if (skillProp != eProperty.Undefined)
+					level += GetModified(skillProp);
+			}
+				
+			return level;
+		}
+
+		/// <summary>
+		/// Adds a spell line to the player
+		/// </summary>
+		/// <param name="line"></param>
+		public virtual void AddSpellLine(SpellLine line)
+		{
+			AddSpellLine(line, true);
+		}
+		
+		/// <summary>
+		/// Adds a spell line to the player
+		/// </summary>
+		/// <param name="line"></param>
+		public virtual void AddSpellLine(SpellLine line, bool notify)
+		{

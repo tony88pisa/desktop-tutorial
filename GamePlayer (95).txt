@@ -1,0 +1,36 @@
+﻿						Ability ab = GetAbility(abv.KeyName);
+						
+						if (ab == null)
+							ab = abv;
+						
+						int index = innerList.FindIndex(k => (k.Item1 is Ability) && ((Ability)k.Item1).KeyName == ab.KeyName);
+						
+						if (index < 0)
+						{
+							// add
+							innerList.Add(new Tuple<Skill, Skill>(ab, spec));
+						}
+						else
+						{
+							copylist.Remove(innerList[index]);
+							// replace
+							innerList[index] = new Tuple<Skill, Skill>(ab, spec);
+						}
+					}
+				}
+
+				// Add Hybrid spell
+				foreach (Specialization spec in specs.Where(item => item.HybridSpellList))
+				{
+					int index = -1;
+					foreach(KeyValuePair<SpellLine, List<Skill>> sl in spec.GetLinesSpellsForLiving(this))
+					{
+						foreach (Spell sp in sl.Value.Where(it => (it is Spell) && !((Spell)it).NeedInstrument).Cast<Spell>())
+						{
+							if (index < innerList.Count)
+								index = innerList.FindIndex(index + 1, e => ((e.Item2 is SpellLine) && ((SpellLine)e.Item2).Spec == sl.Key.Spec) && (e.Item1 is Spell) && !((Spell)e.Item1).NeedInstrument);
+							
+							if (index < 0 || index >= innerList.Count)
+							{
+								// add
+								innerList.Add(new Tuple<Skill, Skill>(sp, sl.Key));

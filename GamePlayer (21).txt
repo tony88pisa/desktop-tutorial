@@ -1,0 +1,45 @@
+﻿			// DamienOphyr: Overwrite current position with Bind position in database, MoveTo() is inoperant
+			if (CurrentRegion.IsInstance)
+			{
+				DBCharacter.Region = BindRegion;
+				DBCharacter.Xpos = BindXpos;
+				DBCharacter.Ypos =  BindYpos;
+				DBCharacter.Zpos = BindZpos;
+				DBCharacter.Direction = BindHeading;
+			}
+			
+			//check for battleground caps
+			Battleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+			if (bg != null)
+			{
+				if (Level > bg.MaxLevel || RealmLevel >= bg.MaxRealmLevel)
+				{
+					// Only kick players out
+					if (Client.Account.PrivLevel == (int)ePrivLevel.Player)
+					{
+						GameServer.KeepManager.ExitBattleground(this);
+					}
+				}
+			}
+
+			// cancel all effects until saving of running effects is done
+			try
+			{
+				EffectList.SaveAllEffects();
+				CancelAllConcentrationEffects();
+				EffectList.CancelAll();
+			}
+			catch (Exception e)
+			{
+				log.ErrorFormat("Cannot cancel all effects - {0}", e);
+			}
+			#region TempPropertiesManager LookUp
+
+			if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP)
+			{
+				try
+				{
+					foreach (string p in TempProperties.getAllProperties())
+					{
+
+						if (p == "")

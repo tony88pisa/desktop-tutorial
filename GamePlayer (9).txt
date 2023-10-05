@@ -1,0 +1,42 @@
+﻿		public bool Autoloot
+		{
+			get { return DBCharacter != null ? DBCharacter.Autoloot : true; }
+			set { if (DBCharacter != null) DBCharacter.Autoloot = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the advisor flag for this player
+		/// (delegate to property in PlayerCharacter)
+		/// </summary>
+		public bool Advisor
+		{
+			get { return DBCharacter != null ? DBCharacter.Advisor : false; }
+			set { if (DBCharacter != null) DBCharacter.Advisor = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the SerializedFriendsList for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public string[] SerializedFriendsList
+		{
+			get { return DBCharacter != null ? DBCharacter.SerializedFriendsList.Split(',').Select(name => name.Trim()).Where(name => !string.IsNullOrEmpty(name)).ToArray() : Array.Empty<string>(); }
+			set { if (DBCharacter != null) DBCharacter.SerializedFriendsList = string.Join(",", value.Select(name => name.Trim()).Where(name => !string.IsNullOrEmpty(name))); }
+		}
+		
+		/// <summary>
+		/// Gets or sets the NotDisplayedInHerald for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public byte NotDisplayedInHerald
+		{
+			get { return DBCharacter != null ? DBCharacter.NotDisplayedInHerald : (byte)0; }
+			set { if (DBCharacter != null) DBCharacter.NotDisplayedInHerald = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the LastFreeLevel for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int LastFreeLevel
+		{

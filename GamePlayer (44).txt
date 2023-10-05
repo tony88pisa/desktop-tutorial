@@ -1,0 +1,44 @@
+﻿			//Reset last valide position array to prevent /stuck avec /release
+			lock (m_lastUniqueLocations)
+			{
+				for (int i = 0; i < m_lastUniqueLocations.Length; i++)
+				{
+					GameLocation loc = m_lastUniqueLocations[i];
+					loc.X = X;
+					loc.Y = Y;
+					loc.Z = Z;
+					loc.Heading = Heading;
+					loc.RegionID = CurrentRegionID;
+				}
+			}
+		}
+
+		/// <summary>
+		/// helper state var for different release phases
+		/// </summary>
+		private byte m_releasePhase = 0;
+
+		/// <summary>
+		/// callback every second to control realtime release
+		/// </summary>
+		/// <param name="callingTimer"></param>
+		/// <returns></returns>
+		protected virtual int ReleaseTimerCallback(RegionTimer callingTimer)
+		{
+			if (IsAlive)
+				return 0;
+			int diffToRelease = Environment.TickCount - m_deathTick;
+			if (m_automaticRelease && diffToRelease > RELEASE_MINIMUM_WAIT * 1000)
+			{
+				Release(m_releaseType, true);
+				return 0;
+			}
+			diffToRelease = (RELEASE_TIME * 1000 - diffToRelease) / 1000;
+			if (diffToRelease <= 0)
+			{
+				Release(m_releaseType, true);
+				return 0;
+			}
+			if (m_releasePhase <= 1 && diffToRelease <= 10 && diffToRelease >= 8)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

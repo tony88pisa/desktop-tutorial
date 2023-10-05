@@ -1,0 +1,45 @@
+﻿			}
+
+			// Dead link-dead players release on live servers
+			if (!IsAlive)
+			{
+				Release(m_releaseType, true);
+				if (log.IsInfoEnabled)
+					log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
+				SaveIntoDatabase();
+				Client.Quit();
+				return;
+			}
+
+			//Stop player if he's running....
+			CurrentSpeed = 0;
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player.ObjectState != eObjectState.Active || player == null || player == this)
+					continue;
+				//Maybe there is a better solution?
+				player.Out.SendObjectRemove(this);
+				player.Out.SendPlayerCreate(this);
+			}
+
+			UpdateEquipmentAppearance();
+
+			LeaveHouse();
+			
+			if (m_quitTimer != null)
+			{
+				m_quitTimer.Stop();
+				m_quitTimer = null;
+			}
+
+			int secondsToQuit = QuitTime;
+			if (log.IsInfoEnabled)
+				log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
+			RegionTimer timer = new RegionTimer(this); // make sure it is not stopped!
+			timer.Callback = new RegionTimerCallback(LinkdeathTimerCallback);
+			timer.Start(1 + secondsToQuit * 1000);
+
+			if (TradeWindow != null)
+				TradeWindow.CloseTrade();
+
+			//Notify players in close proximity!

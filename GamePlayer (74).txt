@@ -1,0 +1,40 @@
+﻿		/// <param name="skill"></param>
+		protected virtual void AddSpecialization(Specialization skill, bool notify)
+		{
+			if (skill == null)
+				return;
+
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				// search for existing key
+				if (!m_specialization.ContainsKey(skill.KeyName))
+				{
+					// Adding
+					m_specialization.Add(skill.KeyName, skill);
+
+					if (skill.KeyName == Specs.Stealth)
+						CanStealth = true;
+
+					if (notify)
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpecialisation.YouLearn", skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					// Updating
+					m_specialization[skill.KeyName].Level = skill.Level;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Removes the existing specialization from the player
+		/// </summary>
+		/// <param name="specKeyName">The spec keyname to remove</param>
+		/// <returns>true if removed</returns>
+		public virtual bool RemoveSpecialization(string specKeyName)
+		{
+			Specialization playerSpec = null;
+			
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				if (!m_specialization.TryGetValue(specKeyName, out playerSpec))

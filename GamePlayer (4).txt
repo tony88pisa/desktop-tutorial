@@ -1,0 +1,53 @@
+﻿		protected bool m_isInBG;
+		public bool isInBG
+		{
+			get { return m_isInBG; }
+			set { m_isInBG = value; }
+		}
+
+		/// <summary>
+		/// Current warmap page
+		/// </summary>
+		private volatile byte m_warmapPage = 1;
+		public byte WarMapPage
+		{
+			get { return m_warmapPage; }
+			set { m_warmapPage = value; }
+		}
+
+		/// <summary>
+		/// Returns the GameClient of this Player
+		/// </summary>
+		public virtual GameClient Client
+		{
+			get { return m_client; }
+		}
+
+		/// <summary>
+		/// Returns the PacketSender for this player
+		/// </summary>
+		public virtual IPacketLib Out
+		{
+			get { return Client.Out; }
+		}
+
+		/// <summary>
+		/// The character the player is based on
+		/// </summary>
+		internal DOLCharacters DBCharacter
+		{
+			get { return m_dbCharacter; }
+		}
+
+		/// <summary>
+		/// Has this player entered the game for the first
+		/// time after logging on (not Zoning!)
+		/// </summary>
+		public bool EnteredGame
+		{
+			get { return m_enteredGame; }
+			set { m_enteredGame = value; }
+		}
+
+		protected DateTime m_previousLoginDate = DateTime.MinValue;
+		/// <summary>

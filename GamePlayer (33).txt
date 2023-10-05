@@ -1,0 +1,35 @@
+﻿				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.NotDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (!forced)
+			{
+				if (m_releaseType == eReleaseType.Duel)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.CantReleaseDuel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				m_releaseType = releaseCommand;
+				// we use realtime, because timer window is realtime
+				int diff = m_deathTick - Environment.TickCount + RELEASE_MINIMUM_WAIT * 1000;
+				if (diff >= 1000)
+				{
+					if (m_automaticRelease)
+					{
+						m_automaticRelease = false;
+						m_releaseType = eReleaseType.Normal;
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.NoLongerReleaseAuto", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+
+					m_automaticRelease = true;
+					switch (releaseCommand)
+					{
+						default:
+							{
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.WillReleaseAuto", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+						case eReleaseType.City:
+							{
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

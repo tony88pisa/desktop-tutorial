@@ -1,0 +1,40 @@
+﻿
+		/// <summary>
+		/// Binds this player to the current location
+		/// </summary>
+		/// <param name="forced">if true, can bind anywhere</param>
+		public virtual void Bind(bool forced)
+		{
+			if (CurrentRegion.IsInstance)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.CantHere"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (forced)
+			{
+				BindRegion = CurrentRegionID;
+				BindHeading = Heading;
+				BindXpos = X;
+				BindYpos = Y;
+				BindZpos = Z;
+				if (DBCharacter != null)
+					GameServer.Database.SaveObject(DBCharacter);
+				return;
+			}
+			
+			if (!IsAlive)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.CantBindDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			//60 second rebind timer
+			long lastBindTick = TempProperties.getProperty<long>(LAST_BIND_TICK, 0);
+			long changeTime = CurrentRegion.Time - lastBindTick;
+			if (Client.Account.PrivLevel <= (uint)ePrivLevel.Player && changeTime < BindAllowInterval)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.MustWait", (1 + (BindAllowInterval - changeTime) / 1000)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			

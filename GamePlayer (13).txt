@@ -1,0 +1,44 @@
+﻿			set { if (DBCharacter != null) DBCharacter.BindRegion = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindXpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindXpos
+		{
+			get { return DBCharacter != null ? DBCharacter.BindXpos : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindXpos = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindYpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindYpos
+		{
+			get { return DBCharacter != null ? DBCharacter.BindYpos : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindYpos = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindZpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindZpos
+		{
+			get { return DBCharacter != null ? DBCharacter.BindZpos : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindZpos = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindHeading for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindHeading
+		{
+			get { return DBCharacter != null ? DBCharacter.BindHeading : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindHeading = value; }
+		}
+		
+		/// <summary>

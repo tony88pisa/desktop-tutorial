@@ -1,0 +1,46 @@
+﻿			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				m_specialization.Clear();
+			}
+		}
+
+		public virtual void RemoveAllSpellLines()
+		{
+			lock (lockSpellLinesList)
+			{
+				m_spellLines.Clear();
+			}
+		}
+
+		public virtual void RemoveAllStyles()
+		{
+			lock (lockStyleList)
+			{
+				m_styles.Clear();
+			}
+		}
+
+		public virtual void AddStyle(Style st, bool notify)
+		{
+			lock (lockStyleList)
+			{
+				if (m_styles.ContainsKey(st.ID))
+				{
+					m_styles[st.ID].Level = st.Level;
+				}
+				else
+				{
+					m_styles.Add(st.ID, st);
+					
+					// Verbose
+					if (notify)
+					{
+						Style style = st;
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	
+						string message = null;
+						
+						if (Style.eOpening.Offensive == style.OpeningRequirementType)
+						{
+							switch (style.AttackResultRequirement)
+							{

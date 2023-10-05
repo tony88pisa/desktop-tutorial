@@ -1,0 +1,38 @@
+﻿			string description = string.Format("in {0}", this.GetBindSpotDescription());
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.LastBindPoint", description), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			
+			bool bound = false;
+			
+			var bindarea = CurrentAreas.OfType<Area.BindArea>().FirstOrDefault(ar => GameServer.ServerRules.IsAllowedToBind(this, ar.BindPoint));
+			if (bindarea != null)
+			{
+				bound = true;
+				BindRegion = CurrentRegionID;
+				BindHeading = Heading;
+				BindXpos = X;
+				BindYpos = Y;
+				BindZpos = Z;
+				if (DBCharacter != null)
+					GameServer.Database.SaveObject(DBCharacter);
+			}
+			
+			//if we are not bound yet lets check if we are in a house where we can bind
+			if (!bound && InHouse && CurrentHouse != null)
+			{
+				var house = CurrentHouse;
+				bool canbindhere;
+				try
+				{
+					canbindhere = house.HousepointItems.Any(kv => ((GameObject)kv.Value.GameObject).GetName(0, false).EndsWith("bindstone", StringComparison.OrdinalIgnoreCase));
+				}
+				catch
+				{
+					canbindhere = false;
+				}
+
+				if (canbindhere)
+				{
+					// make sure we can actually use the bindstone
+					if(!house.CanBindInHouse(this))
+					{
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

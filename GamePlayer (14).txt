@@ -1,0 +1,46 @@
+﻿		/// Gets or sets the Database MaxEndurance for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int DBMaxEndurance
+		{
+			get { return DBCharacter != null ? DBCharacter.MaxEndurance : 100; }
+			set { if (DBCharacter != null) DBCharacter.MaxEndurance = value; }
+		}
+		
+		/// <summary>
+		/// Gets AccountName for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public string AccountName
+		{
+			get { return DBCharacter != null ? DBCharacter.AccountName : string.Empty; }
+		}
+
+		/// <summary>
+		/// Gets CreationDate for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public DateTime CreationDate
+		{
+			get { return DBCharacter != null ? DBCharacter.CreationDate : DateTime.MinValue; }
+		}
+		
+		/// <summary>
+		/// Gets LastPlayed for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public DateTime LastPlayed
+		{
+			get { return DBCharacter != null ? DBCharacter.LastPlayed : DateTime.MinValue; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the BindYpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public byte DeathCount
+		{
+			get { return DBCharacter != null ? DBCharacter.DeathCount : (byte)0; }
+			set { if (DBCharacter != null) DBCharacter.DeathCount = value; }
+		}
+

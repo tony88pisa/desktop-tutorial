@@ -1,0 +1,41 @@
+﻿			get { return DBCharacter != null ? DBCharacter.LastFreeLevel : 0; }
+			set { if (DBCharacter != null) DBCharacter.LastFreeLevel = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the LastFreeLeveled for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public DateTime LastFreeLeveled
+		{
+			get { return DBCharacter != null ? DBCharacter.LastFreeLeveled : DateTime.MinValue; }
+			set { if (DBCharacter != null) DBCharacter.LastFreeLeveled = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the SerializedIgnoreList for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public string[] SerializedIgnoreList
+		{
+			get { return DBCharacter != null ? DBCharacter.SerializedIgnoreList.Split(',').Select(name => name.Trim()).Where(name => !string.IsNullOrEmpty(name)).ToArray() : Array.Empty<string>(); }
+			set { if (DBCharacter != null) DBCharacter.SerializedIgnoreList = string.Join(",", value.Select(name => name.Trim()).Where(name => !string.IsNullOrEmpty(name))); }
+		}
+
+		/// <summary>
+		/// Gets or sets the UsedLevelCommand for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool UsedLevelCommand
+		{
+			get { return DBCharacter != null ? DBCharacter.UsedLevelCommand : false; }
+			set { if (DBCharacter != null) DBCharacter.UsedLevelCommand = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindHouseRegion for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindHouseRegion
+		{
+			get { return DBCharacter != null ? DBCharacter.BindHouseRegion : 0; }

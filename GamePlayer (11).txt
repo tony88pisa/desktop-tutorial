@@ -1,0 +1,45 @@
+﻿			set { if (DBCharacter != null) DBCharacter.BindHouseRegion = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindHouseXpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindHouseXpos
+		{
+			get { return DBCharacter != null ? DBCharacter.BindHouseXpos : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindHouseXpos = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the BindHouseYpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindHouseYpos
+		{
+			get { return DBCharacter != null ? DBCharacter.BindHouseYpos : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindHouseYpos = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets BindHouseZpos for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindHouseZpos
+		{
+			get { return DBCharacter != null ? DBCharacter.BindHouseZpos : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindHouseZpos = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the BindHouseHeading for this player
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public int BindHouseHeading
+		{
+			get { return DBCharacter != null ? DBCharacter.BindHouseHeading : 0; }
+			set { if (DBCharacter != null) DBCharacter.BindHouseHeading = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the CustomisationStep for this player

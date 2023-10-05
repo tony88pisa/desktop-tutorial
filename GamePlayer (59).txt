@@ -1,0 +1,46 @@
+﻿
+			if (DamageRvRMemory > 0)
+				DamageRvRMemory -= (long)Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
+
+			#endregion PVP DAMAGE
+
+			//If we are fully healed, we stop the timer
+			if (Health >= MaxHealth)
+			{
+
+				#region PVP DAMAGE
+
+				// Fully Regenerated, Set DamageRvRMemory to 0
+				if (DamageRvRMemory > 0)
+					DamageRvRMemory = 0;
+
+				#endregion PVP DAMAGE
+
+				//We clean all damagedealers if we are fully healed,
+				//no special XP calculations need to be done
+				lock (m_xpGainers.SyncRoot)
+				{
+					m_xpGainers.Clear();
+				}
+
+				return 0;
+			}
+
+			if (InCombat)
+			{
+				// in combat each tic is aprox 6 seconds - tolakram
+				return HealthRegenerationPeriod * 2;
+			}
+
+			//Heal at standard rate
+			return HealthRegenerationPeriod;
+		}
+
+		/// <summary>
+		/// Override PowerRegenTimer because if we are not connected anymore
+		/// we DON'T regenerate mana, even if we are not garbage collected yet!
+		/// </summary>
+		/// <param name="selfRegenerationTimer">the timer</param>
+		/// <returns>the new time</returns>
+		protected override int PowerRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+		{

@@ -1,0 +1,28 @@
+﻿							case 237:
+							case 238:
+							case 239:
+							case 240:
+							case 241:
+							case 242:
+								{
+									//get the bg cap
+									byte cap = 50;
+									foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+									{
+										if (keep.DBKeep.BaseLevel < cap)
+										{
+											cap = keep.DBKeep.BaseLevel;
+											break;
+										}
+									}
+									//get the portal location
+									foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+									{
+										if (keep.DBKeep.BaseLevel > 50 && keep.Realm == Realm)
+										{
+											relRegion = (ushort)keep.Region;
+											relX = keep.X;
+											relY = keep.Y;
+											relZ = keep.Z;
+											break;
+										}

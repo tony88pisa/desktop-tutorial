@@ -1,0 +1,44 @@
+﻿		/// <summary>
+		/// Gets/sets the object endurance
+		/// </summary>
+		public override int Endurance
+		{
+			get { return DBCharacter != null ? DBCharacter.Endurance : base.Endurance; }
+			set
+			{
+				value = Math.Min(value, MaxEndurance);
+				value = Math.Max(value, 0);
+				//If it is already set, don't do anything
+				if (Endurance == value)
+				{
+					base.Endurance = value; //needed to start regeneration
+					return;
+				}
+				else if (IsAlive && value < MaxEndurance)
+					StartEnduranceRegeneration();
+				int oldPercent = EndurancePercent;
+				base.Endurance = value;
+				if (DBCharacter != null)
+					DBCharacter.Endurance = value;
+				if (oldPercent != EndurancePercent)
+				{
+					//ogre: 1.69+ endurance is displayed on group window
+					if (Group != null)
+						Group.UpdateMember(this, false, false);
+					//end ogre
+					UpdatePlayerStatus();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the objects maximum endurance
+		/// </summary>
+		public override int MaxEndurance
+		{
+			get { return GetModified(eProperty.Fatigue); }
+			set
+			{
+				//If it is already set, don't do anything
+				if (MaxEndurance == value)
+					return;

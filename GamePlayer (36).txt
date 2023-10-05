@@ -1,0 +1,34 @@
+﻿				case eReleaseType.RvR:
+					{
+						foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+						{
+							if (keep.IsPortalKeep && keep.OriginalRealm == Realm)
+							{
+								relRegion = keep.CurrentRegion.ID;
+								relX = keep.X;
+								relY = keep.Y;
+								relZ = keep.Z;
+							}
+						}
+
+						//if we aren't releasing anywhere, release to the border keeps
+						if (relX == 0)
+						{
+							relRegion = CurrentRegion.ID;
+							GameServer.KeepManager.GetBorderKeepLocation(((byte)Realm * 2) / 1, out relX, out relY, out relZ, out relHeading);
+						}
+						break;
+					}
+				default:
+					{
+						if (!ServerProperties.Properties.DISABLE_TUTORIAL)
+						{
+							//Tutorial
+							if (BindRegion == 27)
+							{
+								switch (Realm)
+								{
+									case eRealm.Albion:
+										{
+											relRegion = 1; // Cotswold
+											relX = 8192 + 553251;

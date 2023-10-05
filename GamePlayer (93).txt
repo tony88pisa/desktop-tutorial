@@ -1,0 +1,44 @@
+﻿						if (key != null && spells.ContainsKey(key))
+						{
+							foreach (Skill sp in spells[key])
+							{
+								sps.Add(sp);
+							}
+						}
+						
+						working.Add(new Tuple<SpellLine, List<Skill>>(sl, sps));
+					}
+				}
+				
+				// Linq isn't used, we need to keep order ! (SelectMany, GroupBy, ToDictionary can't be used !)
+				innerList.Clear();
+				foreach (var tp in finalbase)
+				{
+					innerList.Add(tp);
+					results.Add(tp);
+				}
+	
+				foreach (var tp in finalspec)
+				{
+					innerList.Add(tp);
+					results.Add(tp);
+				}
+			                               });
+			
+			return results;
+		}
+		
+		/// <summary>
+		/// Get All Player Usable Skill Ordered in Network Order (usefull to check for useskill)
+		/// This doesn't get player's List Cast Specs...
+		/// </summary>
+		/// <param name="update"></param>
+		/// <returns></returns>
+		public virtual List<Tuple<Skill, Skill>> GetAllUsableSkills(bool update = false)
+		{
+			List<Tuple<Skill, Skill>> results = new List<Tuple<Skill, Skill>>();
+			
+			if (!update)
+			{
+
+				if (m_usableSkills.Count > 0)

@@ -1,0 +1,51 @@
+﻿		}
+
+		/// <summary>
+		/// Gets player's intelligence
+		/// </summary>
+		public int Intelligence
+		{
+			get { return GetModified(eProperty.Intelligence); }
+		}
+
+		/// <summary>
+		/// Gets player's piety
+		/// </summary>
+		public int Piety
+		{
+			get { return GetModified(eProperty.Piety); }
+		}
+
+		/// <summary>
+		/// Gets player's empathy
+		/// </summary>
+		public int Empathy
+		{
+			get { return GetModified(eProperty.Empathy); }
+		}
+
+		/// <summary>
+		/// Gets player's charisma
+		/// </summary>
+		public int Charisma
+		{
+			get { return GetModified(eProperty.Charisma); }
+		}
+
+		protected IPlayerStatistics m_statistics = null;
+
+		/// <summary>
+		/// Get the statistics for this player
+		/// </summary>
+		public virtual IPlayerStatistics Statistics
+		{
+			get { return m_statistics; }
+		}
+
+		/// <summary>
+		/// Create played statistics for this player
+		/// </summary>
+		public virtual void CreateStatistics()
+		{
+			m_statistics = new PlayerStatistics(this);
+		}

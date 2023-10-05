@@ -1,0 +1,45 @@
+﻿			1582,3957,7123,11080,15037,19786,24535,29283,34032, //47
+			1714,4286,7716,12003,16290,21434,26578,31722,36867, //48
+			1853,4634,8341,12976,17610,23171,28732,34293,39854, //49
+			2000,5000,9000,14000,19000,25000,31000,37000,43000,50000 //50
+		};
+
+
+		/// <summary>
+		/// How much does this player have to pay for a respec?
+		/// </summary>
+		public virtual long RespecCost
+		{
+			get
+			{
+				if (Level <= 12) //1-12
+					return m_respecCost[0];
+
+				if (CanBuyRespec)
+				{
+					int t = 0;
+					for (int i = 13; i < Level; i++)
+					{
+						t += m_numRespecsCanBuyOnLevel[i - 1];
+					}
+
+					return m_respecCost[t + RespecBought];
+				}
+
+				return -1;
+			}
+		}
+
+		/// <summary>
+		/// give player a new Specialization or improve existing one
+		/// </summary>
+		/// <param name="skill"></param>
+		public void AddSpecialization(Specialization skill)
+		{
+			AddSpecialization(skill, true);
+		}
+		
+
+		/// <summary>
+		/// give player a new Specialization or improve existing one
+		/// </summary>

@@ -1,0 +1,34 @@
+﻿								// disable replace
+								index = innerList.Count;
+							}
+							else
+							{
+								copylist.Remove(innerList[index]);
+								// replace
+								innerList[index] = new Tuple<Skill, Skill>(sp, sl.Key);
+							}
+						}
+					}
+				}
+				
+				// Add Songs
+				int songIndex = -1;
+				foreach (Specialization spec in specs.Where(item => item.HybridSpellList))
+				{					
+					foreach(KeyValuePair<SpellLine, List<Skill>> sl in spec.GetLinesSpellsForLiving(this))
+					{
+						foreach (Spell sp in sl.Value.Where(it => (it is Spell) && ((Spell)it).NeedInstrument).Cast<Spell>())
+						{
+							if (songIndex < innerList.Count)
+								songIndex = innerList.FindIndex(songIndex + 1, e => (e.Item1 is Spell) && ((Spell)e.Item1).NeedInstrument);
+							
+							if (songIndex < 0 || songIndex >= innerList.Count)
+							{
+								// add
+								innerList.Add(new Tuple<Skill, Skill>(sp, sl.Key));
+								// disable replace
+								songIndex = innerList.Count;
+							}
+							else
+							{
+								copylist.Remove(innerList[songIndex]);

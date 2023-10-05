@@ -1,0 +1,51 @@
+﻿	/// </summary>
+	public class GamePlayer : GameLiving
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		private readonly object m_LockObject = new object();
+
+		#region Client/Character/VariousFlags
+
+		/// <summary>
+		/// This is our gameclient!
+		/// </summary>
+		protected readonly GameClient m_client;
+		
+		/// <summary>
+		/// This holds the character this player is
+		/// based on!
+		/// (renamed and private, cause if derive is needed overwrite PlayerCharacter)
+		/// </summary>
+		protected DOLCharacters m_dbCharacter;
+		
+		/// <summary>
+		/// The guild id this character belong to
+		/// </summary>
+		protected string m_guildId;
+		
+		/// <summary>
+		/// Char spec points checked on load
+		/// </summary>
+		protected bool SpecPointsOk = true;
+		
+		/// <summary>
+		/// Has this player entered the game, will be
+		/// true after the first time the char enters
+		/// the world
+		/// </summary>
+		protected bool m_enteredGame;
+
+		/// <summary>
+		/// Is this player being 'jumped' to a new location?
+		/// </summary>
+		public bool IsJumping { get; set; }
+
+		/// <summary>
+		/// true if the targetObject is visible
+		/// </summary>
+		protected bool m_targetInView;
+
+		/// <summary>
+		/// Property for the optional away from keyboard message.
+		/// </summary>

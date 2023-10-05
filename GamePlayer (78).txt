@@ -1,0 +1,36 @@
+﻿				RespecSingleLine(cspec);
+				ok = true;
+			}
+			return ok;
+		}
+
+		/// <summary>
+		/// Respec single line
+		/// </summary>
+		/// <param name="specLine">spec line being respec'd</param>
+		/// <returns>Amount of points spent in that line</returns>
+		protected virtual int RespecSingleLine(Specialization specLine)
+		{
+			int specPoints = (specLine.Level * (specLine.Level + 1) - 2) / 2;
+			// Graveen - autotrain 1.87
+			specPoints -= GetAutoTrainPoints(specLine, 0);
+
+			//setting directly the autotrain points in the spec
+			if (GetAutoTrainPoints(specLine, 4) == 1 && Level >= 8)
+			{
+				specLine.Level = (int)Math.Floor((double)Level / 4);
+			}
+			else specLine.Level = 1;
+
+			// If BD subpet spells scaled and capped by BD spec, respecing a spell line
+			//	requires re-scaling the spells for all subpets from that line.
+			if (CharacterClass.Equals(GS.CharacterClass.Bonedancer)
+				&& DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
+				&& DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+				&& ControlledBody is GamePet pet && pet.ControlledNpcList != null)
+					foreach (ABrain subBrain in pet.ControlledNpcList)
+						if (subBrain != null && subBrain.Body is BDSubPet subPet && subPet.PetSpecLine == specLine.KeyName)
+							subPet.SortSpells();
+
+			return specPoints;
+		}

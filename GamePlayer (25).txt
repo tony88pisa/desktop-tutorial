@@ -1,0 +1,52 @@
+﻿			{
+				//Notify our event handlers (if any)
+				Notify(GamePlayerEvent.Quit, this);
+
+				// log quit
+				AuditMgr.AddAuditEntry(Client, AuditType.Character, AuditSubtype.CharacterLogout, "", Name);
+
+				//Cleanup stuff
+				Delete();
+			}
+			return true;
+		}
+
+		#endregion
+
+		#region Combat timer
+		/// <summary>
+		/// gets the DamageRvR Memory of this player
+		/// </summary>
+		public override long DamageRvRMemory
+		{
+			get	{ return m_damageRvRMemory; }
+			set	{ m_damageRvRMemory = value; }
+		}
+		
+		/// <summary>
+		/// Override For Combat Timer Update
+		/// </summary>
+		public override long LastAttackedByEnemyTickPvE
+		{
+			set
+			{
+				bool wasInCombat = InCombat;
+				base.LastAttackedByEnemyTickPvE = value;
+				if (!wasInCombat && InCombat)
+					Out.SendUpdateMaxSpeed();
+				
+				ResetInCombatTimer();
+			}
+		}
+
+		/// <summary>
+		/// Override For Combat Timer Update
+		/// </summary>
+		public override long LastAttackTickPvE
+		{
+			set
+			{
+				bool wasInCombat = InCombat;
+				base.LastAttackTickPvE = value;
+				if (!wasInCombat && InCombat)
+					Out.SendUpdateMaxSpeed();

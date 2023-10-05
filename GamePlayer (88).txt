@@ -1,0 +1,45 @@
+﻿			}
+
+			return effectiveness;
+		}
+
+
+		/// <summary>
+		/// returns the level of a specialization
+		/// if 0 is returned, the spec is non existent on player
+		/// </summary>
+		/// <param name="keyName"></param>
+		/// <returns></returns>
+		public override int GetBaseSpecLevel(string keyName)
+		{
+			Specialization spec = null;
+			int level = 0;
+			
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				if (m_specialization.TryGetValue(keyName, out spec))
+					level = m_specialization[keyName].Level;
+			}
+			
+			return level;
+		}
+
+		/// <summary>
+		/// returns the level of a specialization + bonuses from RR and Items
+		/// if 0 is returned, the spec is non existent on the player
+		/// </summary>
+		/// <param name="keyName"></param>
+		/// <returns></returns>
+		public override int GetModifiedSpecLevel(string keyName)
+		{
+			if (keyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
+				return 50;
+
+			Specialization spec = null;
+			int level = 0;
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				if (!m_specialization.TryGetValue(keyName, out spec))
+				{
+					if (keyName == GlobalSpellsLines.Combat_Styles_Effect)
+					{

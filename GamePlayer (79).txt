@@ -1,0 +1,46 @@
+﻿
+		/// <summary>
+		/// Send this players trainer window
+		/// </summary>
+		public virtual void SendTrainerWindow()
+		{
+			Out.SendTrainerWindow();
+		}
+
+		/// <summary>
+		/// returns a list with all specializations
+		/// in the order they were added
+		/// </summary>
+		/// <returns>list of Spec's</returns>
+		public virtual IList<Specialization> GetSpecList()
+		{
+			List<Specialization> list;
+
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				// sort by Level and ID to simulate "addition" order... (try to sort your DB if you want to change this !)
+				list = m_specialization.Select(item => item.Value).OrderBy(it => it.LevelRequired).ThenBy(it => it.ID).ToList();
+			}
+			
+			return list;
+		}
+
+		/// <summary>
+		/// returns a list with all non trainable skills without styles
+		/// This is a copy of Ability until any unhandled Skill subclass needs to go in there...
+		/// </summary>
+		/// <returns>list of Skill's</returns>
+		public virtual IList GetNonTrainableSkillList()
+		{
+			return GetAllAbilities();
+		}
+
+		/// <summary>
+		/// Retrives a specific specialization by name
+		/// </summary>
+		/// <param name="name">the name of the specialization line</param>
+		/// <param name="caseSensitive">false for case-insensitive compare</param>
+		/// <returns>found specialization or null</returns>
+		public virtual Specialization GetSpecializationByName(string name, bool caseSensitive = false)
+		{
+			Specialization spec = null;

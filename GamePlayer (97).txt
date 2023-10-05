@@ -1,0 +1,43 @@
+﻿								// replace
+								innerList[songIndex] = new Tuple<Skill, Skill>(sp, sl.Key);
+							}
+						}
+					}
+				}
+				
+				// Add Styles
+				foreach (Specialization spec in specs)
+				{
+					foreach(Style st in spec.GetStylesForLiving(this))
+					{
+						int index = innerList.FindIndex(e => (e.Item1 is Style) && e.Item1.ID == st.ID);
+						if (index < 0)
+						{
+							// add
+							innerList.Add(new Tuple<Skill, Skill>(st, spec));
+						}
+						else
+						{
+							copylist.Remove(innerList[index]);
+							// replace
+							innerList[index] = new Tuple<Skill, Skill>(st, spec);
+						}
+					}
+				}
+
+				// clean all not re-enabled skills
+				foreach (Tuple<Skill, Skill> item in copylist)
+				{
+					innerList.Remove(item);
+				}
+				
+				foreach (Tuple<Skill, Skill> el in innerList)
+					results.Add(el);
+			                           });
+			
+			return results;
+		}
+		
+		/// <summary>
+		/// updates the list of available skills (dependent on caracter specs)
+		/// </summary>

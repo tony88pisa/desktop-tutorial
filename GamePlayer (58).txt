@@ -1,0 +1,46 @@
+﻿		/// Overriden. No lazy timers for GamePlayers.
+		/// </summary>
+		public override void StopHealthRegeneration()
+		{
+			if (m_healthRegenerationTimer == null) return;
+			m_healthRegenerationTimer.Stop();
+		}
+		/// <summary>
+		/// Stop the power regeneration.
+		/// Overriden. No lazy timers for GamePlayers.
+		/// </summary>
+		public override void StopPowerRegeneration()
+		{
+			if (m_powerRegenerationTimer == null) return;
+			m_powerRegenerationTimer.Stop();
+		}
+		/// <summary>
+		/// Stop the endurance regeneration.
+		/// Overriden. No lazy timers for GamePlayers.
+		/// </summary>
+		public override void StopEnduranceRegeneration()
+		{
+			if (m_enduRegenerationTimer == null) return;
+			m_enduRegenerationTimer.Stop();
+		}
+
+		/// <summary>
+		/// Override HealthRegenTimer because if we are not connected anymore
+		/// we DON'T regenerate health, even if we are not garbage collected yet!
+		/// </summary>
+		/// <param name="callingTimer">the timer</param>
+		/// <returns>the new time</returns>
+		protected override int HealthRegenerationTimerCallback(RegionTimer callingTimer)
+		{
+			// I'm not sure what the point of this is.
+			if (Client.ClientState != GameClient.eClientState.Playing)
+				return HealthRegenerationPeriod;
+
+			// adjust timer based on Live testing of player
+
+			if (Health < MaxHealth)
+			{
+				ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationRate));
+			}
+
+			#region PVP DAMAGE

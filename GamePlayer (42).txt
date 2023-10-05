@@ -1,0 +1,33 @@
+﻿								{
+									oldgrave.Delete();
+								}
+							}
+							character.HasGravestone = false;
+						}
+
+						GameGravestone gravestone = new GameGravestone(this, lostExp);
+						gravestone.AddToWorld();
+						character.GravestoneRegion = gravestone.CurrentRegionID;
+						character.HasGravestone = true;
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.GraveErected"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReturnToPray"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+					}
+				}
+			}
+
+			if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL)
+			{
+				int deathConLoss = TempProperties.getProperty<int>(DEATH_CONSTITUTION_LOSS_PROPERTY); // get back constitution lost at death
+				if (deathConLoss > 0)
+				{
+					TotalConstitutionLostAtDeath += deathConLoss;
+					Out.SendCharStatsUpdate();
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.LostConstitution"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+				}
+			}
+
+			//Update health&sit state first!
+			Health = MaxHealth;
+			StartPowerRegeneration();
+			StartEnduranceRegeneration();
+

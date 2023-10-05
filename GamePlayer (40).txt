@@ -1,0 +1,28 @@
+﻿													break;
+												}
+										}
+										break;
+									}
+									else
+									{
+										relRegion = (ushort)BindRegion;
+										relX = BindXpos;
+										relY = BindYpos;
+										relZ = BindZpos;
+										relHeading = (ushort)BindHeading;
+									}
+									break;
+								}/*
+								//bg45-49
+							case 165:
+								{
+									break;
+								}*/
+							default:
+								{
+									relRegion = (ushort)BindRegion;
+									relX = BindXpos;
+									relY = BindYpos;
+									relZ = BindZpos;
+									relHeading = (ushort)BindHeading;
+									break;

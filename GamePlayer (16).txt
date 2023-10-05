@@ -1,0 +1,39 @@
+﻿				}
+				long secondsleft = 60 - (CurrentRegion.Time - lastCombatAction + 500) / 1000; // 500 is for rounding
+				if (secondsleft > 0)
+				{
+					if (secondsleft == 15 || secondsleft == 10 || secondsleft == 5)
+					{
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.YouWillQuit1", secondsleft), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
+					return 1000;
+				}
+			}
+
+			Out.SendPlayerQuit(false);
+			Quit(true);
+			SaveIntoDatabase();
+			m_quitTimer = null;
+			return 0;
+		}
+
+		/// <summary>
+		/// Gets the amount of time the player must wait before quit, in seconds
+		/// </summary>
+		public virtual int QuitTime
+		{
+			get
+			{
+				if (m_quitTimer == null)
+				{
+					// dirty trick ;-) (20sec min quit time)
+					if (CurrentRegion.Time - LastAttackTickPvP > 40000)
+						LastAttackTickPvP = CurrentRegion.Time - 40000;
+					if (CurrentRegion.Time - LastAttackTickPvE > 40000)
+						LastAttackTickPvE = CurrentRegion.Time - 40000;
+				}
+				long lastCombatAction = LastAttackTick;
+				if (lastCombatAction < LastAttackedByEnemyTick)
+				{
+					lastCombatAction = LastAttackedByEnemyTick;
+				}

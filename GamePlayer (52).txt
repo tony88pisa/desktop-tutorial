@@ -1,0 +1,49 @@
+﻿		}
+
+		/// <summary>
+		/// Male or Female (from DBCharacter)
+		/// Note: DB Gender is 0=male, 1=female while enum is 0=neutral, 1=male, 2=female
+		/// </summary>
+		public override eGender Gender
+		{
+			get
+			{
+				if (DBCharacter.Gender == 0)
+				{
+					return eGender.Male;
+				}
+
+				return eGender.Female;
+			}
+			set
+			{
+			}
+		}
+
+
+		public enum eSize : ushort
+		{
+			Short = 0x800,
+			Average = 0x1000,
+			Tall = 0x1800
+		}
+
+
+		public eSize Size
+		{
+			get
+			{
+				ushort size = (ushort)( Model & (ushort)eSize.Tall );
+
+				switch ( size )
+				{
+						case 0x800: return eSize.Short;
+						case 0x1800: return eSize.Tall;
+						default: return eSize.Average;
+				}
+			}
+
+			set
+			{
+				if ( value != Size )
+				{

@@ -1,0 +1,48 @@
+﻿			{
+				maxpower = 100; // This is a guess, need feedback
+			}
+
+			if (maxpower < 0)
+				maxpower = 0;
+
+			return maxpower;
+		}
+
+
+		/// <summary>
+		/// Gets/sets the object mana
+		/// </summary>
+		public override int Mana
+		{
+			get { return DBCharacter != null ? DBCharacter.Mana : base.Mana; }
+			set
+			{
+				value = Math.Min(value, MaxMana);
+				value = Math.Max(value, 0);
+				//If it is already set, don't do anything
+				if (Mana == value)
+				{
+					base.Mana = value; //needed to start regeneration
+					return;
+				}
+				int oldPercent = ManaPercent;
+				base.Mana = value;
+				if (DBCharacter != null)
+					DBCharacter.Mana = value;
+				if (oldPercent != ManaPercent)
+				{
+					if (Group != null)
+						Group.UpdateMember(this, false, false);
+					UpdatePlayerStatus();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets/sets the object max mana
+		/// </summary>
+		public override int MaxMana
+		{
+			get { return GetModified(eProperty.MaxMana); }
+		}
+

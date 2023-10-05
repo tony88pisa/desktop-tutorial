@@ -1,0 +1,39 @@
+﻿			if (player.Level >= ServerProperties.Properties.RESS_SICKNESS_LEVEL)
+			    switch (DeathType)
+			    {
+				    case eDeathType.RvR:
+					    SpellLine rvrsick = SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells);
+					    if (rvrsick == null) return;
+					    Spell rvrillness = SkillBase.FindSpell(8181, rvrsick);
+					    player.CastSpell(rvrillness, rvrsick);
+					    break;
+				    case eDeathType.PvP: //PvP sickness is the same as PvE sickness - Curable
+				    case eDeathType.PvE:
+					    SpellLine pvesick = SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells);
+					    if (pvesick == null) return;
+					    Spell pveillness = SkillBase.FindSpell(2435, pvesick);
+					    player.CastSpell(pveillness, pvesick);
+					    break;
+			    }
+			
+			GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
+			m_deathtype = eDeathType.None;
+		}
+
+		/// <summary>
+		/// Property that saves experience lost on last death
+		/// </summary>
+		public const string DEATH_EXP_LOSS_PROPERTY = "death_exp_loss";
+		/// <summary>
+		/// Property that saves condition lost on last death
+		/// </summary>
+		public const string DEATH_CONSTITUTION_LOSS_PROPERTY = "death_con_loss";
+		#endregion
+
+		#region Praying
+		/// <summary>
+		/// The timer that will be started when the player wants to pray
+		/// </summary>
+		protected RegionTimerAction<GameGravestone> m_prayAction;
+		/// <summary>
+		/// The delay to wait until xp is regained, in milliseconds

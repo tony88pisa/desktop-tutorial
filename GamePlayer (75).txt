@@ -1,0 +1,45 @@
+﻿						return false;
+				
+				m_specialization.Remove(specKeyName);
+				
+				if (specKeyName == Specs.Stealth)
+					CanStealth = false;
+			}
+			
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Removes the existing spellline from the player, the line instance should be called with GamePlayer.GetSpellLine ONLY and NEVER SkillBase.GetSpellLine!!!!!
+		/// </summary>
+		/// <param name="line">The spell line to remove</param>
+		/// <returns>true if removed</returns>
+		protected virtual bool RemoveSpellLine(SpellLine line)
+		{
+			lock (lockSpellLinesList)
+			{
+				if (!m_spellLines.Contains(line))
+				{
+					return false;
+				}
+
+				m_spellLines.Remove(line);
+			}
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpellLine.YouLose", line.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			
+			return true;
+		}
+
+		/// <summary>
+		/// Removes the existing specialization from the player
+		/// </summary>
+		/// <param name="lineKeyName">The spell line keyname to remove</param>
+		/// <returns>true if removed</returns>
+		public virtual bool RemoveSpellLine(string lineKeyName)
+		{
+			SpellLine line = GetSpellLine(lineKeyName);
+			if (line == null)
+				return false;

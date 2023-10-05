@@ -1,0 +1,44 @@
+﻿					ushort modelID = (ushort)( Model & 0x7FF );
+
+					Model = (ushort)( modelID | (ushort)value );
+				}
+			}
+		}
+
+		#endregion
+
+		#region Stats
+
+		/// <summary>
+		/// Holds if the player can gain a FreeLevel
+		/// </summary>
+		public virtual byte FreeLevelState
+		{
+			get
+			{
+				int freelevel_days = 7;
+				switch (Realm)
+				{
+					case eRealm.Albion:
+						if (ServerProperties.Properties.FREELEVEL_DAYS_ALBION == -1)
+							return 1;
+						else
+							freelevel_days = ServerProperties.Properties.FREELEVEL_DAYS_ALBION;
+						break;
+					case eRealm.Midgard:
+						if (ServerProperties.Properties.FREELEVEL_DAYS_MIDGARD == -1)
+							return 1;
+						else
+							freelevel_days = ServerProperties.Properties.FREELEVEL_DAYS_MIDGARD;
+						break;
+					case eRealm.Hibernia:
+						if (ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA == -1)
+							return 1;
+						else
+							freelevel_days = ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA;
+						break;
+				}
+
+				//flag 1 = above level, 2 = elligable, 3= time until, 4 = level and time until, 5 = level until
+				if (Level >= 48)
+					return 1;

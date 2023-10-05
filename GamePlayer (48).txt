@@ -1,0 +1,34 @@
+﻿			
+			m_prayAction = new RegionTimerAction<GameGravestone>(gravestone, stn => {
+			                                                     	if (stn.XPValue > 0)
+			                                                     	{
+			                                                     		Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pray.GainBack"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			                                                     		GainExperience(eXPSource.Praying, stn.XPValue);
+			                                                     	}
+			                                                     	stn.XPValue = 0;
+			                                                     	stn.Delete();
+			                                                     });
+			m_prayAction.Start(PrayDelay);
+
+			Sit(true);
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pray.Begin"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null) continue;
+				player.Out.SendEmoteAnimation(this, eEmote.Pray);
+			}
+		}
+
+		/// <summary>
+		/// Stop praying; used when player changes target
+		/// </summary>
+		public void PrayTimerStop()
+		{
+			if (!IsPraying)
+				return;
+			m_prayAction.Stop();
+			m_prayAction = null;
+		}
+		#endregion
+

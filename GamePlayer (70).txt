@@ -1,0 +1,48 @@
+﻿
+		/// <summary>
+		/// Used to lock the style list
+		/// </summary>
+		protected readonly Object lockStyleList = new Object();
+
+		/// <summary>
+		/// Temporary Stats Boni
+		/// </summary>
+		protected readonly int[] m_statBonus = new int[8];
+
+		/// <summary>
+		/// Temporary Stats Boni in percent
+		/// </summary>
+		protected readonly int[] m_statBonusPercent = new int[8];
+
+		/// <summary>
+		/// Gets/Sets amount of full skill respecs
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual int RespecAmountAllSkill
+		{
+			get { return DBCharacter != null ? DBCharacter.RespecAmountAllSkill : 0; }
+			set { if (DBCharacter != null) DBCharacter.RespecAmountAllSkill = value; }
+		}
+
+		/// <summary>
+		/// Gets/Sets amount of single-line respecs
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual int RespecAmountSingleSkill
+		{
+			get { return DBCharacter != null ? DBCharacter.RespecAmountSingleSkill : 0; }
+			set { if (DBCharacter != null) DBCharacter.RespecAmountSingleSkill = value; }
+		}
+
+		/// <summary>
+		/// Gets/Sets amount of realm skill respecs
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual int RespecAmountRealmSkill
+		{
+			get { return DBCharacter != null ? DBCharacter.RespecAmountRealmSkill : 0; }
+			set { if (DBCharacter != null) DBCharacter.RespecAmountRealmSkill = value; }
+		}
+
+		/// <summary>
+		/// Gets/Sets amount of DOL respecs

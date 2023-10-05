@@ -1,0 +1,48 @@
+﻿		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual int RespecAmountDOL
+		{
+			get { return DBCharacter != null ? DBCharacter.RespecAmountDOL : 0; }
+			set { if (DBCharacter != null) DBCharacter.RespecAmountDOL = value; }
+		}
+
+		/// <summary>
+		/// Gets/Sets level respec usage flag
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual bool IsLevelRespecUsed
+		{
+			get { return DBCharacter != null ? DBCharacter.IsLevelRespecUsed : true; }
+			set { if (DBCharacter != null) DBCharacter.IsLevelRespecUsed = value; }
+		}
+
+
+		protected static readonly int[] m_numRespecsCanBuyOnLevel =
+		{
+			1,1,1,1,1, //1-5
+			2,2,2,2,2,2,2, //6-12
+			3,3,3,3, //13-16
+			4,4,4,4,4,4, //17-22
+			5,5,5,5,5, //23-27
+			6,6,6,6,6,6, //28-33
+			7,7,7,7,7, //34-38
+			8,8,8,8,8,8, //39-44
+			9,9,9,9,9, //45-49
+			10 //50
+		};
+
+
+		/// <summary>
+		/// Can this player buy a respec?
+		/// </summary>
+		public virtual bool CanBuyRespec
+		{
+			get
+			{
+				return (RespecBought < m_numRespecsCanBuyOnLevel[Level - 1]);
+			}
+		}
+
+		/// <summary>
+		/// Gets/Sets amount of bought respecs
+		/// (delegate to PlayerCharacter)
