@@ -1,0 +1,41 @@
+﻿					if (firstLetterUppercase)
+						return "She";
+					else
+						return "she";
+				case 1:
+					// Possessive
+					if (firstLetterUppercase)
+						return "Her";
+					else
+						return "her";
+				case 2:
+					// Objective
+					if (firstLetterUppercase)
+						return "Her";
+					else
+						return "her";
+			}
+		}
+
+		public string GetPronoun(GameClient Client, int form, bool capitalize)
+		{
+			if (Gender == eGender.Male)
+				switch (form)
+			{
+				default:
+					return Capitalize(capitalize, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pronoun.Male.Subjective"));
+				case 1:
+					return Capitalize(capitalize, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pronoun.Male.Possessive"));
+				case 2:
+					return Capitalize(capitalize, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pronoun.Male.Objective"));
+			}
+			else
+				switch (form)
+			{
+				default:
+					return Capitalize(capitalize, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pronoun.Female.Subjective"));
+				case 1:
+					return Capitalize(capitalize, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pronoun.Female.Possessive"));
+				case 2:
+					return Capitalize(capitalize, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pronoun.Female.Objective"));
+			}

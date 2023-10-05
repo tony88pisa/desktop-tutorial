@@ -1,0 +1,45 @@
+﻿				{
+					if (value == PlayerTitleMgr.ClearTitle)
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CurrentTitle.TitleCleared"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					else
+						Out.SendMessage("Your title has been set to " + value.GetDescription(this) + '.', eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				UpdateCurrentTitle();
+			}
+		}
+
+		/// <summary>
+		/// Adds the title to player.
+		/// </summary>
+		/// <param name="title">The title to add.</param>
+		/// <returns>true if added.</returns>
+		public virtual bool AddTitle(IPlayerTitle title)
+		{
+			if (m_titles.Contains(title))
+				return false;
+			m_titles.Add(title);
+			title.OnTitleGained(this);
+			return true;
+		}
+
+		/// <summary>
+		/// Removes the title from player.
+		/// </summary>
+		/// <param name="title">The title to remove.</param>
+		/// <returns>true if removed.</returns>
+		public virtual bool RemoveTitle(IPlayerTitle title)
+		{
+			if (!m_titles.Contains(title))
+				return false;
+			if (CurrentTitle == title)
+				CurrentTitle = PlayerTitleMgr.ClearTitle;
+			m_titles.Remove(title);
+			title.OnTitleLost(this);
+			return true;
+		}
+
+		/// <summary>
+		/// Updates player's current title to him and everyone around.
+		/// </summary>
+		public virtual void UpdateCurrentTitle()
+		{

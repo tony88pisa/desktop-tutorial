@@ -1,0 +1,31 @@
+﻿						else
+							good = Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, floorItem.Item);
+
+						if (!good)
+						{
+							Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return false;
+						}
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", floorItem.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
+						InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, floorItem.Item.Template, floorItem.Item.IsStackable ? floorItem.Item.Count : 1);
+					}
+					floorItem.RemoveFromWorld();
+				}
+				return true;
+			}
+			else if (floorObject is GameMoney)
+			{
+				GameMoney moneyObject = floorObject as GameMoney;
+				lock (moneyObject)
+				{
+					if (moneyObject.ObjectState != eObjectState.Active)
+						return false;
+
+					if (Group != null && Group.AutosplitCoins)
+					{
+						//Spread the money in the group
+						var eligibleMembers = from p in Group.GetPlayersInTheGroup()
+							where p.IsAlive && p.CanSeeObject(floorObject) && p.ObjectState == eObjectState.Active
+							select p;
+						if (!eligibleMembers.Any())

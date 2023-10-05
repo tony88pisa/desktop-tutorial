@@ -1,0 +1,38 @@
+﻿			if (tmpStr != null && tmpStr.Length > 0 && m_usableSkills.Count == 0)
+			{
+				foreach (string abilities in Util.SplitCSV(tmpStr))
+				{
+					string[] values = abilities.Split('|');
+					if (values.Length >= 2)
+					{
+						int level;
+						if (int.TryParse(values[1], out level))
+						{
+							Ability ability = SkillBase.GetAbility(values[0], level);
+							if (ability != null)
+							{
+								// this is for display order only
+								m_usableSkills.Add(new Tuple<Skill, Skill>(ability, ability));
+							}
+						}
+					}
+				}
+			}
+			
+			// Retrieve Realm Abilities From Database to be handled by Career Spec
+			tmpStr = character.SerializedRealmAbilities;
+			if (tmpStr != null && tmpStr.Length > 0)
+			{
+				foreach (string abilities in Util.SplitCSV(tmpStr))
+				{
+					string[] values = abilities.Split('|');
+					if (values.Length >= 2)
+					{
+						int level;
+						if (int.TryParse(values[1], out level))
+						{
+							Ability ability = SkillBase.GetAbility(values[0], level);
+							if (ability != null && ability is RealmAbility)
+							{
+								// this enable realm abilities for Career Computing.
+								m_realmAbilities.Add((RealmAbility)ability);

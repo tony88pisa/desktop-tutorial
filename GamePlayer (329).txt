@@ -1,0 +1,39 @@
+﻿				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					if (player == this) continue;
+					if (!player.CanDetect(this))
+						player.Out.SendObjectDelete(this);
+				}
+			}
+			else
+			{
+				//stop the uncover timer
+				if (action != null)
+				{
+					action.Stop();
+					TempProperties.removeProperty(UNCOVER_STEALTH_ACTION_PROP);
+				}
+
+				if (ObjectState == eObjectState.Active)
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Stealth.NoLongerHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+				CamouflageEffect cam = EffectList.GetOfType<CamouflageEffect>();
+				if (cam != null)
+				{
+					cam.Stop();
+				}
+				//Andraste
+				try
+				{
+					GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "BlanketOfCamouflage");
+					if (effect != null) effect.Cancel(false);
+				}
+				catch (Exception) { }
+
+				Out.SendPlayerModelTypeChange(this, 2);
+				if (m_stealthEffect != null) m_stealthEffect.Stop();
+				m_stealthEffect = null;
+				GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{

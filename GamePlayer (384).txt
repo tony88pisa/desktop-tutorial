@@ -1,0 +1,51 @@
+﻿			{
+				Mana = CalculateMaxMana(Level, 0);
+			}
+
+			RefreshSpecDependantSkills(true);
+			Out.SendUpdatePlayerSkills();
+			
+			Notify(GamePlayerEvent.ChampionLevelUp, this);
+			Out.SendMessage("You have gained one champion level!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			Out.SendUpdatePlayer();
+			Out.SendUpdatePoints();
+			UpdatePlayerStatus();
+		}
+
+		#endregion
+
+		#region Master levels
+
+		/// <summary>
+		/// The maximum ML level a player can reach
+		/// </summary>
+		public const int ML_MAX_LEVEL = 10;
+
+		/// <summary>
+		/// Amount of MLXP required for ML validation. MLXP reset at every ML.
+		/// </summary>
+		private static readonly long[] MLXPLevel =
+		{
+			0, //xp tp level 0
+			32000, //xp to level 1
+			32000, // xp to level 2
+			32000, // xp to level 3
+			32000, // xp to level 4
+			32000, // xp to level 5
+			32000, // xp to level 6
+			32000, // xp to level 7
+			32000, // xp to level 8
+			32000, // xp to level 9
+			32000, // xp to level 10
+		};
+
+		/// <summary>
+		/// Get the amount of XP needed for a ML
+		/// </summary>
+		/// <param name="ml"></param>
+		/// <returns></returns>
+		public virtual long GetXPForML(byte ml)
+		{
+			if (ml > MLXPLevel.Length - 1)
+				return 0;
+

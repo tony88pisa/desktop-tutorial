@@ -1,0 +1,51 @@
+﻿
+		/// <summary>
+		/// Gets/sets the custom dialog callback
+		/// </summary>
+		public CustomDialogResponse CustomDialogCallback
+		{
+			get { return m_customDialogCallback; }
+			set { m_customDialogCallback = value; }
+		}
+
+		#endregion
+
+		#region GetPronoun/GetExamineMessages
+
+		/// <summary>
+		/// Pronoun of this player in case you need to refer it in 3rd person
+		/// http://webster.commnet.edu/grammar/cases.htm
+		/// </summary>
+		/// <param name="firstLetterUppercase"></param>
+		/// <param name="form">0=Subjective, 1=Possessive, 2=Objective</param>
+		/// <returns>pronoun of this object</returns>
+		public override string GetPronoun(int form, bool firstLetterUppercase)
+		{
+			if (Gender == eGender.Male) // male
+				switch (form)
+			{
+				default:
+					// Subjective
+					if (firstLetterUppercase)
+						return "He";
+					else
+						return "he";
+				case 1:
+					// Possessive
+					if (firstLetterUppercase)
+						return "His";
+					else
+						return "his";
+				case 2:
+					// Objective
+					if (firstLetterUppercase)
+						return "Him";
+					else
+						return "him";
+			}
+			else
+				// female
+				switch (form)
+			{
+				default:
+					// Subjective

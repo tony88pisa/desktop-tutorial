@@ -1,0 +1,43 @@
+﻿							}
+						}
+					}
+				}
+			}
+
+			// Load dependent skills
+			RefreshSpecDependantSkills(false);
+			
+			#endregion
+
+			#region disable ability
+			//Since we added all the abilities that this character has, let's now disable the disabled ones!
+			tmpStr = character.DisabledAbilities;
+			if (tmpStr != null && tmpStr.Length > 0)
+			{
+				foreach (string str in Util.SplitCSV(tmpStr))
+				{
+					string[] values = str.Split('|');
+					if (values.Length >= 2)
+					{
+						string keyname = values[0];
+						int duration;
+						if (HasAbility(keyname) && int.TryParse(values[1], out duration))
+						{
+							DisableSkill(GetAbility(keyname), duration);
+						}
+						else if (log.IsErrorEnabled)
+						{
+							log.ErrorFormat("{0}: error in loading disabled abilities => '{1}'", Name, tmpStr);
+						}
+					}
+				}
+			}
+
+			#endregion
+			
+			//Load the disabled spells
+			tmpStr = character.DisabledSpells;
+			if (!string.IsNullOrEmpty(tmpStr))
+			{
+				foreach (string str in Util.SplitCSV(tmpStr))
+				{

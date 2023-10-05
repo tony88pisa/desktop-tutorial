@@ -1,0 +1,45 @@
+﻿			lock (QuestListFinished)
+			{
+				foreach (AbstractQuest q in m_questListFinished)
+				{
+					if (q is DataQuest == false)
+					{
+						if (q.GetType().Equals(questType) && q.Step == -1)
+						{
+							m_questListFinished.Remove(q);
+							q.DeleteFromDatabase();
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+
+		/// <summary>
+		/// Checks if a player has done a specific quest type
+		/// This is used for scripted quests
+		/// </summary>
+		/// <param name="questType">The quest type</param>
+		/// <returns>the number of times the player did this quest</returns>
+		public int HasFinishedQuest(Type questType)
+		{
+			int counter = 0;
+			lock (QuestListFinished)
+			{
+				foreach (AbstractQuest q in m_questListFinished)
+				{
+					if (q is DataQuest == false)
+					{
+						if (q.GetType().Equals(questType))
+							counter++;
+					}
+				}
+			}
+			return counter;
+		}
+
+		/// <summary>
+		/// Checks if this player is currently doing the specified quest

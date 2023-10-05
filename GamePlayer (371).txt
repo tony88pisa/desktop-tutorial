@@ -1,0 +1,44 @@
+﻿			set
+			{
+				if (DBCharacter != null) DBCharacter.CapturedTowers = value;
+				Notify(GamePlayerEvent.CapturedTowersChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of captured relics.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int CapturedRelics
+		{
+			get { return DBCharacter != null ? DBCharacter.CapturedRelics : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.CapturedRelics = value;
+				Notify(GamePlayerEvent.CapturedRelicsChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of dragons killed.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsDragon
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsDragon : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsDragon = value;
+				Notify(GamePlayerEvent.KillsDragonChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the pvp deaths
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int DeathsPvP
+		{
+			get { return DBCharacter != null ? DBCharacter.DeathsPvP : 0; }
+			set { if (DBCharacter != null) DBCharacter.DeathsPvP = value; }
+		}

@@ -1,0 +1,43 @@
+﻿			get { return DBCharacter != null ? DBCharacter.KillsMidgardSolo : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsMidgardSolo = value;
+				Notify(GamePlayerEvent.KillsTotalSoloChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of killed solo hibernia players.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsHiberniaSolo
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsHiberniaSolo : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsHiberniaSolo = value;
+				Notify(GamePlayerEvent.KillsTotalSoloChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of captured keeps.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int CapturedKeeps
+		{
+			get { return DBCharacter != null ? DBCharacter.CapturedKeeps : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.CapturedKeeps = value;
+				Notify(GamePlayerEvent.CapturedKeepsChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of captured towers.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int CapturedTowers
+		{
+			get { return DBCharacter != null ? DBCharacter.CapturedTowers : 0; }

@@ -1,0 +1,46 @@
+﻿		/// Values represents a percent; 0 - 100
+		/// </summary>
+		public virtual int CraftingSkillBonus
+		{
+			get
+			{
+				if (CurrentRegion.IsCapitalCity)
+				{
+					return Properties.CAPITAL_CITY_CRAFTING_SKILL_GAIN_BONUS;
+				}
+
+				return 0;
+			}
+		}
+
+		protected virtual bool HasPlayerReachedNewCraftingTitle(int skillLevel)
+		{
+			// no titles after 1000 any more, checked in 1.97
+			if (skillLevel <= 1000)
+			{
+				if (skillLevel % 100 == 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		/// <summary>
+		/// Add a new crafting skill to the player
+		/// </summary>
+		/// <param name="skill"></param>
+		/// <param name="startValue"></param>
+		/// <returns></returns>
+		public virtual bool AddCraftingSkill(eCraftingSkill skill, int startValue)
+		{
+			if (skill == eCraftingSkill.NoCrafting) return false;
+
+			if (CraftingPrimarySkill == eCraftingSkill.NoCrafting)
+				CraftingPrimarySkill = eCraftingSkill.BasicCrafting;
+
+			lock (CraftingLock)
+			{
+				if (m_craftingSkills.ContainsKey(skill))
+				{

@@ -1,0 +1,32 @@
+﻿								InventoryLogging.LogInventoryAction("(ground)", eligibleMember, eInventoryActionType.Loot, moneyToPlayer);
+							}
+						}
+					}
+					else
+					{
+						//Add money only to picking player
+						if (Guild != null && Guild.IsGuildDuesOn() && moneyObject.TotalCopper > 0 && Guild.GetGuildDuesPercent() > 0)
+						{
+							long moneyToGuild = moneyObject.TotalCopper * Guild.GetGuildDuesPercent() / 100;
+							if (Guild.GetGuildDuesPercent() != 100)
+							{
+								AddMoney(Currency.Copper.Mint(moneyObject.TotalCopper));
+								SendSystemMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", Money.GetString(moneyObject.TotalCopper)));
+							}
+							else
+							{
+								AddMoney(Currency.Copper.Mint(moneyObject.TotalCopper));
+							}
+							InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyObject.TotalCopper);
+							Guild.SetGuildBank(this, moneyToGuild);
+						}
+						else
+						{
+							AddMoney(Currency.Copper.Mint(moneyObject.TotalCopper));
+							SendSystemMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", Money.GetString(moneyObject.TotalCopper)));
+							InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyObject.TotalCopper);
+						}
+					}
+					moneyObject.Delete();
+					return true;
+				}

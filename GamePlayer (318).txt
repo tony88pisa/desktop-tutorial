@@ -1,0 +1,37 @@
+﻿			#region setting world-init-position (delegate to PlayerCharacter dont make sense)
+			m_x = DBCharacter.Xpos;
+			m_y = DBCharacter.Ypos;
+			m_z = DBCharacter.Zpos;
+			m_Heading = (ushort)DBCharacter.Direction;
+			//important, use CurrentRegion property
+			//instead because it sets the Region too
+			CurrentRegionID = (ushort)DBCharacter.Region;
+			if (CurrentRegion == null || CurrentRegion.GetZone(m_x, m_y) == null)
+			{
+				log.WarnFormat("Invalid region/zone on char load ({0}): x={1} y={2} z={3} reg={4}; moving to bind point.", DBCharacter.Name, X, Y, Z, DBCharacter.Region);
+				m_x = DBCharacter.BindXpos;
+				m_y = DBCharacter.BindYpos;
+				m_z = DBCharacter.BindZpos;
+				m_Heading = (ushort)DBCharacter.BindHeading;
+				CurrentRegionID = (ushort)DBCharacter.BindRegion;
+			}
+
+			for (int i = 0; i < m_lastUniqueLocations.Length; i++)
+			{
+				m_lastUniqueLocations[i] = new GameLocation(null, CurrentRegionID, m_x, m_y, m_z);
+			}
+			#endregion
+
+			// stats first
+			m_charStat[eStat.STR - eStat._First] = (short)DBCharacter.Strength;
+			m_charStat[eStat.DEX - eStat._First] = (short)DBCharacter.Dexterity;
+			m_charStat[eStat.CON - eStat._First] = (short)DBCharacter.Constitution;
+			m_charStat[eStat.QUI - eStat._First] = (short)DBCharacter.Quickness;
+			m_charStat[eStat.INT - eStat._First] = (short)DBCharacter.Intelligence;
+			m_charStat[eStat.PIE - eStat._First] = (short)DBCharacter.Piety;
+			m_charStat[eStat.EMP - eStat._First] = (short)DBCharacter.Empathy;
+			m_charStat[eStat.CHR - eStat._First] = (short)DBCharacter.Charisma;
+
+			SetCharacterClass(CharacterClass.GetClass(DBCharacter.Class));
+
+			m_currentSpeed = 0;

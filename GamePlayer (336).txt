@@ -1,0 +1,49 @@
+﻿				range += (int)iSpymasterEffect2.Spell.Value;
+
+			// Apply Prescience node effect
+			GameSpellEffect iConvokerEffect = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "Prescience");
+			if (iConvokerEffect != null)
+				range += (int)iConvokerEffect.Spell.Value;
+
+			//Hard cap is 1900
+			if (range > 1900)
+				range = 1900;
+			//everyone can see your own group stealthed
+			else if (enemy.Group != null && Group != null && enemy.Group == Group)
+			{
+				range = 2500;
+			}
+
+			// Fin
+			// vampiir stealth range, uncomment when add eproperty stealthrange i suppose
+			return this.IsWithinRadius( enemy, range );
+		}
+
+		#endregion
+
+		#region Task
+
+		/// <summary>
+		/// Holding tasks of player
+		/// </summary>
+		AbstractTask m_task = null;
+
+		/// <summary>
+		/// Gets the tasklist of this player
+		/// </summary>
+		public AbstractTask Task
+		{
+			get { return m_task; }
+			set { m_task = value; }
+		}
+
+		#endregion
+
+		#region Mission
+
+		private AbstractMission m_mission = null;
+
+		/// <summary>
+		/// Gets the personal mission
+		/// </summary>
+		public AbstractMission Mission

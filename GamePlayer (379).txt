@@ -1,0 +1,49 @@
+﻿		{
+			0, //xp tp level 0
+			32000, //xp to level 1
+			64000, // xp to level 2
+			96000, // xp to level 3
+			128000, // xp to level 4
+			160000, // xp to level 5
+			192000, // xp to level 6
+			224000, // xp to level 7
+			256000, // xp to level 8
+			288000, // xp to level 9
+			320000, // xp to level 10
+			640000, // xp to level 11
+			640000, // xp to level 12
+			640000, // xp to level 13
+			640000, // xp to level 14
+			640000, // xp to level 15
+		};
+
+		/// <summary>
+		/// Get the CL title string of the player
+		/// </summary>
+		public virtual IPlayerTitle CLTitle
+		{
+			get
+			{
+				var title = m_titles.FirstOrDefault(ttl => ttl is ChampionlevelTitle);
+				
+				if (title != null && title.IsSuitable(this))
+					return title;
+				
+				return PlayerTitleMgr.ClearTitle;
+			}
+		}
+
+		/// <summary>
+		/// Is Champion level activated
+		/// </summary>
+		public virtual bool Champion
+		{
+			get { return DBCharacter != null ? DBCharacter.Champion : false; }
+			set { if (DBCharacter != null) DBCharacter.Champion = value; }
+		}
+
+		/// <summary>
+		/// Champion level
+		/// </summary>
+		public virtual int ChampionLevel
+		{

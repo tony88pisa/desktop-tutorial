@@ -1,0 +1,42 @@
+﻿			npc.SetAggressionState(eAggressionState.Passive);
+			npc.Body.StopAttack();
+			npc.Body.StopCurrentSpellcast();
+			
+			if(npc.WalkState == eWalkState.Follow)
+				npc.FollowOwner();
+		}
+
+		/// <summary>
+		/// Changes controlled object state to aggressive
+		/// </summary>
+		public virtual void CommandNpcAgressive()
+		{
+			IControlledBrain npc = ControlledBrain;
+			if (npc == null)
+				return;
+
+			if (npc.Body.IsConfused)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Aggressive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			npc.SetAggressionState(eAggressionState.Aggressive);
+		}
+
+		/// <summary>
+		/// Changes controlled object state to defensive
+		/// </summary>
+		public virtual void CommandNpcDefensive()
+		{
+			IControlledBrain npc = ControlledBrain;
+			if (npc == null)
+				return;
+
+			if (npc.Body.IsConfused)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+

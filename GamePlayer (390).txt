@@ -1,0 +1,47 @@
+﻿			Dictionary<String, ItemTemplate> possibleVersions = ArtifactMgr.GetArtifactVersions(artifactID, (eCharacterClass)CharacterClass.ID, Realm);
+
+			if (possibleVersions.Count == 0)
+				return false;
+
+			return true;
+		}
+
+		#endregion
+
+		#region Constructors
+		/// <summary>
+		/// Returns the string representation of the GamePlayer
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+		{
+			return new StringBuilder(base.ToString())
+				.Append(" class=").Append(Salutation)
+				.Append('(').Append(CharacterClass.ID.ToString()).Append(')')
+				.ToString();
+		}
+
+		public static GamePlayer CreateDummy()
+		{
+			var player = new GamePlayer();
+			player.CharacterClass = GS.CharacterClass.None;
+			player.m_dbCharacter = new DOLCharacters();
+			return player;
+		}
+
+		private GamePlayer() : base() { }
+
+		/// <summary>
+		/// Creates a new player
+		/// </summary>
+		/// <param name="client">The GameClient for this player</param>
+		/// <param name="dbChar">The character for this player</param>
+		public GamePlayer(GameClient client, DOLCharacters dbChar)
+			: base()
+		{
+			Wallet = new Wallet(this);
+			IsJumping = false;
+			m_steed = new WeakRef(null);
+			m_rangeAttackAmmo = new WeakRef(null);
+			m_rangeAttackTarget = new WeakRef(null);
+			m_client = client;

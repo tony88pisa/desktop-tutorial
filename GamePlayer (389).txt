@@ -1,0 +1,46 @@
+﻿			else
+				description = LanguageMgr.GetTranslation(Client.Account.Language, String.Format("SendMasterLevelWindow.Uncomplete.ML{0}.Step{1}", ml, step));
+
+			return description;
+		}
+
+		/// <summary>
+		/// Get the ML title string of the player
+		/// </summary>
+		public virtual IPlayerTitle MLTitle
+		{
+			get
+			{
+				var title = m_titles.FirstOrDefault(ttl => ttl is MasterlevelTitle);
+				
+				if (title != null && title.IsSuitable(this))
+					return title;
+				
+				return PlayerTitleMgr.ClearTitle;
+			}
+		}
+
+		#endregion
+
+		#region Minotaur Relics
+		protected MinotaurRelic m_minoRelic = null;
+
+		/// <summary>
+		/// sets or sets the Minotaur Relic of this Player
+		/// </summary>
+		public MinotaurRelic MinotaurRelic
+		{
+			get { return m_minoRelic; }
+			set { m_minoRelic = value; }
+		}
+		#endregion
+
+		#region Artifacts
+
+		/// <summary>
+		/// Checks if the player's class has at least one version of the artifact specified available to them.
+		/// </summary>
+		/// <param name="artifactID"></param>
+		/// <returns>True when at least one version exists, false when no versions are available.</returns>
+		public bool CanReceiveArtifact(string artifactID)
+		{

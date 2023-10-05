@@ -1,0 +1,49 @@
+﻿					if (item != null)
+						item.Creator = Name;
+					m_player.Out.SendSetControlledHorse(m_player);
+				}
+			}
+
+			public short Speed
+			{
+				get
+				{
+					if (m_level <= 35)
+						return ServerProperties.Properties.MOUNT_UNDER_LEVEL_35_SPEED;
+					else
+						return ServerProperties.Properties.MOUNT_OVER_LEVEL_35_SPEED;
+				}
+			}
+
+			public bool IsSummonRvR
+			{
+				get
+				{
+					if (m_level <= 35)
+						return false;
+					else
+						return true;
+				}
+			}
+
+			public bool IsCombatHorse
+			{
+				get
+				{
+					return false;
+				}
+			}
+		}
+		#endregion
+
+		#region GuildBanner
+		protected GuildBanner m_guildBanner = null;
+
+		/// <summary>
+		/// Gets/Sets the visibility of the carryable RvrGuildBanner. Wont work if the player has no guild.
+		/// </summary>
+		public GuildBanner GuildBanner
+		{
+			get { return m_guildBanner; }
+			set
+			{

@@ -1,0 +1,43 @@
+﻿		}
+		
+		public void GainChampionExperience(long experience)
+		{
+			GainChampionExperience(experience, eXPSource.Other);
+		}
+
+		/// <summary>
+		/// The process that gains exp
+		/// </summary>
+		/// <param name="experience">Amount of Experience</param>
+		public virtual void GainChampionExperience(long experience, eXPSource source)
+		{
+			if (ChampionExperience >= 320000)
+			{
+				ChampionExperience = 320000;
+				return;
+			}
+			
+			// Do not gain experience:
+			// - if champion not activated
+			// - if champion max level reached
+			// - if experience is negative
+			// - if praying at your grave
+			if (!Champion || ChampionLevel == CL_MAX_LEVEL || experience <= 0 || IsPraying)
+				return;
+
+			if (source != eXPSource.GM && source != eXPSource.Quest)
+			{
+				double modifier = ServerProperties.Properties.CL_XP_RATE;
+
+				// 1 CLXP point per 333K normal XP
+				if (this.CurrentRegion.IsRvR)
+				{
+					experience = (long)((double)experience * modifier / 333000);
+				}
+				else // 1 CLXP point per 2 Million normal XP
+				{
+					experience = (long)((double)experience * modifier / 2000000);
+				}
+			}
+
+			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;

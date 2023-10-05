@@ -1,0 +1,45 @@
+﻿		/// <summary>
+		/// Holds the invulnerability timer
+		/// </summary>
+		protected InvulnerabilityTimer m_invulnerabilityTimer;
+		/// <summary>
+		/// Holds the invulnerability expiration tick
+		/// </summary>
+		protected long m_invulnerabilityTick;
+
+		/// <summary>
+		/// Starts the Invulnerability Timer
+		/// </summary>
+		/// <param name="duration">The invulnerability duration in milliseconds</param>
+		/// <param name="callback">
+		/// The callback for when invulnerability expires;
+		/// not guaranteed to be called if overwriten by another invulnerability
+		/// </param>
+		/// <returns>true if invulnerability was set (smaller than old invulnerability)</returns>
+		public virtual bool StartInvulnerabilityTimer(int duration, InvulnerabilityExpiredCallback callback)
+		{
+			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+				return false;
+
+			if (duration < 1)
+{
+//throw new ArgumentOutOfRangeException("duration", duration, "Immunity duration cannot be less than 1ms"); This causes problems down the road, just log it instead.
+if (log.IsWarnEnabled)
+	log.Warn("GamePlayer.StartInvulnerabilityTimer(): Immunity duration cannot be less than 1ms");
+return false;
+}
+
+			long newTick = CurrentRegion.Time + duration;
+			if (newTick < m_invulnerabilityTick)
+				return false;
+
+			m_invulnerabilityTick = newTick;
+			if (m_invulnerabilityTimer != null)
+				m_invulnerabilityTimer.Stop();
+
+			if (callback != null)
+			{
+				m_invulnerabilityTimer = new InvulnerabilityTimer(this, callback);
+				m_invulnerabilityTimer.Start(duration);
+			}
+			else

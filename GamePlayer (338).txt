@@ -1,0 +1,44 @@
+﻿			var dataQuests = DOLDB<CharacterXDataQuest>.SelectObjects(DB.Column(nameof(CharacterXDataQuest.Character_ID)).IsEqualTo(QuestPlayerID));
+			foreach (CharacterXDataQuest quest in dataQuests)
+			{
+				DBDataQuest dbDataQuest = GameServer.Database.FindObjectByKey<DBDataQuest>(quest.DataQuestID);
+				if (dbDataQuest != null && dbDataQuest.StartType != (byte)DataQuest.eStartType.Collection)
+				{
+					DataQuest dataQuest = new DataQuest(this, dbDataQuest, quest);
+
+					if (quest.Step > 0)
+					{
+						m_questList.Add((AbstractQuest)dataQuest);
+					}
+					else if (quest.Count > 0)
+					{
+						m_questListFinished.Add((AbstractQuest)dataQuest);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Holds all the quests currently active on this player
+		/// </summary>
+		protected List<AbstractQuest> m_questList = new List<AbstractQuest>();
+
+		/// <summary>
+		/// Holds all already finished quests off this player
+		/// </summary>
+		protected List<AbstractQuest> m_questListFinished = new List<AbstractQuest>();
+
+		protected RegionTimer m_questActionTimer = null;
+
+		public RegionTimer QuestActionTimer
+		{
+			get { return m_questActionTimer; }
+			set { m_questActionTimer = value; }
+		}
+
+		/// <summary>
+		/// Gets the questlist of this player
+		/// </summary>
+		public virtual List<AbstractQuest> QuestList
+		{
+			get { return m_questList; }

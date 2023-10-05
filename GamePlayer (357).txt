@@ -1,0 +1,42 @@
+﻿
+		/// <summary>
+		/// Commands controlled object to stay where it is
+		/// </summary>
+		public virtual void CommandNpcStay()
+		{
+			IControlledBrain npc = ControlledBrain;
+			if (npc == null)
+				return;
+
+			if (npc.Body.IsConfused)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Stay", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			npc.Stay();
+		}
+
+		/// <summary>
+		/// Commands controlled object to go to players location
+		/// </summary>
+		public virtual void CommandNpcComeHere()
+		{
+			IControlledBrain npc = ControlledBrain;
+			if (npc == null)
+				return;
+
+			if (npc.Body.IsConfused)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.ComeHere", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			npc.ComeHere();
+		}
+
+		/// <summary>
+		/// Commands controlled object to go to target
+		/// </summary>

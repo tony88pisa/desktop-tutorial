@@ -1,0 +1,9 @@
+﻿				return (guard.IsAlive && guard.IsWithinRadius(guardee, BodyguardAbilityHandler.BODYGUARD_DISTANCE) &&
+				        !guard.IsCasting && guardee.IsStandingStill)
+					? guard
+					: null;
+			}
+		}
+		#endregion
+	}
+}

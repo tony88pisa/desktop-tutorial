@@ -1,0 +1,47 @@
+﻿
+		/// <summary>
+		/// Gets or sets the count of killed Legions.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsLegion
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsLegion : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsLegion = value;
+				Notify(GamePlayerEvent.KillsLegionChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of killed Epic Boss.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsEpicBoss
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsEpicBoss : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsEpicBoss = value;
+				Notify(GamePlayerEvent.KillsEpicBossChanged, this);
+			}
+		}
+		#endregion
+
+		#region Controlled Mount
+
+		protected RegionTimer m_whistleMountTimer;
+		protected ControlledHorse m_controlledHorse;
+
+		public bool HasHorse
+		{
+			get
+			{
+				if (ActiveHorse == null || ActiveHorse.ID == 0)
+					return false;
+				return true;
+			}
+		}
+
+		public bool IsSummoningMount
+		{

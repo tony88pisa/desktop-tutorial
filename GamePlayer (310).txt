@@ -1,0 +1,40 @@
+﻿			
+			if (DBCharacter != null)
+			{
+				DBCharacter.SerializedAbilities = ab.ToString();
+				DBCharacter.SerializedSpecs = sp.ToString();
+				DBCharacter.SerializedRealmAbilities = sra.ToString();
+				DBCharacter.DisabledSpells = disabledSpells.ToString();
+				DBCharacter.DisabledAbilities = disabledAbilities.ToString();
+			}
+		}
+
+		/// <summary>
+		/// Loads the Skills from the Character
+		/// Called after the default skills / level have been set!
+		/// </summary>
+		protected virtual void LoadSkillsFromCharacter()
+		{
+			DOLCharacters character = DBCharacter; // if its derived and filled with some code
+			if (character == null) return; // no character => exit
+
+			#region load class spec
+			
+			// first load spec's career
+			LoadClassSpecializations(false);
+			
+			//Load Remaining spec and levels from Database (custom spec can still be added here...)
+			string tmpStr = character.SerializedSpecs;
+			if (tmpStr != null && tmpStr.Length > 0)
+			{
+				foreach (string spec in Util.SplitCSV(tmpStr))
+				{
+					string[] values = spec.Split('|');
+					if (values.Length >= 2)
+					{
+						Specialization tempSpec = SkillBase.GetSpecialization(values[0], false);
+
+						if (tempSpec != null)
+						{
+							if (tempSpec.AllowSave)
+							{

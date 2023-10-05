@@ -1,0 +1,40 @@
+﻿					if (player == null) continue;
+					//TODO: more correct way to do it
+					if (player == this) continue;
+					//if a player could see us stealthed, we just update our model to avoid untargetting.
+					if (player.CanDetect(this))
+						player.Out.SendPlayerModelTypeChange(this, 2);
+					else
+						player.Out.SendPlayerCreate(this);
+					player.Out.SendLivingEquipmentUpdate(this);
+				}
+			}
+			Notify(GamePlayerEvent.StealthStateChanged, this, null);
+			Out.SendUpdateMaxSpeed();
+		}
+
+		/// <summary>
+		/// The temp property that stores the uncover stealth action
+		/// </summary>
+		protected const string UNCOVER_STEALTH_ACTION_PROP = "UncoverStealthAction";
+
+		/// <summary>
+		/// Uncovers the player if a mob is too close
+		/// </summary>
+		protected class UncoverStealthAction : RegionAction
+		{
+			/// <summary>
+			/// Constructs a new uncover stealth action
+			/// </summary>
+			/// <param name="actionSource">The action source</param>
+			public UncoverStealthAction(GamePlayer actionSource)
+				: base(actionSource)
+			{
+			}
+
+			/// <summary>
+			/// Called on every timer tick
+			/// </summary>
+			protected override void OnTick()
+			{
+				GamePlayer player = (GamePlayer)m_actionSource;

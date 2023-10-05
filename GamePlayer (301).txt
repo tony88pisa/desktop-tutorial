@@ -1,0 +1,31 @@
+﻿						}
+						else
+						{
+							mybattlegroup.SendMessageToBattleGroupMembers(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneWantsThis", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						}
+					}
+					else if (group != null && group.AutosplitLoot)
+					{
+						List<GameObject> owners = new List<GameObject>((GameObject[])floorItem.Owners);
+						List<GamePlayer> eligibleMembers = new List<GamePlayer>(8);
+						foreach (GamePlayer ply in group.GetPlayersInTheGroup())
+						{
+							if (ply.IsAlive
+							    && ply.CanSeeObject(floorObject)
+							    && this.IsWithinRadius( ply, WorldMgr.MAX_EXPFORKILL_DISTANCE )
+							    && (ply.ObjectState == eObjectState.Active)
+							    && (ply.AutoSplitLoot)
+							    && (owners.Contains(ply) || owners.Count == 0)
+							    && (ply.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != eInventorySlot.Invalid))
+							{
+								eligibleMembers.Add(ply);
+							}
+						}
+
+						if (eligibleMembers.Count <= 0)
+						{
+							Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneWantsThis", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return false;
+						}
+
+						int i = Util.Random(0, eligibleMembers.Count - 1);

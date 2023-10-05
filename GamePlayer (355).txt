@@ -1,0 +1,41 @@
+﻿throw new ArgumentException("ControlledNpc with wrong owner is set (player=" + Name + ", owner=" + controlledBrain.Owner.Name + ")", "controlledNpc");
+if (ControlledBrain == null)
+InitControlledBrainArray(1);
+Out.SendPetWindow(controlledBrain.Body, ePetWindowAction.Open, controlledBrain.AggressionState, controlledBrain.WalkState);
+if (controlledBrain.Body != null)
+{
+Out.SendNPCCreate(controlledBrain.Body); // after open pet window again send creation NPC packet
+if (controlledBrain.Body.Inventory != null)
+Out.SendLivingEquipmentUpdate(controlledBrain.Body);
+}
+}
+
+ControlledBrain = controlledBrain;
+		}
+
+public virtual void CommandNpcRelease()
+{
+var targetIsPet = TargetObject is GameNPC npc && IsControlledNPC(npc);
+if (targetIsPet)
+{
+Notify(GameLivingEvent.PetReleased, TargetObject);
+}
+else
+{
+var hasMainPet = ControlledBrain != null && ControlledBrain.Body != null;
+if (hasMainPet) Notify(GameLivingEvent.PetReleased, ControlledBrain.Body);
+}
+}
+		
+		/// <summary>
+		/// Commands controlled object to attack
+		/// </summary>
+		public virtual void CommandNpcAttack()
+		{
+			IControlledBrain npc = ControlledBrain;
+			if (npc == null || !GameServer.ServerRules.IsAllowedToAttack(this, TargetObject as GameLiving, false))
+				return;
+
+			if (npc.Body.IsConfused)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

@@ -1,0 +1,43 @@
+﻿			get { return m_whistleMountTimer != null && m_whistleMountTimer.IsAlive; }
+		}
+
+		protected bool m_isOnHorse;
+		public virtual bool IsOnHorse
+		{
+			get { return m_isOnHorse; }
+			set
+			{
+				if (m_whistleMountTimer != null)
+					StopWhistleTimers();
+				m_isOnHorse = value;
+				Out.SendControlledHorse(this, value); // fix very rare bug when this player not in GetPlayersInRadius;
+				foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (plr == null) continue;
+					if (plr == this)
+						continue;
+					plr.Out.SendControlledHorse(this, value);
+				}
+				if (m_isOnHorse)
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsOnHorse.MountSteed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				else
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.IsOnHorse.DismountSteed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendUpdateMaxSpeed();
+			}
+		}
+
+		protected void StopWhistleTimers()
+		{
+			if (m_whistleMountTimer != null)
+			{
+				m_whistleMountTimer.Stop();
+				Out.SendCloseTimerWindow();
+			}
+			m_whistleMountTimer = null;
+		}
+
+		protected int WhistleMountTimerCallback(RegionTimer callingTimer)
+		{
+			StopWhistleTimers();
+			IsOnHorse = true;
+			return 0;

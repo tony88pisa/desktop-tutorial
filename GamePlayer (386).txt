@@ -1,0 +1,48 @@
+﻿		}
+
+		/// <summary>
+		/// Gets and sets the last ML the player has completed.
+		/// MLLevel is advanced once all steps are completed.
+		/// </summary>
+		public virtual int MLLevel
+		{
+			get { return DBCharacter != null ? DBCharacter.MLLevel : 0; }
+			set { if (DBCharacter != null) DBCharacter.MLLevel = value; }
+		}
+
+		/// <summary>
+		/// Gets and sets ML Experience for the current ML level
+		/// </summary>
+		public virtual long MLExperience
+		{
+			get { return DBCharacter != null ? DBCharacter.MLExperience : 0; }
+			set { if (DBCharacter != null) DBCharacter.MLExperience = value; }
+		}
+		
+		/// <summary>
+		/// Get the number of steps completed for a ML
+		/// </summary>
+		/// <param name="ml"></param>
+		/// <returns></returns>
+		public virtual byte GetCountMLStepsCompleted(byte ml)
+		{
+			byte count = 0;
+			int steps = GetStepCountForML(ml);
+
+			for (byte i = 1; i <= steps; i++)
+			{
+				if (HasFinishedMLStep(ml, i))
+				{
+					count++;
+				}
+			}
+
+			return count;
+		}
+
+		/// <summary>
+		/// Check ML step completition.
+		/// Arbiter checks this to see if player is eligible to advance to the next Master Level.
+		/// </summary>
+		public virtual bool HasFinishedMLStep(int mlLevel, int step)
+		{

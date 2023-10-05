@@ -1,0 +1,42 @@
+﻿				bool needUpdate = m_isWireframe != value;
+				m_isWireframe = value;
+				if (needUpdate && ObjectState == eObjectState.Active)
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					player.Out.SendPlayerModelTypeChange(this, (byte)(value ? 1 : 0));
+				}
+			}
+		}
+
+		private bool m_isTorchLighted = false;
+		
+		/// <summary>
+		/// Is player Torch lighted ?
+		/// </summary>
+		public bool IsTorchLighted
+		{
+			get { return m_isTorchLighted; }
+			set { m_isTorchLighted = value; }
+		}
+		
+		/// <summary>
+		/// Property that holds tick when stealth state was changed last time
+		/// </summary>
+		public const string STEALTH_CHANGE_TICK = "StealthChangeTick";
+		/// <summary>
+		/// Holds the stealth effect
+		/// </summary>
+		protected StealthEffect m_stealthEffect = null;
+		/// <summary>
+		/// The stealth state of this player
+		/// </summary>
+		public override bool IsStealthed
+		{
+			get { return m_stealthEffect != null; }
+		}
+		public static void Unstealth(DOLEvent ev, object sender, EventArgs args)
+		{
+			AttackedByEnemyEventArgs atkArgs = args as AttackedByEnemyEventArgs;
+			GamePlayer player = sender as GamePlayer;
+			if (player == null || atkArgs == null) return;

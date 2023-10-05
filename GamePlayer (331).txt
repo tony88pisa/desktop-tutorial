@@ -1,0 +1,36 @@
+﻿				if (player.Client.Account.PrivLevel > 1) return;
+
+				bool checklos = false;
+				foreach (AbstractArea area in player.CurrentAreas)
+				{
+					if (area.CheckLOS)
+					{
+						checklos = true;
+						break;
+					}
+				}
+
+				foreach (GameNPC npc in player.GetNPCsInRadius(1024))
+				{
+					// Friendly mobs do not uncover stealthed players
+					if (!GameServer.ServerRules.IsAllowedToAttack(npc, player, true)) continue;
+
+					// Npc with player owner don't uncover
+					if (npc.Brain != null
+					    && (npc.Brain as IControlledBrain) != null
+					    && (npc.Brain as IControlledBrain).GetPlayerOwner() != null) continue;
+
+					double npcLevel = Math.Max(npc.Level, 1.0);
+					double stealthLevel = player.GetModifiedSpecLevel(Specs.Stealth);
+					double detectRadius = 125.0 + ((npcLevel - stealthLevel) * 20.0);
+
+					// we have detect hidden and enemy don't = higher range
+					if (npc.HasAbility(Abilities.DetectHidden) && player.EffectList.GetOfType<CamouflageEffect>() == null)
+					{
+						detectRadius += 125;
+					}
+
+					if (detectRadius < 126) detectRadius = 126;
+
+					double distanceToPlayer = npc.GetDistanceTo( player );
+

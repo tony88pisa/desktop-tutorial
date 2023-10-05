@@ -1,0 +1,48 @@
+﻿			Out.SendMessage("You get " + experience.ToString("N0", format) + " champion experience points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+			ChampionExperience += experience;
+			Out.SendUpdatePoints();
+
+if (ChampionExperience >= ChampionExperienceForNextLevel)
+ChampionLevelUp();
+}
+
+
+		/// <summary>
+		/// Reset all Champion skills for this player
+		/// </summary>
+		public virtual void RespecChampionSkills()
+		{
+			foreach (var spec in GetSpecList().Where(sp => sp is LiveChampionsLineSpec))
+			{
+				RemoveSpecialization(spec.KeyName);
+			}
+
+			RefreshSpecDependantSkills(false);
+			Out.SendUpdatePlayer();
+			Out.SendUpdatePoints();
+			Out.SendUpdatePlayerSkills();
+			UpdatePlayerStatus();
+		}
+
+
+		/// <summary>
+		/// Remove all Champion levels and XP from this character.
+		/// </summary>
+		public virtual void RemoveChampionLevels()
+		{
+			ChampionExperience = 0;
+			ChampionLevel = 0;
+
+			RespecChampionSkills();
+		}
+
+		/// <summary>
+		/// Holds what happens when your champion level goes up;
+		/// </summary>
+		public virtual void ChampionLevelUp()
+		{
+			ChampionLevel++;
+
+			// If this is a pure tank then give them full power when reaching champ level 1
+			if (ChampionLevel == 1 && CharacterClass.ClassType == eClassType.PureTank)

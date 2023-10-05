@@ -1,0 +1,47 @@
+﻿				{
+					m_callback((GamePlayer)m_actionSource);
+				}
+				catch (Exception e)
+				{
+					log.Error("InvulnerabilityTimer callback", e);
+				}
+			}
+		}
+
+		#endregion
+
+		#region Player Titles
+
+		/// <summary>
+		/// Holds all players titles.
+		/// </summary>
+		protected readonly ReaderWriterHashSet<IPlayerTitle> m_titles = new ReaderWriterHashSet<IPlayerTitle>();
+
+		/// <summary>
+		/// Holds current selected title.
+		/// </summary>
+		protected IPlayerTitle m_currentTitle = PlayerTitleMgr.ClearTitle;
+
+		/// <summary>
+		/// Gets all player's titles.
+		/// </summary>
+		public virtual ISet<IPlayerTitle> Titles
+		{
+			get { return m_titles; }
+		}
+
+		/// <summary>
+		/// Gets/sets currently selected/active player title.
+		/// </summary>
+		public virtual IPlayerTitle CurrentTitle
+		{
+			get { return m_currentTitle; }
+			set
+			{
+				if (value == null)
+					value = PlayerTitleMgr.ClearTitle;
+				m_currentTitle = value;
+				if (DBCharacter != null) DBCharacter.CurrentTitleType = value.GetType().FullName;
+
+				//update newTitle for all players if client is playing
+				if (ObjectState == eObjectState.Active)

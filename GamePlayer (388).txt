@@ -1,0 +1,45 @@
+﻿				newStep.MLStep = step;
+				newStep.StepCompleted = true;
+				newStep.ValidationDate = DateTime.Now;
+				m_mlSteps.Add(newStep);
+
+				// Add it in DB
+				try
+				{
+					GameServer.Database.AddObject(newStep);
+				}
+				catch (Exception e)
+				{
+					if (log.IsErrorEnabled)
+						log.Error("Error adding player " + Name + " ml step!", e);
+				}
+
+				// Refresh Window
+				Out.SendMasterLevelWindow((byte)mlLevel);
+			}
+		}
+
+		/// <summary>
+		/// Returns the xp that are needed for the specified level
+		/// </summary>
+		public virtual long GetMLExperienceForLevel(int level)
+		{
+			if (level >= ML_MAX_LEVEL)
+				return MLXPLevel[GamePlayer.ML_MAX_LEVEL - 1]; // exp for level 9, needed to get exp after 9
+			if (level <= 0)
+				return MLXPLevel[0];
+			return MLXPLevel[level];
+		}
+
+		/// <summary>
+		/// Get the Masterlevel window text for a ML and Step
+		/// </summary>
+		/// <param name="ml"></param>
+		/// <param name="step"></param>
+		/// <returns></returns>
+		public virtual string GetMLStepDescription(byte ml, int step)
+		{
+			string description = " ";
+
+			if (HasFinishedMLStep(ml, step))
+				description = LanguageMgr.GetTranslation(Client.Account.Language, String.Format("SendMasterLevelWindow.Complete.ML{0}.Step{1}", ml, step));

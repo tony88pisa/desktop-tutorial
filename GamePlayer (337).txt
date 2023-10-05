@@ -1,0 +1,45 @@
+﻿		{
+			get { return m_mission; }
+			set
+			{
+				m_mission = value;
+				this.Out.SendQuestListUpdate();
+				if (value != null) Out.SendMessage(m_mission.Description, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+		}
+
+		#endregion
+
+		#region Quest
+
+		/// <summary>
+		/// Get the player ID used for quests.  Usually InternalID, provided for customization
+		/// </summary>
+		public virtual string QuestPlayerID
+		{
+			get { return InternalID; }
+		}
+
+		/// <summary>
+		/// Load all the ongoing or completed quests for this player
+		/// </summary>
+		public virtual void LoadQuests()
+		{
+			m_questList.Clear();
+			m_questListFinished.Clear();
+
+			// Scripted quests
+			var quests = DOLDB<DBQuest>.SelectObjects(DB.Column(nameof(DBQuest.Character_ID)).IsEqualTo(QuestPlayerID));
+			foreach (DBQuest dbquest in quests)
+			{
+				AbstractQuest quest = AbstractQuest.LoadFromDatabase(this, dbquest);
+				if (quest != null)
+				{
+					if (quest.Step == -1)
+						m_questListFinished.Add(quest);
+					else
+						m_questList.Add(quest);
+				}
+			}
+
+			// Data driven quests for this player

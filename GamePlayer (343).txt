@@ -1,0 +1,45 @@
+﻿
+		/// <summary>
+		/// Store the player primary crafting skill
+		/// </summary>
+		protected eCraftingSkill m_craftingPrimarySkill = 0;
+
+		/// <summary>
+		/// Get all player crafting skill and their value
+		/// </summary>
+		public Dictionary<eCraftingSkill, int> CraftingSkills
+		{
+			get { return m_craftingSkills; }
+		}
+
+		/// <summary>
+		/// Store the player primary crafting skill
+		/// </summary>
+		public eCraftingSkill CraftingPrimarySkill
+		{
+			get { return m_craftingPrimarySkill; }
+			set { m_craftingPrimarySkill = value; }
+		}
+
+		/// <summary>
+		/// Get the specified player crafting skill value
+		/// </summary>
+		/// <param name="skill">The crafting skill to get value</param>
+		/// <returns>the level in the specified crafting if valid and -1 if not</returns>
+		public virtual int GetCraftingSkillValue(eCraftingSkill skill)
+		{
+			lock (CraftingLock)
+			{
+				if (!m_craftingSkills.ContainsKey(skill)) return -1;
+				return m_craftingSkills[skill];
+			}
+		}
+
+		/// <summary>
+		/// Increase the specified player crafting skill
+		/// </summary>
+		/// <param name="skill">Crafting skill to increase</param>
+		/// <param name="count">How much increase or decrase</param>
+		/// <returns>true if the skill is valid and -1 if not</returns>
+		public virtual bool GainCraftingSkill(eCraftingSkill skill, int count)
+		{

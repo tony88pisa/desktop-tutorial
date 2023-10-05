@@ -1,0 +1,42 @@
+﻿			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsMidgardPlayers = value;
+				Notify(GamePlayerEvent.KillsMidgardPlayersChanged, this);
+				Notify(GamePlayerEvent.KillsTotalPlayersChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of hibernia players killed.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsHiberniaPlayers
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsHiberniaPlayers : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsHiberniaPlayers = value;
+				Notify(GamePlayerEvent.KillsHiberniaPlayersChanged, this);
+				Notify(GamePlayerEvent.KillsTotalPlayersChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of death blows on albion players.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsAlbionDeathBlows
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsAlbionDeathBlows : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsAlbionDeathBlows = value;
+				Notify(GamePlayerEvent.KillsTotalDeathBlowsChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of death blows on midgard players.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsMidgardDeathBlows

@@ -1,0 +1,34 @@
+﻿		}
+
+		public string GetName(GamePlayer target)
+		{
+			return GameServer.ServerRules.GetPlayerName(this, target);
+		}
+
+		/// <summary>
+		/// Adds messages to ArrayList which are sent when object is targeted
+		/// </summary>
+		/// <param name="player">GamePlayer that is examining this object</param>
+		/// <returns>list with string messages</returns>
+		public override IList GetExamineMessages(GamePlayer player)
+		{
+			// TODO: PvP & PvE messages
+			IList list = base.GetExamineMessages(player);
+
+			string message = "";
+			switch (GameServer.Instance.Configuration.ServerType)
+			{//FIXME: Better extract this to a new function in ServerRules !!! (VaNaTiC)
+				case eGameServerType.GST_Normal:
+					{
+						if (Realm == player.Realm || Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
+							message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.RealmMember", player.GetName(this), GetPronoun(Client, 0, true), Salutation);
+						else
+							message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.EnemyRealmMember", player.GetName(this), GetPronoun(Client, 0, true));
+						break;
+					}
+
+				case eGameServerType.GST_PvP:
+					{
+						if (Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
+							message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), Salutation);
+						else if (Guild == null)

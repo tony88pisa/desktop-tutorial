@@ -1,0 +1,38 @@
+﻿					if ( distanceToPlayer > detectRadius )
+						continue;
+
+					double fieldOfView = 90.0;  //90 degrees  = standard FOV
+					double fieldOfListen = 120.0; //120 degrees = standard field of listening
+					if (npc.Level > 50)
+					{
+						fieldOfListen += (npc.Level - player.Level) * 3;
+					}
+
+					double angle = npc.GetAngle( player );
+
+					//player in front
+					fieldOfView /= 2.0;
+					bool canSeePlayer = (angle >= 360 - fieldOfView || angle < fieldOfView);
+
+					//If npc can not see nor hear the player, continue the loop
+					fieldOfListen /= 2.0;
+					if (canSeePlayer == false &&
+					    !(angle >= (45 + 60) - fieldOfListen && angle < (45 + 60) + fieldOfListen) &&
+					    !(angle >= (360 - 45 - 60) - fieldOfListen && angle < (360 - 45 - 60) + fieldOfListen))
+						continue;
+
+					double chanceMod = 1.0;
+
+					//Chance to detect player decreases after 125 coordinates!
+					if (distanceToPlayer > 125)
+						chanceMod = 1f - (distanceToPlayer - 125.0) / (detectRadius - 125.0);
+
+					double chanceToUncover = 0.1 + (npc.Level - stealthLevel) * 0.01 * chanceMod;
+					if (chanceToUncover < 0.01) chanceToUncover = 0.01;
+
+					if (Util.ChanceDouble(chanceToUncover))
+					{
+						if (canSeePlayer)
+						{
+							if (checklos)
+							{

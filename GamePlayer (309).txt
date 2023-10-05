@@ -1,0 +1,41 @@
+﻿			foreach (Skill skill in disabledSkills)
+			{
+				int duration = GetSkillDisabledDuration(skill);
+				
+				if (duration <= 0)
+					continue;
+				
+				if (skill is Spell)
+				{
+					Spell spl = (Spell)skill;
+					
+					if (disabledSpells.Length > 0)
+						disabledSpells.Append(";");
+					
+					disabledSpells.AppendFormat("{0}|{1}", spl.ID, duration);
+				}
+				else if (skill is Ability)
+				{
+					Ability ability = (Ability)skill;
+					
+					if (disabledAbilities.Length > 0)
+						disabledAbilities.Append(";");
+					
+					disabledAbilities.AppendFormat("{0}|{1}", ability.KeyName, duration);
+				}
+				else
+				{
+					if (log.IsWarnEnabled)
+						log.WarnFormat("{0}: Can't save disabled skill {1}", Name, skill.GetType().ToString());
+				}
+			}
+			
+			StringBuilder sra = new StringBuilder();
+			
+			foreach (RealmAbility rab in m_realmAbilities)
+			{
+				if (sra.Length > 0)
+					sra.Append(";");
+				
+				sra.AppendFormat("{0}|{1}", rab.KeyName, rab.Level);
+			}

@@ -1,0 +1,46 @@
+﻿						
+						default: return Model;
+				}
+			}
+		}
+
+		public virtual void Shade(bool makeShade)
+		{
+			if (IsShade == makeShade)
+{
+if (makeShade && (ObjectState == GameObject.eObjectState.Active))
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Shade.AlreadyShade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+return;
+}
+
+if (makeShade)
+			{
+				var isNecro = CharacterClass.Equals(GS.CharacterClass.Necromancer);
+				if(isNecro) ShadeEffect = new NecromancerShadeEffect();
+				else ShadeEffect = new ShadeEffect();
+				ShadeEffect.Start(this);
+			}
+else ShadeEffect.Cancel(false);
+		}
+		#endregion
+
+		#region Siege Weapon
+		private GameSiegeWeapon m_siegeWeapon;
+
+		public GameSiegeWeapon SiegeWeapon
+		{
+			get { return m_siegeWeapon; }
+			set { m_siegeWeapon = value; }
+		}
+		public void SalvageSiegeWeapon(GameSiegeWeapon siegeWeapon)
+		{
+			Salvage.BeginWork(this, siegeWeapon);
+		}
+		#endregion
+
+		#region Invulnerability
+
+		/// <summary>
+		/// The delegate for invulnerability expire callbacks
+		/// </summary>
+		public delegate void InvulnerabilityExpiredCallback(GamePlayer player);

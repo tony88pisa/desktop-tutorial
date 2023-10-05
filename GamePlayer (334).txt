@@ -1,0 +1,39 @@
+﻿			if (!IsAlive)
+				return false;
+			if (enemy.EffectList.GetOfType<VanishEffect>() != null)
+				return false;
+			if (this.Client.Account.PrivLevel > 1)
+				return true;
+			if (enemy.Client.Account.PrivLevel > 1)
+				return false;
+
+			/*
+			 * http://www.critshot.com/forums/showthread.php?threadid=3142
+			 * The person doing the looking has a chance to find them based on their level, minus the stealthed person's stealth spec.
+			 *
+			 * -Normal detection range = (enemy lvl  your stealth spec) * 20 + 125
+			 * -Detect Hidden Range = (enemy lvl  your stealth spec) * 50 + 250
+			 * -See Hidden range = 2700 - (38 * your stealth spec)
+			 */
+
+			int EnemyStealthLevel = enemy.GetModifiedSpecLevel(Specs.Stealth);
+			if (EnemyStealthLevel > 50)
+				EnemyStealthLevel = 50;
+			int levelDiff = this.Level - EnemyStealthLevel;
+			if (levelDiff < 0) levelDiff = 0;
+
+			int range;
+			bool enemyHasCamouflage = enemy.EffectList.GetOfType<CamouflageEffect>() != null;
+			if (HasAbility(Abilities.DetectHidden) && !enemy.HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
+			{
+				// we have detect hidden and enemy don't = higher range
+				range = levelDiff * 50 + 250; // Detect Hidden advantage
+			}
+			else
+			{
+				range = levelDiff * 20 + 125; // Normal detection range
+			}
+
+			// Mastery of Stealth Bonus
+			RAPropertyEnhancer mos = GetAbility<MasteryOfStealthAbility>();
+			if (mos != null && !enemyHasCamouflage)

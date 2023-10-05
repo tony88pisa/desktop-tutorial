@@ -1,0 +1,43 @@
+﻿			{
+				parryChance *= 0.001;
+				if (parryChance < 0.01) parryChance = 0.01;
+				if (parryChance > 0.99) parryChance = 0.99;
+			}
+			
+			return Math.Round(parryChance*10000)/100;
+		}
+		#endregion
+
+		#region Bodyguard
+		/// <summary>
+		/// True, if the player has been standing still for at least 3 seconds,
+		/// else false.
+		/// </summary>
+		private bool IsStandingStill
+		{
+			get
+			{
+				if (IsMoving)
+					return false;
+
+				long lastMovementTick = TempProperties.getProperty<long>("PLAYERPOSITION_LASTMOVEMENTTICK");
+				return (CurrentRegion.Time - lastMovementTick > 3000);
+			}
+		}
+
+		/// <summary>
+		/// This player's bodyguard (ML ability) or null, if there is none.
+		/// </summary>
+		public GamePlayer Bodyguard
+		{
+			get
+			{
+				var bodyguardEffects = EffectList.GetAllOfType<BodyguardEffect>();
+
+				BodyguardEffect bodyguardEffect = bodyguardEffects.FirstOrDefault();
+				if (bodyguardEffect == null || bodyguardEffect.GuardTarget != this)
+					return null;
+
+				GamePlayer guard = bodyguardEffect.GuardSource;
+				GamePlayer guardee = this;
+

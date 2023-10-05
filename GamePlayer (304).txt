@@ -1,0 +1,26 @@
+﻿						{
+							Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneGroupWantsMoney"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return false;
+						}
+
+						long moneyToPlayer = moneyObject.TotalCopper / eligibleMembers.Count();
+						foreach (GamePlayer eligibleMember in eligibleMembers)
+						{
+							if (eligibleMember.Guild != null && eligibleMember.Guild.IsGuildDuesOn())
+							{
+								long moneyToGuild = moneyToPlayer * eligibleMember.Guild.GetGuildDuesPercent() / 100;
+								if (eligibleMember.Guild.GetGuildDuesPercent() != 100)
+								{
+									eligibleMember.AddMoney(Currency.Copper.Mint(moneyToPlayer));
+									eligibleMember.SendSystemMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YourLootShare", Money.GetString(moneyToPlayer)));
+								}
+								else
+									eligibleMember.AddMoney(Currency.Copper.Mint(moneyToPlayer));
+
+								InventoryLogging.LogInventoryAction("(ground)", eligibleMember, eInventoryActionType.Loot, moneyToPlayer);
+								eligibleMember.Guild.SetGuildBank(eligibleMember, moneyToGuild);
+							}
+							else
+							{
+								eligibleMember.AddMoney(Currency.Copper.Mint(moneyToPlayer));
+								eligibleMember.SendSystemMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YourLootShare", Money.GetString(moneyToPlayer)));

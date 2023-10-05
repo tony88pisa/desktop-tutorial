@@ -1,0 +1,53 @@
+﻿		}
+
+		/// <summary>
+		/// Gets the finished quests of this player
+		/// </summary>
+		public virtual List<AbstractQuest> QuestListFinished
+		{
+			get { return m_questListFinished; }
+		}
+
+		/// <summary>
+		/// Add a quest to the players finished list
+		/// </summary>
+		/// <param name="quest"></param>
+		public void AddFinishedQuest(AbstractQuest quest)
+		{
+			lock (m_questListFinished)
+			{
+				m_questListFinished.Add(quest);
+			}
+		}
+
+		/// <summary>
+		/// Adds a quest to the players questlist
+		/// Can be used by both scripted quests and data quests
+		/// </summary>
+		/// <param name="quest">The quest to add</param>
+		/// <returns>true if added, false if player is already doing the quest!</returns>
+		public bool AddQuest(AbstractQuest quest)
+		{
+			lock (QuestList)
+			{
+				if (IsDoingQuest(quest) != null)
+					return false;
+
+				m_questList.Add(quest);
+				quest.OnQuestAssigned(this);
+			}
+			Out.SendQuestUpdate(quest);
+			return true;
+		}
+
+		/// <summary>
+		/// Remove credit for this type of encounter.
+		/// Used for scripted quests
+		/// </summary>
+		/// <param name="questType"></param>
+		/// <returns></returns>
+		public bool RemoveEncounterCredit(Type questType)
+		{
+			if (questType == null)
+				return false;
+

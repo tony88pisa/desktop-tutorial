@@ -1,0 +1,43 @@
+﻿
+		/// <summary>
+		/// Checks to see if an object is viewable from the players perspective
+		/// </summary>
+		/// <param name="obj">The Object to be seen</param>
+		/// <returns>True/False</returns>
+		public bool CanSeeObject(GameObject obj)
+		{
+			return IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE);
+		}
+
+		/// <summary>
+		/// Checks to see if an object is viewable from the players perspective
+		/// </summary>
+		/// <param name="player">The Player that can see</param>
+		/// <param name="obj">The Object to be seen</param>
+		/// <returns>True/False</returns>
+		public static bool CanSeeObject(GamePlayer player, GameObject obj)
+		{
+			return player.IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE);
+		}
+
+		#endregion
+
+		#region Database
+
+		/// <summary>
+		/// Subtracts the current time from the last time the character was saved
+		/// and adds it in the form of seconds to player.PlayedTime
+		/// for the /played command.
+		/// </summary>
+		public long PlayedTime
+		{
+			get
+			{
+				DateTime rightNow = DateTime.Now;
+				DateTime oldLast = LastPlayed;
+				// Get the total amount of time played between now and lastplayed
+				// This is safe as lastPlayed is updated on char load.
+				TimeSpan playaPlayed = rightNow.Subtract(oldLast);
+				TimeSpan newPlayed = playaPlayed + TimeSpan.FromSeconds(DBCharacter.PlayedTime);
+				return (long)newPlayed.TotalSeconds;
+			}

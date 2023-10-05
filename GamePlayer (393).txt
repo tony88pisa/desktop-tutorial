@@ -1,0 +1,45 @@
+﻿		/// <returns></returns>
+		public virtual void DelveWeaponStyle(IList<string> delveInfo, Style style)
+		{
+			StyleProcessor.DelveWeaponStyle(delveInfo, style, this);
+		}
+
+		/// <summary>
+		/// Get a list of bonuses that effect this player
+		/// </summary>
+		public virtual ICollection<string> GetBonuses()
+		{
+			return this.GetBonusesInfo();
+		}
+		#endregion
+
+		#region Combat Calc (unused ?)
+		public virtual double GetEvadeChance()
+		{
+			double evadeChance = 0;
+
+			GameSpellEffect evade = SpellHandler.FindEffectOnTarget(this, "EvadeBuff");
+			if (evade == null)
+				evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
+
+			if (HasAbility(Abilities.Advanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+				evadeChance = GetModified(eProperty.EvadeChance);
+			else if (evade != null || HasAbility(Abilities.Evade))
+			{
+				int res = GetModified(eProperty.EvadeChance);
+				if (res > 0)
+					evadeChance = res;
+			}
+			
+			if (evadeChance > 0)
+			{
+				evadeChance *= 0.001;
+				if (evadeChance < 0.01)
+					evadeChance = 0.01;
+				if (evadeChance > 0.5)
+					evadeChance = 0.5;
+			}
+			return Math.Round(evadeChance*10000)/100;
+		}
+		
+		public virtual double GetBlockChance()

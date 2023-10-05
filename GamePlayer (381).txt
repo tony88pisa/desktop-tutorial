@@ -1,0 +1,43 @@
+﻿				if ((ChampionExperienceForNextLevel - ChampionExperienceForCurrentLevel) > 0)
+					return (ushort)(1000 * (ChampionExperience - ChampionExperienceForCurrentLevel) / (ChampionExperienceForNextLevel - ChampionExperienceForCurrentLevel));
+				else return 0;
+
+			}
+		}
+
+		/// <summary>
+		/// Returns the xp that are needed for the next level
+		/// </summary>
+		public virtual long ChampionExperienceForNextLevel
+		{
+			get { return GetChampionExperienceForLevel(ChampionLevel + 1); }
+		}
+
+		/// <summary>
+		/// Returns the xp that were needed for the current level
+		/// </summary>
+		public virtual long ChampionExperienceForCurrentLevel
+		{
+			get { return GetChampionExperienceForLevel(ChampionLevel); }
+		}
+
+		/// <summary>
+		/// Gets/Sets amount of champion skills respecs
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public virtual int RespecAmountChampionSkill
+		{
+			get { return DBCharacter != null ? DBCharacter.RespecAmountChampionSkill : 0; }
+			set { if (DBCharacter != null) DBCharacter.RespecAmountChampionSkill = value; }
+		}
+
+		/// <summary>
+		/// Returns the xp that are needed for the specified level
+		/// </summary>
+		public virtual long GetChampionExperienceForLevel(int level)
+		{
+			if (level > CL_MAX_LEVEL)
+				return CLXPLevel[GamePlayer.CL_MAX_LEVEL]; // exp for level 51, needed to get exp after 50
+			if (level <= 0)
+				return CLXPLevel[0];
+			return CLXPLevel[level];

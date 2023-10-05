@@ -1,0 +1,42 @@
+﻿		/// <returns>true if trade has started</returns>
+		public bool OpenTrade(GamePlayer tradePartner)
+		{
+			lock (m_LockObject)
+			{
+				lock (tradePartner)
+				{
+					if (tradePartner.TradeWindow != null)
+						return false;
+
+					object sync = new object();
+					PlayerTradeWindow initiantWindow = new PlayerTradeWindow(tradePartner, false, sync);
+					PlayerTradeWindow recipientWindow = new PlayerTradeWindow(this, true, sync);
+
+					tradePartner.TradeWindow = initiantWindow;
+					TradeWindow = recipientWindow;
+
+					initiantWindow.PartnerWindow = recipientWindow;
+					recipientWindow.PartnerWindow = initiantWindow;
+
+					return true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Opens the trade window for myself (combine, repair)
+		/// </summary>
+		/// <param name="item">The item to spell craft</param>
+		/// <returns>true if trade has started</returns>
+		public bool OpenSelfCraft(InventoryItem item)
+		{
+			if (item == null) return false;
+
+			lock (m_LockObject)
+			{
+				if (TradeWindow != null)
+				{
+					GamePlayer sourceTradePartner = TradeWindow.Partner;
+					if (sourceTradePartner == null)
+					{
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OpenSelfCraft.AlreadySelfCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

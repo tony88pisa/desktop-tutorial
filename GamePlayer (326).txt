@@ -1,0 +1,37 @@
+﻿							message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.NeutralMember", player.GetName(this), GetPronoun(Client, 0, true));
+						else if (Guild == player.Guild || Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
+							message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), Salutation);
+						else
+							message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.OtherGuildMember", player.GetName(this), GetPronoun(Client, 0, true), GuildName);
+						break;
+					}
+
+				default:
+					{
+						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YouExamine", player.GetName(this));
+						break;
+					}
+			}
+
+			list.Add(message);
+			return list;
+		}
+
+public virtual void SendSystemMessage(string message)
+=> Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+public virtual void SendMessage(string message, eChatType chatType, eChatLoc chatLocation)
+=> Out.SendMessage(message, chatType, chatLocation);
+		#endregion
+
+		#region Stealth / Wireframe
+
+		bool m_isWireframe = false;
+
+		/// <summary>
+		/// Player is drawn as a Wireframe.  Not sure why or when this is used.  -- Tolakram
+		/// </summary>
+		public bool IsWireframe
+		{
+			get { return m_isWireframe; }
+			set
+			{

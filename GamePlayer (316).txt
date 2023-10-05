@@ -1,0 +1,42 @@
+﻿				if (i <= 5) allpoints += i; //start levels
+				if (i > 5) allpoints += CharacterClass.SpecPointsMultiplier * i / 10; //normal levels
+				if (i > 40) allpoints += CharacterClass.SpecPointsMultiplier * (i - 1) / 20; //half levels
+			}
+			if (IsLevelSecondStage && Level != MaxLevel)
+				allpoints += CharacterClass.SpecPointsMultiplier * Level / 20; // add current half level
+
+			// calc spec points player have (autotrain is not anymore processed here - 1.87 livelike)
+			int usedpoints = 0;
+			foreach (Specialization spec in GetSpecList().Where(e => e.Trainable))
+			{
+				usedpoints += (spec.Level * (spec.Level + 1) - 2) / 2;
+				usedpoints -= GetAutoTrainPoints(spec, 0);
+			}
+			
+			allpoints -= usedpoints;
+
+			// check if correct, if not respec. Not applicable to GMs
+			if (allpoints < 0)
+			{
+				if (Client.Account.PrivLevel == 1)
+				{
+					log.WarnFormat("Spec points total for player {0} incorrect: {1} instead of {2}.", Name, usedpoints, allpoints+usedpoints);
+					RespecAllLines();
+					return allpoints+usedpoints;
+				}
+			}
+
+			return allpoints;
+		}
+
+		/// <summary>
+		/// Loads this player from a character table slot
+		/// </summary>
+		/// <param name="obj">DOLCharacter</param>
+		public override void LoadFromDatabase(DataObject obj)
+		{
+			base.LoadFromDatabase(obj);
+			if (!(obj is DOLCharacters))
+				return;
+			m_dbCharacter = (DOLCharacters)obj;
+			

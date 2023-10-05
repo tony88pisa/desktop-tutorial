@@ -1,0 +1,46 @@
+﻿		/// <param name="delveInfo"></param>
+		/// <returns>false if delve not handled</returns>
+		public virtual bool DelveItem<T>(T item, List<string> delveInfo)
+		{
+			if (item is IGameInventoryItem)
+			{
+				(item as IGameInventoryItem).Delve(delveInfo, this);
+			}
+			else if (item is InventoryItem)
+			{
+				GameInventoryItem tempItem = GameInventoryItem.Create(item as InventoryItem);
+				tempItem.Delve(delveInfo, this);
+			}
+			else if (item is ItemTemplate)
+			{
+				GameInventoryItem tempItem = GameInventoryItem.Create(item as ItemTemplate);
+				tempItem.Delve(delveInfo, this);
+			}
+			else
+			{
+				delveInfo.Add("Error, unable to delve this item!");
+				log.ErrorFormat("Error delving item of ClassType {0}", item.GetType().FullName);
+			}
+
+			return true;
+		}
+
+
+		/// <summary>
+		/// Player is delving a spell
+		/// </summary>
+		/// <param name="output"></param>
+		/// <param name="spell"></param>
+		/// <param name="spellLine"></param>
+		/// <returns>false if not handled here, use default delve</returns>
+		public virtual bool DelveSpell(IList<string> output, Spell spell, SpellLine spellLine)
+		{
+			return false;
+		}
+
+
+		/// <summary>
+		/// Delve a weapon style for this player
+		/// </summary>
+		/// <param name="delveInfo"></param>
+		/// <param name="style"></param>

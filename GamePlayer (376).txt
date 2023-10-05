@@ -1,0 +1,46 @@
+﻿				{
+					InventoryItem armor = m_player.Inventory.GetItem(eInventorySlot.HorseArmor);
+					if (armor != null)
+						return (byte)armor.DPS_AF;
+					return m_saddleId;
+				}
+				set
+				{
+					m_saddleId = value;
+					m_player.Out.SendSetControlledHorse(m_player);
+				}
+			}
+
+			public byte SaddleColor
+			{
+				get
+				{
+					InventoryItem armor = m_player.Inventory.GetItem(eInventorySlot.HorseArmor);
+					if (armor != null)
+						return (byte)armor.Color;
+					return m_saddleColor;
+				}
+				set
+				{
+					m_saddleColor = value;
+					m_player.Out.SendSetControlledHorse(m_player);
+				}
+			}
+
+			public byte Slots
+			{
+				get { return m_player.ActiveSaddleBags; }
+			}
+
+			public byte Armor
+			{
+				get { return m_armor; }
+			}
+
+			public string Name
+			{
+				get { return m_name; }
+				set
+				{
+					m_name = value;
+					InventoryItem item = m_player.Inventory.GetItem(eInventorySlot.Horse);

@@ -1,0 +1,42 @@
+﻿			m_dbCharacter = dbChar;
+			m_controlledHorse = new ControlledHorse(this);
+			m_buff1Bonus = new PropertyIndexer((int)eProperty.MaxProperty); // set up a fixed indexer for players
+			m_buff2Bonus = new PropertyIndexer((int)eProperty.MaxProperty);
+			m_debuffBonus = new PropertyIndexer((int)eProperty.MaxProperty);
+			m_buff4Bonus = new PropertyIndexer((int)eProperty.MaxProperty);
+			m_itemBonus = new PropertyIndexer((int)eProperty.MaxProperty);
+			m_lastUniqueLocations = new GameLocation[4];
+			m_canFly = false;
+
+			CreateInventory();
+			GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemEquipped, new DOLEventHandler(OnItemEquipped));
+			GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemUnequipped, new DOLEventHandler(OnItemUnequipped));
+			GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemBonusChanged, new DOLEventHandler(OnItemBonusChanged));
+
+			m_enteredGame = false;
+			m_customDialogCallback = null;
+			m_sitting = false;
+			m_isWireframe = false;
+			CharacterClass = GS.CharacterClass.None;
+			m_groupIndex = 0xFF;
+
+			m_saveInDB = true;
+			LoadFromDatabase(dbChar);
+
+			CreateStatistics();
+		}
+
+		/// <summary>
+		/// Create this players inventory
+		/// </summary>
+		protected virtual void CreateInventory()
+		{
+			m_inventory = new GamePlayerInventory(this);
+		}
+		#endregion
+
+		#region Delving
+		/// <summary>
+		/// Player is delving an item
+		/// </summary>
+		/// <param name="item"></param>

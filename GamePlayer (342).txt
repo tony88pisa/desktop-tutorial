@@ -1,0 +1,48 @@
+﻿
+			// events will only fire for currently active quests.
+			lock (QuestList)
+			{
+				List<AbstractQuest> cloneList = new List<AbstractQuest>(m_questList);
+				foreach (AbstractQuest q in cloneList)
+				{
+					// player forwards every single notify message to all active quests
+					q.Notify(e, sender, args);
+				}
+			}
+
+			if (Task != null)
+				Task.Notify(e, sender, args);
+
+			if (Mission != null)
+				Mission.Notify(e, sender, args);
+
+			if (Group != null && Group.Mission != null)
+				Group.Mission.Notify(e, sender, args);
+
+			//Realm mission will be handled on the capture event args
+		}
+
+		public override void Notify(DOLEvent e, object sender)
+		{
+			Notify(e, sender, null);
+		}
+
+		public override void Notify(DOLEvent e)
+		{
+			Notify(e, null, null);
+		}
+
+		public override void Notify(DOLEvent e, EventArgs args)
+		{
+			Notify(e, null, args);
+		}
+		#endregion
+
+		#region Crafting
+
+		public Object CraftingLock = new Object();
+
+		/// <summary>
+		/// Store all player crafting skill and their value (eCraftingSkill => Value)
+		/// </summary>
+		protected Dictionary<eCraftingSkill, int> m_craftingSkills = new Dictionary<eCraftingSkill, int>();

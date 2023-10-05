@@ -1,0 +1,49 @@
+﻿			{
+				m_invulnerabilityTimer = null;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// True if player is invulnerable to any attack
+		/// </summary>
+		public virtual bool IsInvulnerableToAttack
+		{
+			get { return m_invulnerabilityTick > CurrentRegion.Time; }
+		}
+
+		/// <summary>
+		/// The timer to call invulnerability expired callbacks
+		/// </summary>
+		protected class InvulnerabilityTimer : RegionAction
+		{
+			/// <summary>
+			/// Defines a logger for this class.
+			/// </summary>
+			private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+			/// <summary>
+			/// Holds the callback
+			/// </summary>
+			private readonly InvulnerabilityExpiredCallback m_callback;
+
+			/// <summary>
+			/// Constructs a new InvulnerabilityTimer
+			/// </summary>
+			/// <param name="actionSource"></param>
+			/// <param name="callback"></param>
+			public InvulnerabilityTimer(GamePlayer actionSource, InvulnerabilityExpiredCallback callback)
+				: base(actionSource)
+			{
+				if (callback == null)
+					throw new ArgumentNullException("callback");
+				m_callback = callback;
+			}
+
+			/// <summary>
+			/// Called on every timer tick
+			/// </summary>
+			protected override void OnTick()
+			{
+				try

@@ -1,0 +1,43 @@
+﻿			get { return DBCharacter != null ? DBCharacter.ChampionLevel : 0; }
+			set { if (DBCharacter != null) DBCharacter.ChampionLevel = value; }
+		}
+
+		/// <summary>
+		/// Max champion level for the player
+		/// </summary>
+		public virtual int ChampionMaxLevel
+		{
+			get { return CL_MAX_LEVEL; }
+		}
+
+		/// <summary>
+		/// Champion Experience
+		/// </summary>
+		public virtual long ChampionExperience
+		{
+			get { return DBCharacter != null ? DBCharacter.ChampionExperience : 0; }
+			set { if (DBCharacter != null) DBCharacter.ChampionExperience = value; }
+		}
+
+		/// <summary>
+		/// Champion Available speciality points
+		/// </summary>
+		public virtual int ChampionSpecialtyPoints
+		{
+			get { return ChampionLevel - GetSpecList().Where(sp => sp is LiveChampionsLineSpec).Sum(sp => sp.Level); }
+		}
+
+		/// <summary>
+		/// Returns how far into the champion level we have progressed
+		/// A value between 0 and 1000 (1 bubble = 100)
+		/// </summary>
+		public virtual ushort ChampionLevelPermill
+		{
+			get
+			{
+				//No progress if we haven't even reached current level!
+				if (ChampionExperience <= ChampionExperienceForCurrentLevel)
+					return 0;
+				//No progess after maximum level
+				if (ChampionLevel > CL_MAX_LEVEL) // needed to get exp after 10
+					return 0;

@@ -1,0 +1,37 @@
+﻿			Wallet.InitializeFromDatabase();
+			
+			Model = (ushort)DBCharacter.CurrentModel;
+
+			m_customFaceAttributes[(int)eCharFacePart.EyeSize] = DBCharacter.EyeSize;
+			m_customFaceAttributes[(int)eCharFacePart.LipSize] = DBCharacter.LipSize;
+			m_customFaceAttributes[(int)eCharFacePart.EyeColor] = DBCharacter.EyeColor;
+			m_customFaceAttributes[(int)eCharFacePart.HairColor] = DBCharacter.HairColor;
+			m_customFaceAttributes[(int)eCharFacePart.FaceType] = DBCharacter.FaceType;
+			m_customFaceAttributes[(int)eCharFacePart.HairStyle] = DBCharacter.HairStyle;
+			m_customFaceAttributes[(int)eCharFacePart.MoodType] = DBCharacter.MoodType;
+
+			#region guild handling
+			//TODO: overwork guild handling (VaNaTiC)
+			m_guildId = DBCharacter.GuildID;
+			if (m_guildId != null)
+				m_guild = GuildMgr.GetGuildByGuildID(m_guildId);
+			else
+				m_guild = null;
+
+			if (m_guild != null)
+			{
+				foreach (DBRank rank in m_guild.Ranks)
+				{
+					if (rank == null) continue;
+					if (rank.RankLevel == DBCharacter.GuildRank)
+					{
+						m_guildRank = rank;
+						break;
+					}
+				}
+
+				m_guildName = m_guild.Name;
+				m_guild.AddOnlineMember(this);
+			}
+			#endregion
+

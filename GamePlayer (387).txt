@@ -1,0 +1,45 @@
+﻿			// No steps registered so false
+			if (m_mlSteps == null) return false;
+
+			// Current ML Level >= required ML, so true
+			if (MLLevel >= mlLevel) return true;
+
+			// Check current registered steps
+			foreach (DBCharacterXMasterLevel mlStep in m_mlSteps)
+			{
+				// Found so return value
+				if (mlStep.MLLevel == mlLevel && mlStep.MLStep == step)
+					return mlStep.StepCompleted;
+			}
+
+			// Not found so false
+			return false;
+		}
+
+		/// <summary>
+		/// Sets an ML step to finished or clears it
+		/// </summary>
+		/// <param name="mlLevel"></param>
+		/// <param name="step"></param>
+		/// <param name="setFinished">(optional) false will remove the finished entry for this step</param>
+		public virtual void SetFinishedMLStep(int mlLevel, int step, bool setFinished = true)
+		{
+			// Check current registered steps in case of previous GM rollback command
+			if (m_mlSteps != null)
+			{
+				foreach (DBCharacterXMasterLevel mlStep in m_mlSteps)
+				{
+					if (mlStep.MLLevel == mlLevel && mlStep.MLStep == step)
+					{
+						mlStep.StepCompleted = setFinished;
+						return;
+					}
+				}
+			}
+
+			if (setFinished)
+			{
+				// Register new step
+				DBCharacterXMasterLevel newStep = new DBCharacterXMasterLevel();
+				newStep.Character_ID = QuestPlayerID;
+				newStep.MLLevel = mlLevel;

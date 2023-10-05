@@ -1,0 +1,45 @@
+﻿			}
+		}
+
+		/// <summary>
+		/// This function saves all player crafting skill in the db
+		/// </summary>
+		protected void SaveCraftingSkills()
+		{
+			if (DBCharacter == null)
+				return;
+			
+			DBCharacter.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
+
+			string cs = "";
+
+			if (CraftingPrimarySkill != eCraftingSkill.NoCrafting)
+			{
+				lock (CraftingLock)
+				{
+					foreach (KeyValuePair<eCraftingSkill, int> de in m_craftingSkills)
+					{
+						if (cs.Length > 0) cs += ";";
+
+						cs += Convert.ToInt32(de.Key) + "|" + Convert.ToInt32(de.Value);
+					}
+				}
+			}
+
+			DBCharacter.SerializedCraftingSkills = cs;
+		}
+
+		/// <summary>
+		/// This function load all player crafting skill from the db
+		/// </summary>
+		protected void LoadCraftingSkills()
+		{
+			if (DBCharacter == null)
+				return;
+
+			if (DBCharacter.SerializedCraftingSkills == "" || DBCharacter.CraftingPrimarySkill == 0)
+			{
+				AddCraftingSkill(eCraftingSkill.BasicCrafting, 1);
+				SaveCraftingSkills();
+				Out.SendUpdateCraftingSkills();
+				return;

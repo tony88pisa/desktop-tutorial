@@ -1,0 +1,38 @@
+﻿					string[] values = str.Split('|');
+					int spellid;
+					int duration;
+					if (values.Length >= 2 && int.TryParse(values[0], out spellid) && int.TryParse(values[1], out duration))
+					{
+						Spell sp = SkillBase.GetSpellByID(spellid);
+						// disable
+						if (sp != null)
+							DisableSkill(sp, duration);
+					}
+					else if (log.IsErrorEnabled)
+					{
+						log.ErrorFormat("{0}: error in loading disabled spells => '{1}'", Name, tmpStr);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Load this player Classes Specialization.
+		/// </summary>
+		public virtual void LoadClassSpecializations(bool sendMessages)
+		{
+			// Get this Attached Class Specialization from SkillBase.
+			IDictionary<Specialization, int> careers = SkillBase.GetSpecializationCareer(CharacterClass.ID);
+			
+			// Remove All Trainable Specialization or "Career Spec" that aren't managed by This Data Career anymore
+			var speclist = GetSpecList();
+			var careerslist = careers.Keys.Select(k => k.KeyName.ToLower());
+			foreach (var spec in speclist.Where(sp => sp.Trainable || !sp.AllowSave))
+			{
+				if (!careerslist.Contains(spec.KeyName.ToLower()))
+					RemoveSpecialization(spec.KeyName);
+			}
+						
+			// sort ML Spec depending on ML Line
+			byte mlindex = 0;
+			foreach (KeyValuePair<Specialization, int> constraint in careers)

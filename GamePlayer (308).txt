@@ -1,0 +1,44 @@
+﻿		}
+
+		/// <summary>
+		/// Saves the player's skills
+		/// </summary>
+		protected virtual void SaveSkillsToCharacter()
+		{
+			StringBuilder ab = new StringBuilder();
+			StringBuilder sp = new StringBuilder();
+			
+			// Build Serialized Spec list
+			List<Specialization> specs = null;
+			lock (((ICollection)m_specialization).SyncRoot)
+			{
+				specs = m_specialization.Values.Where(s => s.AllowSave).ToList();
+				foreach (Specialization spec in specs)
+				{
+					if (sp.Length > 0)
+					{
+						sp.Append(";");
+					}
+					sp.AppendFormat("{0}|{1}", spec.KeyName, spec.GetSpecLevelForLiving(this));
+				}
+			}
+			
+			// Build Serialized Ability List to save Order
+			foreach (Ability ability in m_usableSkills.Where(e => e.Item1 is Ability).Select(e => e.Item1).Cast<Ability>())
+			{					
+				if (ability != null)
+				{
+					if (ab.Length > 0)
+					{
+						ab.Append(";");
+					}
+					ab.AppendFormat("{0}|{1}", ability.KeyName, ability.Level);
+				}
+			}
+
+			// Build Serialized disabled Spell/Ability
+			StringBuilder disabledSpells = new StringBuilder();
+			StringBuilder disabledAbilities = new StringBuilder();
+			
+			ICollection<Skill> disabledSkills = GetAllDisabledSkills();
+			

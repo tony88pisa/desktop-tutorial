@@ -1,0 +1,30 @@
+﻿								int level;
+								if (int.TryParse(values[1], out level))
+								{
+									if (HasSpecialization(tempSpec.KeyName))
+									{
+										GetSpecializationByName(tempSpec.KeyName).Level = level;
+									}
+									else
+									{
+										tempSpec.Level = level;
+										AddSpecialization(tempSpec, false);
+									}
+								}
+								else if (log.IsErrorEnabled)
+								{
+									log.ErrorFormat("{0} : error in loading specs => '{1}'", Name, tmpStr);
+								}
+							}
+						}
+						else if (log.IsErrorEnabled)
+						{
+							log.ErrorFormat("{0}: can't find spec '{1}'", Name, values[0]);
+						}
+					}
+				}
+			}
+			
+			// Add Serialized Abilities to keep Database Order
+			// Custom Ability will be disabled as soon as they are not in any specs...
+			tmpStr = character.SerializedAbilities;

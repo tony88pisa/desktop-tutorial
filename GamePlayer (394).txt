@@ -1,0 +1,40 @@
+﻿		{
+			double blockChance = 0;
+			InventoryItem lefthand = null;
+			if (HasAbility(Abilities.Shield))
+			{
+				lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+				if (lefthand != null && (AttackWeapon == null || AttackWeapon.Item_Type == Slot.RIGHTHAND || AttackWeapon.Item_Type == Slot.LEFTHAND))
+				{
+					if (lefthand.Object_Type == (int)eObjectType.Shield)
+						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01;
+				}
+			}
+			if (blockChance > 0)
+			{
+				blockChance *= 0.001;
+				if (blockChance > 0.99) blockChance = 0.99;
+				if (blockChance < 0.01) blockChance = 0.01;
+
+				int shieldSize = 0;
+				if (lefthand != null)
+					shieldSize = lefthand.Type_Damage;
+			}
+
+			return Math.Round(blockChance*10000)/100;
+		}
+		
+		public virtual double GetParryChance()
+		{
+			double parryChance = 0;
+			
+			GameSpellEffect parry = SpellHandler.FindEffectOnTarget(this, "ParryBuff");
+			if (parry == null)
+				parry = SpellHandler.FindEffectOnTarget(this, "SavageParryBuff");
+			
+			if ((HasSpecialization(Specs.Parry) || parry != null) && (AttackWeapon != null))
+				parryChance = GetModified(eProperty.ParryChance);
+			else if (EffectList.GetOfType<BladeBarrierEffect>() != null)
+				parryChance = GetModified(eProperty.ParryChance);
+
+			if (parryChance > 0)

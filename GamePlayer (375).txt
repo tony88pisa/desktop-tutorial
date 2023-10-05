@@ -1,0 +1,44 @@
+﻿					InventoryItem item = m_player.Inventory.GetItem(eInventorySlot.Horse);
+					if (item != null)
+						m_level = item.Level;
+					else
+						m_level = 35;//base horse by default
+					m_player.Out.SendSetControlledHorse(m_player);
+				}
+			}
+
+			public byte Barding
+			{
+				get
+				{
+					InventoryItem barding = m_player.Inventory.GetItem(eInventorySlot.HorseBarding);
+					if (barding != null)
+						return (byte)barding.DPS_AF;
+					return m_bardingId;
+				}
+				set
+				{
+					m_bardingId = value;
+					m_player.Out.SendSetControlledHorse(m_player);
+				}
+			}
+
+			public ushort BardingColor
+			{
+				get
+				{
+					InventoryItem barding = m_player.Inventory.GetItem(eInventorySlot.HorseBarding);
+					if (barding != null)
+						return (ushort)barding.Color;
+					return m_bardingColor;
+				}
+				set
+				{
+					m_bardingColor = value;
+					m_player.Out.SendSetControlledHorse(m_player);
+				}
+			}
+
+			public byte Saddle
+			{
+				get

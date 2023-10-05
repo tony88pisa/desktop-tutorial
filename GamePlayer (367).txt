@@ -1,0 +1,43 @@
+﻿			if (ObjectState == eObjectState.Active)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					if (player != this)
+					{
+						//						player.Out.SendRemoveObject(this);
+						//						player.Out.SendPlayerCreate(this);
+						//						player.Out.SendLivingEquipementUpdate(this);
+						player.Out.SendPlayerTitleUpdate(this);
+					}
+				}
+				Out.SendUpdatePlayer();
+			}
+		}
+
+		#endregion
+
+		#region Statistics
+
+		/// <summary>
+		/// Gets or sets the count of albion players killed.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsAlbionPlayers
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsAlbionPlayers : 0; }
+			set
+			{
+				if (DBCharacter != null) DBCharacter.KillsAlbionPlayers = value;
+				Notify(GamePlayerEvent.KillsAlbionPlayersChanged, this);
+				Notify(GamePlayerEvent.KillsTotalPlayersChanged, this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of midgard players killed.
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public virtual int KillsMidgardPlayers
+		{
+			get { return DBCharacter != null ? DBCharacter.KillsMidgardPlayers : 0; }

@@ -1,0 +1,33 @@
+﻿			}
+			try
+			{
+				CraftingPrimarySkill = (eCraftingSkill)DBCharacter.CraftingPrimarySkill;
+
+				lock (CraftingLock)
+				{
+					foreach (string skill in Util.SplitCSV(DBCharacter.SerializedCraftingSkills))
+					{
+						string[] values = skill.Split('|');
+						//Load by crafting skill name
+						if (values[0].Length > 3)
+						{
+							int i = 0;
+							switch (values[0])
+							{
+									case "WeaponCrafting": i = 1; break;
+									case "ArmorCrafting": i = 2; break;
+									case "SiegeCrafting": i = 3; break;
+									case "Alchemy": i = 4; break;
+									case "MetalWorking": i = 6; break;
+									case "LeatherCrafting": i = 7; break;
+									case "ClothWorking": i = 8; break;
+									case "GemCutting": i = 9; break;
+									case "HerbalCrafting": i = 10; break;
+									case "Tailoring": i = 11; break;
+									case "Fletching": i = 12; break;
+									case "SpellCrafting": i = 13; break;
+									case "WoodWorking": i = 14; break;
+									case "BasicCrafting": i = 15; break;
+
+							}
+							if (!m_craftingSkills.ContainsKey((eCraftingSkill)i))

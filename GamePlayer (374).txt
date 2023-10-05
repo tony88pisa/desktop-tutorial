@@ -1,0 +1,51 @@
+﻿		}
+
+		public enum eHorseSaddleBag : byte
+		{
+			None = 0x00,
+			LeftFront = 0x01,
+			RightFront = 0x02,
+			LeftRear = 0x04,
+			RightRear = 0x08,
+			All = 0x0F
+		}
+
+		/// <summary>
+		/// What horse saddle bags are active on this player?
+		/// </summary>
+		public virtual byte ActiveSaddleBags
+		{
+			get { return DBCharacter != null ? DBCharacter.ActiveSaddleBags : (byte)0; }
+			set { if (DBCharacter != null) DBCharacter.ActiveSaddleBags = value; }
+		}
+
+		public ControlledHorse ActiveHorse
+		{
+			get { return m_controlledHorse; }
+		}
+
+		public class ControlledHorse
+		{
+			protected byte m_id;
+			protected byte m_bardingId;
+			protected ushort m_bardingColor;
+			protected byte m_saddleId;
+			protected byte m_saddleColor;
+			protected byte m_slots;
+			protected byte m_armor;
+			protected string m_name;
+			protected int m_level;
+			protected GamePlayer m_player;
+
+			public ControlledHorse(GamePlayer player)
+			{
+				m_name = "";
+				m_player = player;
+			}
+
+			public byte ID
+			{
+				get { return m_id; }
+				set
+				{
+					m_id = value;

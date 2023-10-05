@@ -1,0 +1,47 @@
+﻿				return true;
+			}
+
+			set { m_isEligibleToGiveMeritPoints = value; }
+		}
+
+		protected bool m_canGenerateNews = true;
+
+		/// <summary>
+		/// Can this player generate news items?
+		/// </summary>
+		public virtual bool CanGenerateNews
+		{
+			get { return m_canGenerateNews && GameServer.ServerRules.CanGenerateNews(this); }
+			set { m_canGenerateNews = value; }
+		}
+
+		/// <summary>
+		/// Get the crafting speed multiplier for this player
+		/// This might be modified by region or equipment
+		/// </summary>
+		public virtual double CraftingSpeed
+		{
+			get
+			{
+				double speed = Properties.CRAFTING_SPEED;
+
+				if (speed <= 0)
+					speed = 1.0;
+
+				if (Guild != null && Guild.BonusType == Guild.eBonusType.CraftingHaste)
+				{
+					speed *= (1.0 + Properties.GUILD_BUFF_CRAFTING * .01);
+				}
+
+				if (CurrentRegion.IsCapitalCity && Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS > 0)
+				{
+					return speed * Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS;
+				}
+
+				return speed;
+			}
+		}
+
+		/// <summary>
+		/// Get the crafting skill bonus for this player.
+		/// This might be modified by region or equipment

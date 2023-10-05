@@ -1,0 +1,46 @@
+﻿					AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
+					if (craftingSkill != null)
+					{
+						m_craftingSkills.Add(skill, startValue);
+						Out.SendMessage("You gain skill in " + craftingSkill.Name + "! (" + startValue + ").", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// This is the timer used to count time when a player craft
+		/// </summary>
+		private RegionTimer m_crafttimer;
+
+		/// <summary>
+		/// Get and set the craft timer
+		/// </summary>
+		public RegionTimer CraftTimer
+		{
+			get { return m_crafttimer; }
+			set { m_crafttimer = value; }
+		}
+
+		/// <summary>
+		/// Does the player is crafting
+		/// </summary>
+		public bool IsCrafting
+		{
+			get { return (m_crafttimer != null && m_crafttimer.IsAlive); }
+		}
+
+		/// <summary>
+		/// Get the craft title string of the player
+		/// </summary>
+		public virtual IPlayerTitle CraftTitle
+		{
+			get
+			{
+				var title = m_titles.FirstOrDefault(ttl => ttl is CraftTitle);
+				if (title != null && title.IsSuitable(this))
+					return title;
+				
+				return PlayerTitleMgr.ClearTitle;

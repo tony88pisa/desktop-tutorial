@@ -1,0 +1,43 @@
+﻿						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.Error(Name + ": error in loading playerCraftingSkills => " + DBCharacter.SerializedCraftingSkills, e);
+			}
+		}
+
+		private bool IsCraftingSkillDefined(int craftingSkillToCheck)
+		{
+			return Enum.IsDefined(typeof(eCraftingSkill), craftingSkillToCheck);
+		}
+
+		/// <summary>
+		/// This function is called each time a player tries to make a item
+		/// </summary>
+		public virtual void CraftItem(ushort itemID)
+		{
+			var recipe = RecipeDB.FindBy(itemID);
+
+			AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(recipe.RequiredCraftingSkill);
+			if (skill != null)
+			{
+				skill.CraftItem(this, recipe);
+			}
+			else
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CraftItem.DontHaveAbilityMake"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+		}
+
+		/// <summary>
+		/// This function is called each time a player try to salvage a item
+		/// </summary>
+		public virtual void SalvageItem(InventoryItem item)
+		{
+			Salvage.BeginWork(this, item);
+		}
+
+		/// <summary>

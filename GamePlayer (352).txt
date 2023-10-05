@@ -1,0 +1,52 @@
+﻿		/// This function is called each time a player try to repair a item
+		/// </summary>
+		public virtual void RepairItem(InventoryItem item)
+		{
+			Repair.BeginWork(this, item);
+		}
+
+		#endregion
+
+		#region Housing
+
+		/// <summary>
+		/// Jumps the player out of the house he is in
+		/// </summary>
+		public void LeaveHouse()
+		{
+			if (CurrentHouse == null || (!InHouse))
+			{
+				InHouse = false;
+				return;
+			}
+
+			House house = CurrentHouse;
+			InHouse = false;
+			CurrentHouse = null;
+
+			house.Exit(this, false);
+		}
+
+
+		#endregion
+
+		#region Trade
+
+		/// <summary>
+		/// Holds the trade window object
+		/// </summary>
+		protected ITradeWindow m_tradeWindow;
+
+		/// <summary>
+		/// Gets or sets the player trade windows
+		/// </summary>
+		public ITradeWindow TradeWindow
+		{
+			get { return m_tradeWindow; }
+			set { m_tradeWindow = value; }
+		}
+
+		/// <summary>
+		/// Opens the trade between two players
+		/// </summary>
+		/// <param name="tradePartner">GamePlayer to trade with</param>

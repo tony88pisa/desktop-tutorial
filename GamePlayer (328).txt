@@ -1,0 +1,40 @@
+﻿			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled && atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.Damage == -1) return;
+
+			player.Stealth(false);
+		}
+		/// <summary>
+		/// Set player's stealth state
+		/// </summary>
+		/// <param name="goStealth">true is stealthing, false if unstealthing</param>
+		public override void Stealth(bool goStealth)
+		{
+			if (IsStealthed == goStealth)
+				return;
+
+			if (goStealth && CraftTimer != null && CraftTimer.IsAlive)
+			{
+				Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (IsOnHorse || IsSummoningMount)
+				IsOnHorse = false;
+
+			UncoverStealthAction action = (UncoverStealthAction)TempProperties.getProperty<object>(UNCOVER_STEALTH_ACTION_PROP, null);
+			if (goStealth)
+			{
+				//start the uncover timer
+				if (action == null)
+					action = new UncoverStealthAction(this);
+				action.Interval = 2000;
+				action.Start(2000);
+				TempProperties.setProperty(UNCOVER_STEALTH_ACTION_PROP, action);
+
+				if (ObjectState == eObjectState.Active)
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendPlayerModelTypeChange(this, 3);
+				m_stealthEffect = new StealthEffect();
+				m_stealthEffect.Start(this);
+				Sprint(false);
+				GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));

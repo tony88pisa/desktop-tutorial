@@ -1,0 +1,46 @@
+﻿		/// Can be used by scripted and data quests
+		/// </summary>
+		/// <param name="questType">The quest type</param>
+		/// <returns>the quest if player is doing the quest or null if not</returns>
+		public AbstractQuest IsDoingQuest(AbstractQuest quest)
+		{
+			lock (QuestList)
+			{
+				foreach (AbstractQuest q in m_questList)
+				{
+					if (q.GetType().Equals(quest.GetType()) && q.IsDoingQuest(quest))
+						return q;
+				}
+			}
+			return null;
+		}
+
+
+		/// <summary>
+		/// Checks if this player is currently doing the specified quest type
+		/// This is used for scripted quests
+		/// </summary>
+		/// <param name="questType">The quest type</param>
+		/// <returns>the quest if player is doing the quest or null if not</returns>
+		public AbstractQuest IsDoingQuest(Type questType)
+		{
+			lock (QuestList)
+			{
+				foreach (AbstractQuest q in m_questList)
+				{
+					if (q is DataQuest == false)
+					{
+						if (q.GetType().Equals(questType))
+							return q;
+					}
+				}
+			}
+			return null;
+		}
+
+		#endregion
+
+		#region Notify
+		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		{
+			base.Notify(e, sender, args);

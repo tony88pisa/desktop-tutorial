@@ -1,0 +1,42 @@
+﻿				GameServer.Database.SaveObject(DBCharacter);
+				Inventory.SaveIntoDatabase(InternalID);
+
+				DOLCharacters cachedCharacter = null;
+
+				foreach (DOLCharacters accountChar in Client.Account.Characters)
+				{
+					if (accountChar.ObjectId == InternalID)
+					{
+						cachedCharacter = accountChar;
+						break;
+					}
+				}
+
+				if (cachedCharacter != null)
+				{
+					cachedCharacter = DBCharacter;
+				}
+
+
+				if (m_mlSteps != null)
+					GameServer.Database.SaveObject(m_mlSteps.OfType<DBCharacterXMasterLevel>());
+
+				if (log.IsInfoEnabled)
+					log.InfoFormat("{0} saved!", DBCharacter.Name);
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SaveIntoDatabase.CharacterSaved"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.ErrorFormat("Error saving player {0}! - {1}", Name, e);
+			}
+		}
+
+		#endregion
+
+		#region CustomDialog
+
+		/// <summary>
+		/// Holds the delegates that calls
+		/// </summary>
+		public CustomDialogResponse m_customDialogCallback;

@@ -1,0 +1,36 @@
+﻿					}
+					else
+					{
+						Out.SendMessage("You are still trading with " + sourceTradePartner.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+					return false;
+				}
+
+				if (item.SlotPosition < (int)eInventorySlot.FirstBackpack || item.SlotPosition > (int)eInventorySlot.LastBackpack)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OpenSelfCraft.CanOnlyCraftBackpack"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+
+				TradeWindow = new SelfCraftWindow(this, item);
+				TradeWindow.TradeUpdate();
+
+				return true;
+			}
+		}
+
+		#endregion
+
+		#region ControlledNpc
+		public override void SetControlledBrain(IControlledBrain controlledBrain)
+		{
+			if (controlledBrain == ControlledBrain) return;
+if (controlledBrain == null)
+{
+Out.SendPetWindow(null, ePetWindowAction.Close, 0, 0);
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SetControlledNpc.ReleaseTarget2", ControlledBrain.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SetControlledNpc.ReleaseTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+}
+else
+{
+if (controlledBrain.Owner != this)

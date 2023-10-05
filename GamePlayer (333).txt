@@ -1,0 +1,42 @@
+﻿								player.Out.SendCheckLOS(player, npc, new CheckLOSResponse(player.UncoverLOSHandler));
+							}
+							else
+							{
+								player.Out.SendMessage(npc.GetName(0, true) + " uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Stealth(false);
+								break;
+							}
+						}
+						else
+						{
+							npc.TurnTo(player, 10000);
+						}
+					}
+				}
+			}
+		}
+		/// <summary>
+		/// This handler is called by the unstealth check of mobs
+		/// </summary>
+		public void UncoverLOSHandler(GamePlayer player, ushort response, ushort targetOID)
+		{
+			GameObject target = CurrentRegion.GetObject(targetOID);
+
+			if ((target == null) || (player.IsStealthed == false)) return;
+
+			if ((response & 0x100) == 0x100)
+			{
+				player.Out.SendMessage(target.GetName(0, true) + " uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Stealth(false);
+			}
+		}
+
+		/// <summary>
+		/// Checks whether this player can detect stealthed enemy
+		/// </summary>
+		/// <param name="enemy"></param>
+		/// <returns>true if enemy can be detected</returns>
+		public virtual bool CanDetect(GamePlayer enemy)
+		{
+			if (enemy.CurrentRegionID != CurrentRegionID)
+				return false;

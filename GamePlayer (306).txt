@@ -1,0 +1,36 @@
+﻿			}
+			else if (floorObject is GameBoat)
+			{
+				if (!this.IsWithinRadius(floorObject, 1000))
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.TooFarFromBoat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+
+				if (!InCombat)
+					MountSteed(floorObject as GameBoat, false);
+
+				return true;
+			}
+			else if (floorObject is GameHouseVault && floorObject.CurrentHouse != null)
+			{
+				GameHouseVault houseVault = floorObject as GameHouseVault;
+				if (houseVault.Detach(this))
+				{
+					ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(houseVault.TemplateID);
+					Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template));
+					InventoryLogging.LogInventoryAction("(HOUSE;" + floorObject.CurrentHouse.HouseNumber + ")", this, eInventoryActionType.Other, template);
+				}
+				return true;
+			}
+			else if ((floorObject is GameNPC || floorObject is GameStaticItem) && floorObject.CurrentHouse != null)
+			{
+				floorObject.CurrentHouse.EmptyHookpoint(this, floorObject);
+				return true;
+			}
+			else
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+		}

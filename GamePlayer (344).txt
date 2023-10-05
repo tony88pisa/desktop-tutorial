@@ -1,0 +1,37 @@
+﻿			if (skill == eCraftingSkill.NoCrafting) return false;
+
+			lock (CraftingLock)
+			{
+				AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
+				if (craftingSkill != null && count >0)
+				{
+					m_craftingSkills[skill] = count + m_craftingSkills[skill];
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainCraftingSkill.GainSkill", craftingSkill.Name, m_craftingSkills[skill]), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					int currentSkillLevel = GetCraftingSkillValue(skill);
+					if (HasPlayerReachedNewCraftingTitle(currentSkillLevel))
+					{
+						GameEventMgr.Notify(GamePlayerEvent.NextCraftingTierReached, this,new NextCraftingTierReachedEventArgs(skill,currentSkillLevel) );
+					}
+					if (CanGenerateNews && currentSkillLevel >= 1000 && currentSkillLevel - count < 1000)
+					{
+						string message = string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainCraftingSkill.ReachedSkill", Name, craftingSkill.Name));
+						NewsMgr.CreateNews(message, Realm, eNewsType.PvE, true);
+					}
+				}
+				return true;
+			}
+		}
+
+
+		protected bool m_isEligibleToGiveMeritPoints = true;
+
+		/// <summary>
+		/// Can actions done by this player reward merit points to the players guild?
+		/// </summary>
+		public virtual bool IsEligibleToGiveMeritPoints
+		{
+			get
+			{
+				if (Guild == null || Client.Account.PrivLevel > 1 || m_isEligibleToGiveMeritPoints == false)
+					return false;
+				
