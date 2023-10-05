@@ -1,0 +1,39 @@
+﻿			if (prevSlot == Slot.MYTHICAL && item.Item_Type == (int)eInventorySlot.Mythical && item is GameMythirian)
+			{
+				(item as GameMythirian).OnUnEquipped(this);
+			}
+
+			if (item.Item_Type == (int)eInventorySlot.Horse)
+			{
+				if (IsOnHorse)
+					IsOnHorse = false;
+				ActiveHorse.ID = 0;
+				ActiveHorse.Name = "";
+				//				Out.SendDebugMessage("Try unapply horse.");
+				return;
+			}
+			else if (item.Item_Type == (int)eInventorySlot.HorseArmor)
+			{
+				ActiveHorse.Saddle = 0;
+				//				Out.SendDebugMessage("Try unapply saddle.");
+				return;
+			}
+			else if (item.Item_Type == (int)eInventorySlot.HorseBarding)
+			{
+				ActiveHorse.Barding = 0;
+				//				Out.SendDebugMessage("Try unapply barding.");
+				return;
+			}
+
+			if (!item.IsMagical) return;
+
+			if (item.Bonus1 != 0)
+			{
+				ItemBonus[item.Bonus1Type] -= item.Bonus1;
+				if (item.Bonus1Type < 20)
+					Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus1Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+			}
+			if (item.Bonus2 != 0)
+			{
+				ItemBonus[item.Bonus2Type] -= item.Bonus2;
+				if (item.Bonus2Type < 20)

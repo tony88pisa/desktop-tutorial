@@ -1,0 +1,29 @@
+﻿									{
+										//set new target only if there was no target before
+										RangeAttackTarget = TargetObject;
+									}
+
+									RangedAttackState = eRangedAttackState.AimFire;
+									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShot"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+							}
+							else if (RangedAttackState == eRangedAttackState.AimFire)
+							{
+								RangedAttackState = eRangedAttackState.AimFireReload;
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShotReload"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+							else if (RangedAttackState == eRangedAttackState.AimFireReload)
+							{
+								RangedAttackState = eRangedAttackState.Aim;
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NoAutoReleaseShotReload"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+						}
+						break;
+						case Slot.FIRSTQUIVER: SwitchQuiver(eActiveQuiverSlot.First, false); break;
+						case Slot.SECONDQUIVER: SwitchQuiver(eActiveQuiverSlot.Second, false); break;
+						case Slot.THIRDQUIVER: SwitchQuiver(eActiveQuiverSlot.Third, false); break;
+						case Slot.FOURTHQUIVER: SwitchQuiver(eActiveQuiverSlot.Fourth, false); break;
+				}
+
+				#endregion
+

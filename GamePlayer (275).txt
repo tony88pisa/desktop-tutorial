@@ -1,0 +1,38 @@
+﻿"GamePlayer.OnPlayerMove.CannotCallMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				StopWhistleTimers();
+			}
+			if (AttackState)
+			{
+				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				{
+					string attackTypeMsg = (AttackWeapon.Object_Type == (int)eObjectType.Thrown ? "throw" : "shot");
+					Out.SendMessage("You move and interrupt your " + attackTypeMsg + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					StopAttack();
+				}
+				else
+				{
+					AttackData ad = TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+					if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
+					{
+						//Does the target can be attacked ?
+						if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && m_attackAction != null)
+						{
+							m_attackAction.Start(1);
+						}
+					}
+				}
+			}
+			//Notify the GameEventMgr of the moving player
+			GameEventMgr.Notify(GamePlayerEvent.Moving, this);
+		}
+
+		/// <summary>
+		/// Sits/Stands the player
+		/// </summary>
+		/// <param name="sit">True if sitting, otherwise false</param>
+		public virtual void Sit(bool sit)
+		{
+			Sprint(false);
+			if (IsSummoningMount)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

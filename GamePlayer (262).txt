@@ -1,0 +1,49 @@
+﻿		public ArrayList IgnoreList
+		{
+			get
+			{
+				if (SerializedIgnoreList.Length > 0)
+					return new ArrayList(SerializedIgnoreList);
+				return new ArrayList(0);
+			}
+			set
+			{
+				if (value == null)
+					SerializedIgnoreList = Array.Empty<string>();
+				else
+					SerializedIgnoreList = value.OfType<string>().ToArray();
+				
+				if (DBCharacter != null)
+					GameServer.Database.SaveObject(DBCharacter);
+			}
+		}
+
+		/// <summary>
+		/// Modifies the friend list of this player
+		/// </summary>
+		/// <param name="friendName">the friend name</param>
+		/// <param name="remove">true to remove this friend, false to add it</param>
+		public void ModifyIgnoreList(string Name, bool remove)
+		{
+			ArrayList currentIgnores = IgnoreList;
+			if (remove && currentIgnores != null)
+			{
+				if (currentIgnores.Contains(Name))
+				{
+					currentIgnores.Remove(Name);
+					IgnoreList = currentIgnores;
+				}
+			}
+			else
+			{
+				if (!currentIgnores.Contains(Name))
+				{
+					currentIgnores.Add(Name);
+					IgnoreList = currentIgnores;
+				}
+			}
+		}
+
+		#endregion
+
+		#region X/Y/Z/Region/Realm/Position...

@@ -1,0 +1,51 @@
+﻿
+		/// <summary>
+		/// Holds all areas this player is currently within
+		/// </summary>
+		private ReaderWriterList<IArea> m_currentAreas = new ReaderWriterList<IArea>();
+
+		/// <summary>
+		/// Holds all areas this player is currently within
+		/// </summary>
+		public override IList<IArea> CurrentAreas
+		{
+			get { return m_currentAreas; }
+			set { m_currentAreas.FreezeWhile(l => { l.Clear(); l.AddRange(value); }); }
+		}
+
+		/// <summary>
+		/// Property that saves last maximum Z value
+		/// </summary>
+		public const string MAX_LAST_Z = "max_last_z";
+
+		/// <summary>
+		/// The base speed of the player
+		/// </summary>
+		public const int PLAYER_BASE_SPEED = 191;
+
+		public long m_areaUpdateTick = 0;
+
+
+		/// <summary>
+		/// Gets the tick when the areas should be updated
+		/// </summary>
+		public long AreaUpdateTick
+		{
+			get { return m_areaUpdateTick; }
+			set { m_areaUpdateTick = value; }
+		}
+
+		/// <summary>
+		/// Gets the current position of this player
+		/// </summary>
+		public override int X
+		{
+			set
+			{
+				base.X = value;
+				if (DBCharacter != null) DBCharacter.Xpos = base.X;
+			}
+		}
+
+		/// <summary>
+		/// Gets the current position of this player

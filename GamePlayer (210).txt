@@ -1,0 +1,42 @@
+﻿				else
+				{
+					Out.SendMessage(spell.Name + " not implemented yet (" + spell.SpellType + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+			}
+			return casted;
+		}
+
+		public override bool CastSpell(ISpellCastingAbilityHandler ab)
+		{
+			bool casted = false;
+
+			if (IsCrafting)
+			{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				CraftTimer.Stop();
+				CraftTimer = null;
+				Out.SendCloseTimerWindow();
+			}
+
+			ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, ab.Spell, ab.SpellLine);
+			if (spellhandler != null)
+			{
+				// Instant cast abilities should not interfere with the spell queue
+				if (spellhandler.Spell.CastTime > 0)
+				{
+					m_runningSpellHandler = spellhandler;
+					m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+				}
+
+				spellhandler.Ability = ab;
+				casted = spellhandler.CastSpell();
+			}
+			else
+			{
+				Out.SendMessage(ab.Spell.Name + " not implemented yet (" + ab.Spell.SpellType + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+
+			return casted;
+		}
+		#endregion

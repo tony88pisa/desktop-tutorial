@@ -1,0 +1,20 @@
+﻿											{
+												Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseCast", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+											}
+											else
+											{
+												SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) as SpellHandler;
+												if (spellHandler != null)
+												{
+													GameLiving target = TargetObject as GameLiving;
+
+													// Tobz: make sure we have the appropriate target for our charge spell,
+													// otherwise don't waste a charge.
+													if (spell.Target.ToLower() == "enemy")
+													{
+														// we need an enemy target.
+														if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
+														{
+															// not allowed to attack, so they are not an enemy.
+															Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+															return;

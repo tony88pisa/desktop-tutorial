@@ -1,0 +1,39 @@
+﻿			if (onSendReceive != null && !onSendReceive(source, this, str))
+				return false;
+
+			if (IsIgnoring(source))
+				return true;
+
+			eChatType type = eChatType.CT_Send;
+			if (source.Client.Account.PrivLevel > 1)
+				type = eChatType.CT_Staff;
+
+			if (GameServer.ServerRules.IsAllowedToUnderstand(source, this))
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.Sends", source.Name, str), type,
+				                eChatLoc.CL_ChatWindow);
+			else
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.FalseLanguage", source.Name),
+				                eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+				return true;
+			}
+
+			var afkmessage = TempProperties.getProperty<string>(AFK_MESSAGE);
+			if (afkmessage != null)
+			{
+				if (afkmessage == "")
+				{
+					source.Out.SendMessage(LanguageMgr.GetTranslation(source.Client.Account.Language, "GamePlayer.SendReceive.Afk", Name),
+					                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					source.Out.SendMessage(
+						LanguageMgr.GetTranslation(source.Client.Account.Language, "GamePlayer.SendReceive.AfkMessage", Name, afkmessage), eChatType.CT_Say,
+						eChatLoc.CL_ChatWindow);
+				}
+			}
+
+			return true;
+		}
+

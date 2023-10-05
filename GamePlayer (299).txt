@@ -1,0 +1,35 @@
+﻿			}
+
+			if ((floorObject is GameBoat == false) && !checkRange && !floorObject.IsWithinRadius(this, GS.ServerProperties.Properties.WORLD_PICKUP_DISTANCE, true))
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.ObjectTooFarAway", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				try
+				{
+					log.DebugFormat("Pickup error: {0}  object x{1}, y{2}, z{3}, r{4} - player x{5}, y{6}, z{7}, r{8}",
+					                Name,
+					                floorObject.X, floorObject.Y, floorObject.Z, floorObject.CurrentRegionID,
+					                X, Y, Z, CurrentRegionID);
+				}
+				catch
+				{
+				}
+				return false;
+			}
+
+			if (floorObject is WorldInventoryItem)
+			{
+				WorldInventoryItem floorItem = floorObject as WorldInventoryItem;
+
+				lock (floorItem)
+				{
+					if (floorItem.ObjectState != eObjectState.Active)
+						return false;
+
+					if (floorItem.Item == null || floorItem.Item.IsPickable == false)
+					{
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return false;
+					}
+					if (floorItem.GetPickupTime > 0)
+					{
+						Out.SendMessage("You must wait another " + floorItem.GetPickupTime / 

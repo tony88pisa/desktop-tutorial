@@ -1,0 +1,28 @@
+﻿									cloneSpell.CostPower = false;
+									spellhandler = ScriptMgr.CreateSpellHandler(this, cloneSpell, line);
+									casted = spellhandler.CastSpell();
+									effect.Cancel(false);
+								}
+								else if (effect.SpellHandler is RangeSpellHandler)
+								{
+									cloneSpell = spell.Copy();
+									cloneSpell.CostPower = false;
+									cloneSpell.OverrideRange = effect.Spell.Range;
+									spellhandler = ScriptMgr.CreateSpellHandler(this, cloneSpell, line);
+									casted = spellhandler.CastSpell();
+									effect.Cancel(false);
+								}
+								else if (effect.SpellHandler is UninterruptableSpellHandler)
+								{
+									cloneSpell = spell.Copy();
+									cloneSpell.CostPower = false;
+									spellhandler = ScriptMgr.CreateSpellHandler(this, cloneSpell, line);
+									casted = spellhandler.CastSpell();
+									effect.Cancel(false);
+								}
+							}
+						}
+						else
+							spellhandler.CastSpell();
+					}
+				}

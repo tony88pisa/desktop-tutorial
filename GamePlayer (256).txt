@@ -1,0 +1,43 @@
+﻿
+				IsJumping = true;
+			}
+			bool hasPetToMove = false;
+			//Remove the last update tick property, to prevent speedhack messages during zoning and teleporting!
+			LastPositionUpdateTick = 0;
+
+			if (ControlledBrain != null && ControlledBrain.WalkState != eWalkState.Stay)
+			{
+				if (CharacterClass.ID != (int)eCharacterClass.Theurgist && CharacterClass.ID != (int)eCharacterClass.Animist)
+				{
+					hasPetToMove = true;
+				}
+			}
+			//Set the new destination
+			//Current Speed = 0 when moved ... else X,Y,Z continue to be modified
+			CurrentSpeed = 0;
+			MovementStartTick = Environment.TickCount;
+			Point3D originalPoint = new Point3D(X, Y, Z);
+			X = x;
+			Y = y;
+			Z = z;
+			Heading = heading;
+
+			//Remove the last update tick property, to prevent speedhack messages during zoning and teleporting!
+			TempProperties.removeProperty(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
+			//If the destination is in another region
+			if (regionID != CurrentRegionID)
+			{
+				//Set our new region
+				CurrentRegionID = regionID;
+
+				//Send the region update packet, the rest will be handled
+				//by the packethandlers
+				Out.SendRegionChanged();
+			}
+			else
+			{
+				//Add the player to the new coordinates
+				Out.SendPlayerJump(false);
+
+				// are we jumping far enough to force a complete refresh?
+				if (GetDistanceTo(originalPoint) > WorldMgr.REFRESH_DISTANCE)

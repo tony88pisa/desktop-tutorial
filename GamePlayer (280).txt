@@ -1,0 +1,44 @@
+﻿		}
+
+		/// <summary>
+		/// Updates the appearance of the equipment this player is using
+		/// </summary>
+		public virtual void UpdateEquipmentAppearance()
+		{
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null) continue;
+				if (player != this)
+					player.Out.SendLivingEquipmentUpdate(this);
+			}
+		}
+
+		/// <summary>
+		/// Updates Encumberance and its effects
+		/// </summary>
+		public void UpdateEncumberance()
+		{
+			if (Inventory.InventoryWeight > MaxEncumberance)
+			{
+				if (IsOverencumbered == false)
+				{
+					IsOverencumbered = true;
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.EncumberedMoveSlowly"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.Encumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				Out.SendUpdateMaxSpeed();
+			}
+			else if (IsOverencumbered)
+			{
+				IsOverencumbered = false;
+				Out.SendUpdateMaxSpeed();
+			}
+			Out.SendEncumberance();
+		}
+
+		public override void UpdateHealthManaEndu()
+		{
+			Out.SendCharStatsUpdate();

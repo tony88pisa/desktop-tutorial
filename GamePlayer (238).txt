@@ -1,0 +1,41 @@
+﻿			}
+
+
+			//Eden
+			if (IsMezzed || (IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || !IsAlive)
+			{
+				Out.SendMessage("You can't use anything in your state.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (m_runningSpellHandler != null)
+			{
+				Out.SendMessage("You are already casting a spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			SpellLine itemSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+
+			if (itemSpellLine == null)
+				return false;
+
+			if (type == 1 || type == 0)
+			{
+				Spell spell = SkillBase.FindSpell(item.SpellID, itemSpellLine);
+
+				if (spell != null)
+				{
+					int requiredLevel = item.Template.LevelRequirement > 0 ? item.Template.LevelRequirement : Math.Min(MaxLevel, item.Level);
+
+					if (requiredLevel > Level)
+					{
+						Out.SendMessage("You are not powerful enough to use this item's spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return false;
+					}
+
+					Out.SendMessage(String.Format("You use {0}.", item.GetName(0, false)), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+
+					ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, itemSpellLine);
+					if (spellHandler == null)
+						return false;
+

@@ -1,0 +1,44 @@
+﻿					{
+						ItemBonus[item.Bonus8Type] += item.Bonus8;
+					}
+					if (item.Bonus9 != 0)
+					{
+						ItemBonus[item.Bonus9Type] += item.Bonus9;
+					}
+					if (item.Bonus10 != 0)
+					{
+						ItemBonus[item.Bonus10Type] += item.Bonus10;
+					}
+					if (item.ExtraBonus != 0)
+					{
+						ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles a bonus change on an item.
+		/// </summary>
+		/// <param name="e"></param>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
+		protected virtual void OnItemBonusChanged(DOLEvent e, object sender, EventArgs args)
+		{
+			ItemBonusChangedEventArgs changeArgs = args as ItemBonusChangedEventArgs;
+			if (changeArgs == null || changeArgs.BonusType == 0 || changeArgs.BonusAmount == 0)
+				return;
+
+			ItemBonus[changeArgs.BonusType] += changeArgs.BonusAmount;
+
+			if (ObjectState == eObjectState.Active)
+			{
+				Out.SendCharStatsUpdate();
+				Out.SendCharResistsUpdate();
+				Out.SendUpdateWeaponAndArmorStats();
+				Out.SendUpdatePlayerSkills();
+				UpdatePlayerStatus();
+
+				if (IsAlive)
+				{
+					if (Health < MaxHealth) StartHealthRegeneration();

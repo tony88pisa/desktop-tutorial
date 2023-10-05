@@ -1,0 +1,37 @@
+﻿				{
+					Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.WieldLeftHand", item.GetName(0, false))), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.WieldRightHand", item.GetName(0, false))), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+
+			if (item.Item_Type == (int)eInventorySlot.Horse)
+			{
+				if (item.SlotPosition == Slot.HORSE)
+				{
+					ActiveHorse.ID = (byte)(item.SPD_ABS == 0 ? 1 : item.SPD_ABS);
+					ActiveHorse.Name = item.Creator;
+				}
+				return;
+			}
+			else if (item.Item_Type == (int)eInventorySlot.HorseArmor)
+			{
+				if (item.SlotPosition == Slot.HORSEARMOR)
+				{
+					//					Out.SendDebugMessage("Try apply horse armor.");
+					ActiveHorse.Saddle = (byte)(item.DPS_AF);
+				}
+				return;
+			}
+			else if (item.Item_Type == (int)eInventorySlot.HorseBarding)
+			{
+				if (item.SlotPosition == Slot.HORSEBARDING)
+				{
+					//					Out.SendDebugMessage("Try apply horse barding.");
+					ActiveHorse.Barding = (byte)(item.DPS_AF);
+				}
+				return;
+			}
+

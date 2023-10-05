@@ -1,0 +1,45 @@
+﻿		/// to dismount from a steed
+		/// </summary>
+		public delegate bool DismountSteedHandler(GamePlayer rider, GameLiving steed, bool forced);
+
+		/// <summary>
+		/// Event will be fired whenever the player tries to dismount
+		/// from a steed
+		/// </summary>
+		public event DismountSteedHandler OnDismountSteed;
+		/// <summary>
+		/// Clears all DismountSteed handlers
+		/// </summary>
+		public void ClearDismountSteedHandlers()
+		{
+			OnDismountSteed = null;
+		}
+
+		/// <summary>
+		/// Dismounts the player from it's steed.
+		/// </summary>
+		/// <param name="forced">true if the dismounting should not be prevented by handlers</param>
+		/// <returns>true if the dismount was successful, false if not</returns>
+		public virtual bool DismountSteed(bool forced)
+		{
+			if (Steed == null)
+				return false;
+			if (Steed.Name == "Forceful Zephyr" && !forced) return false;
+			if (OnDismountSteed != null && !OnDismountSteed(this, Steed, forced) && !forced)
+				return false;
+			GameObject steed = Steed;
+			if (!Steed.RiderDismount(forced, this) && !forced)
+				return false;
+
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null) continue;
+				player.Out.SendRiding(this, steed, true);
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Returns if the player is riding or not
+		/// </summary>
+		/// <returns>true if on a steed, false if not</returns>

@@ -1,0 +1,44 @@
+﻿				Group.RemoveMember(this);
+			}
+			BattleGroup mybattlegroup = (BattleGroup)this.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+			if (mybattlegroup != null)
+			{
+				mybattlegroup.RemoveBattlePlayer(this);
+			}
+			if (m_guild != null)
+			{
+				m_guild.RemoveOnlineMember(this);
+			}
+			GroupMgr.RemovePlayerLooking(this);
+			if (log.IsDebugEnabled)
+			{
+				log.DebugFormat("({0}) player.Delete()", Name);
+			}
+			base.Delete();
+		}
+
+		/// <summary>
+		/// The property to save debug mode on region change
+		/// </summary>
+		public const string DEBUG_MODE_PROPERTY = "Player.DebugMode";
+
+		/// <summary>
+		/// This function moves a player to a specific region and
+		/// specific coordinates.
+		/// </summary>
+		/// <param name="regionID">RegionID to move to</param>
+		/// <param name="x">X target coordinate</param>
+		/// <param name="y">Y target coordinate</param>
+		/// <param name="z">Z target coordinate (0 to put player on floor)</param>
+		/// <param name="heading">Target heading</param>
+		/// <returns>true if move succeeded, false if failed</returns>
+		public override bool MoveTo(ushort regionID, int x, int y, int z, ushort heading)
+		{
+			//if we are jumping somewhere away from our house not using house.Exit
+			//we need to make the server know we have left the house
+			if ((CurrentHouse != null || InHouse) && CurrentHouse.RegionID != regionID)
+			{
+				InHouse = false;
+				CurrentHouse = null;
+			}
+			//if we send a jump, we get off the horse

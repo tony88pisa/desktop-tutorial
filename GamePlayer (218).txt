@@ -1,0 +1,34 @@
+﻿				if (useItem.Item_Type >= (int)eInventorySlot.LeftFrontSaddleBag && useItem.Item_Type <= (int)eInventorySlot.RightRearSaddleBag)
+				{
+					UseSaddleBag(useItem);
+					return;
+				}
+
+				if (useItem.Item_Type != Slot.RANGED && (slot != Slot.HORSE || type != 0))
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AttemptToUse", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				#region Non-backpack/vault slots
+
+				switch (slot)
+				{
+					case Slot.HORSEARMOR:
+					case Slot.HORSEBARDING:
+						return;
+					case Slot.HORSE:
+						if (type == 0)
+						{
+							if (IsOnHorse)
+								IsOnHorse = false;
+							else
+							{
+								if (Level < useItem.Level)
+								{
+									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.SummonHorseLevel", useItem.Level), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									return;
+								}
+								
+								string reason = GameServer.ServerRules.ReasonForDisallowMounting(this);
+								if (!String.IsNullOrEmpty(reason))
+								{

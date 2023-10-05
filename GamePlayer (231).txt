@@ -1,0 +1,37 @@
+﻿									if (type == 1) //use1
+									{
+										if (useItem.SpellID == 0)
+											return;
+
+										UseItemCharge(useItem, type);
+									}
+									else if (type == 2) //use2
+									{
+										if (useItem.SpellID1 == 0)
+											return;
+
+										UseItemCharge(useItem, type);
+									}
+								}
+							}
+						}
+					}
+				}
+				// notify event handlers about used slot
+				Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
+			}
+		}
+
+		/// <summary>
+		/// Player is using a saddle bag to open up slots on a mount
+		/// </summary>
+		/// <param name="useItem"></param>
+		protected virtual void UseSaddleBag(InventoryItem useItem)
+		{
+			eHorseSaddleBag bag = eHorseSaddleBag.None;
+
+			switch ((eInventorySlot)useItem.Item_Type)
+			{
+				case eInventorySlot.LeftFrontSaddleBag:
+					if (ChampionLevel >= 2)
+					{

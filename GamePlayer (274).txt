@@ -1,0 +1,47 @@
+﻿		/// <summary>
+		/// The strafe state of this player
+		/// </summary>
+		protected bool m_strafing;
+		/// <summary>
+		/// Gets/sets the current strafing mode
+		/// </summary>
+		public override bool IsStrafing
+		{
+			set
+			{
+				m_strafing = value;
+				if (value)
+				{
+					OnPlayerMove();
+				}
+			}
+			get { return m_strafing; }
+		}
+
+		public virtual void OnPlayerMove()
+		{
+			if (IsSitting)
+			{
+				Sit(false);
+			}
+			if (IsCasting)
+			{
+				m_runningSpellHandler.CasterMoves();
+			}
+			if (IsCastingRealmAbility)
+			{
+				Out.SendInterruptAnimation(this);
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				RealmAbilityCastTimer.Stop();
+				RealmAbilityCastTimer = null;
+			}
+			if (IsCrafting)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnPlayerMove.InterruptCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				CraftTimer.Stop();
+				CraftTimer = null;
+				Out.SendCloseTimerWindow();
+			}
+			if (IsSummoningMount)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, 

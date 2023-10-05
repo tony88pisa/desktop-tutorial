@@ -1,0 +1,33 @@
+﻿				if (useItem.SpellID != 0 || useItem.SpellID1 != 0 || useItem.PoisonSpellID != 0) // don't return without firing events
+				{
+					if (IsSitting)
+					{
+						Out.SendMessage("You can't use an item while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+
+					// Item with a non-charge ability.
+
+					if (useItem.Object_Type == (int)eObjectType.Magical
+					    && useItem.Item_Type == (int)eInventorySlot.FirstBackpack
+					    && useItem.SpellID > 0
+					    && useItem.MaxCharges == 0)
+					{
+						UseMagicalItem(useItem, type);
+						return;
+					}
+
+					// Artifacts don't require charges.
+
+					if ((type < 2 && useItem.SpellID > 0 && useItem.Charges < 1 && useItem.MaxCharges > -1 && !(useItem is InventoryArtifact)) ||
+					    (type == 2 && useItem.SpellID1 > 0 && useItem.Charges1 < 1 && useItem.MaxCharges1 > -1 && !(useItem is InventoryArtifact)) ||
+					    (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1))
+					{
+						Out.SendMessage("The " + useItem.Name + " is out of charges.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					else
+					{
+						if (useItem.Object_Type == (int)eObjectType.Poison)
+						{
+							InventoryItem mainHand = AttackWeapon;

@@ -1,0 +1,27 @@
+﻿								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								return false;
+							}
+							if (SpellQueue)
+							{
+								if (spell.SpellType.ToLower() == "archery")
+								{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.FollowSpell", spell.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+								}
+								else
+								{
+									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.AlreadyCastFollow"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								}
+
+								m_nextSpell = spell;
+								m_nextSpellLine = line;
+								m_nextSpellTarget = TargetObject as GameLiving;
+								return true;
+							}
+							else Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.AlreadyCastNoQueue"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							
+							return false;
+						}
+						else if (m_runningSpellHandler is PrimerSpellHandler)
+						{
+							if (!spell.IsSecondary)
+							{

@@ -1,0 +1,45 @@
+﻿[Obsolete("Use RemoveMoney(Money) and SendSystemMessage(string) instead.")]
+public virtual bool RemoveMoney(long copperAmount)
+{
+if (copperAmount >= 0) return RemoveMoney(Currency.Copper.Mint(copperAmount));
+else
+{
+AddMoney(Currency.Copper.Mint(-copperAmount));
+return true;
+}
+}
+
+[Obsolete("Use RemoveMoney(Money) and SendSystemMessage(string) instead.")]
+public virtual bool RemoveMoney(long money, string messageFormat)
+{
+var hasEnoughMoney = RemoveMoney(money);
+if (hasEnoughMoney && messageFormat != null && money != 0) SendSystemMessage(messageFormat);
+return hasEnoughMoney;
+}
+
+[Obsolete("Use RemoveMoney(Money) and SendMessage(string,eChatType,eChatLoc) instead.")]
+public virtual bool RemoveMoney(long money, string messageFormat, eChatType ct, eChatLoc cl)
+{
+			var hasEnoughMoney = RemoveMoney(money);
+if (hasEnoughMoney && messageFormat != null && money != 0) SendMessage(messageFormat, ct, cl);
+return hasEnoughMoney;
+}
+		#endregion
+
+		private InventoryItem m_useItem;
+
+		/// <summary>
+		/// The item the player is trying to use.
+		/// </summary>
+		public InventoryItem UseItem
+		{
+			get { return m_useItem; }
+			set { m_useItem = value; }
+		}
+
+		/// <summary>
+		/// Called when the player uses an inventory in a slot
+		/// eg. by clicking on the icon in the qickbar dragged from a slot
+		/// </summary>
+		/// <param name="slot">inventory slot used</param>
+		/// <param name="type">type of slot use (0=simple click on icon, 1=use, 2=/use2)</param>

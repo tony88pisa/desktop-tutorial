@@ -1,0 +1,36 @@
+﻿					if (IsOnHorse && !spellHandler.HasPositiveEffect)
+						IsOnHorse = false;
+
+					Stealth(false);
+
+					if (spellHandler.CheckBeginCast(TargetObject as GameLiving))
+					{
+						TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
+						m_runningSpellHandler = spellHandler;
+						m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+						spellHandler.CastSpell(item);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Apply poison to weapon
+		/// </summary>
+		/// <param name="poisonPotion"></param>
+		/// <param name="toItem"></param>
+		/// <returns>true if applied</returns>
+		public bool ApplyPoison(InventoryItem poisonPotion, InventoryItem toItem)
+		{
+			if (poisonPotion == null || toItem == null) return false;
+			int envenomSpec = GetModifiedSpecLevel(Specs.Envenom);
+			if (envenomSpec < 1)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantUsePoisons"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			if (!GlobalConstants.IsWeapon(toItem.Object_Type))
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.PoisonsAppliedWeapons"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

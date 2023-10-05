@@ -1,0 +1,39 @@
+﻿				if ((ActiveSaddleBags & (byte)bag) == 0)
+				{
+					if (Inventory.RemoveItem(useItem))
+					{
+						InventoryLogging.LogInventoryAction(this, "(HorseSaddleBag)", eInventoryActionType.Other, useItem.Template, useItem.Count);
+						ActiveSaddleBags |= (byte)bag;
+						Out.SendSetControlledHorse(this);
+						Out.SendMessage("You've activated a saddlebag!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						SaveIntoDatabase();
+					}
+					else
+					{
+						Out.SendMessage("An error occurred while trying to activate this saddlebag!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					}
+				}
+				else
+				{
+					Out.SendMessage("You've already activated this saddlebag!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				}
+			}
+		}
+
+		private const int NUM_SLOTS_PER_SADDLEBAG = 4;
+
+		/// <summary>
+		/// Can player use this horse inventory slot
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <returns></returns>
+		public virtual bool CanUseHorseInventorySlot(int slot)
+		{
+			if (Inventory.GetItem(eInventorySlot.Horse) == null)
+			{
+				Out.SendMessage("You must be equipped with a horse.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (IsOnHorse == false)
+			{

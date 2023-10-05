@@ -1,0 +1,23 @@
+﻿														}
+													}
+
+													Stealth(false);
+
+													if (useItem.Item_Type == (int)eInventorySlot.FirstBackpack)
+													{
+														Emote(eEmote.Drink);
+
+														if (spell.CastTime > 0)
+															TempProperties.setProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
+													}
+
+													//Spell
+													if (spellHandler.StartSpell(target, useItem))
+													{
+														if (useItem.Count > 1)
+														{
+															Inventory.RemoveCountFromStack(useItem, 1);
+															InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
+														}
+														else
+														{

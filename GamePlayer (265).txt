@@ -1,0 +1,51 @@
+﻿		/// Holds the zone player was in after last position update
+		/// </summary>
+		private Zone m_lastPositionUpdateZone;
+
+		/// <summary>
+		/// Gets or sets the zone after last position update
+		/// </summary>
+		public Zone LastPositionUpdateZone
+		{
+			get { return m_lastPositionUpdateZone; }
+			set { m_lastPositionUpdateZone = value; }
+		}
+
+
+		private int m_lastPositionUpdateTick = 0;
+
+		/// <summary>
+		/// The environment tick count when this players position was last updated
+		/// </summary>
+		public int LastPositionUpdateTick
+		{
+			get { return m_lastPositionUpdateTick; }
+			set { m_lastPositionUpdateTick = value; }
+		}
+
+		private Point3D m_lastPositionUpdatePoint = new Point3D(0, 0, 0);
+
+		/// <summary>
+		/// The last recorded position of this player
+		/// </summary>
+		public Point3D LastPositionUpdatePoint
+		{
+			get { return m_lastPositionUpdatePoint; }
+			set { m_lastPositionUpdatePoint = value; }
+		}
+
+		/// <summary>
+		/// Holds the players max Z for fall damage
+		/// </summary>
+		private int m_maxLastZ;
+
+		/// <summary>
+		/// Gets or sets the players max Z for fall damage
+		/// </summary>
+		public int MaxLastZ
+		{
+			get { return m_maxLastZ; }
+			set { m_maxLastZ = value; }
+		}
+
+		/// <summary>

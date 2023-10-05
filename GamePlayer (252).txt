@@ -1,0 +1,41 @@
+﻿			m_enduRegenerationTimer = new RegionTimer(this);
+			m_healthRegenerationTimer.Callback = new RegionTimerCallback(HealthRegenerationTimerCallback);
+			m_powerRegenerationTimer.Callback = new RegionTimerCallback(PowerRegenerationTimerCallback);
+			m_enduRegenerationTimer.Callback = new RegionTimerCallback(EnduranceRegenerationTimerCallback);
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null) continue;
+				if (player != this)
+					player.Out.SendPlayerCreate(this);
+			}
+
+			UpdateEquipmentAppearance();
+
+			// display message
+			if (SpecPointsOk == false)
+			{
+				log.Debug(Name + " is told spec points are incorrect!");
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language,"GamePlayer.AddToWorld.SpecsPointsIncorrect"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+SpecPointsOk = true;
+			}
+
+			//Dinberg, instance change.
+			if (CurrentRegion is BaseInstance)
+				((BaseInstance)CurrentRegion).OnPlayerEnterInstance(this);
+
+			RefreshItemBonuses();
+
+			return true;
+		}
+
+		/// <summary>
+		/// Called to remove the item from the world. Also removes the
+		/// player visibly from all other players around this one
+		/// </summary>
+		/// <returns>true if removed, false if removing failed</returns>
+		public override bool RemoveFromWorld()
+		{
+			if (ObjectState == eObjectState.Active)
+			{
+				DismountSteed(true);
+				if (CurrentRegion.GetZone(X, Y) == null)

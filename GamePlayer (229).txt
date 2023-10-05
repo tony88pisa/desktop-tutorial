@@ -1,0 +1,28 @@
+﻿											}
+										}
+										else
+										{
+											Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NotEnouthPower"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+										}
+									}
+									else
+									{
+										Out.SendMessage("Potion effect line not found", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									}
+								}
+							}
+							else
+							{
+								Out.SendMessage("Potion effect spell ID " + useItem.SpellID + " not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+						}
+						else if (type > 0)
+						{
+							if (!Inventory.EquippedItems.Contains(useItem))
+							{
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseFromBackpack"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+							else
+							{
+								long lastChargedItemUseTick = TempProperties.getProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
+								long changeTime = CurrentRegion.Time - lastChargedItemUseTick;

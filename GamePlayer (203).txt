@@ -1,0 +1,27 @@
+﻿Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.OnlyASecondarySpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							}
+							else
+							{
+								if (SpellQueue && !(m_runningSpellHandler is ChamberSpellHandler))
+								{
+									Spell cloneSpell = null;
+									if (m_runningSpellHandler is PowerlessSpellHandler)
+									{
+										cloneSpell = spell.Copy();
+										cloneSpell.CostPower = false;
+										m_nextSpell = cloneSpell;
+										m_nextSpellLine = line;
+										casted = true;
+									}
+									else if (m_runningSpellHandler is RangeSpellHandler)
+									{
+										cloneSpell = spell.Copy();
+										cloneSpell.CostPower = false;
+										cloneSpell.OverrideRange = m_runningSpellHandler.Spell.Range;
+										m_nextSpell = cloneSpell;
+										m_nextSpellLine = line;
+										casted = true;
+									}
+									else if (m_runningSpellHandler is UninterruptableSpellHandler)
+									{
+										cloneSpell = spell.Copy();

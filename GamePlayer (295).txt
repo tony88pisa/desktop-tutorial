@@ -1,0 +1,38 @@
+﻿					else if (Health > MaxHealth) Health = MaxHealth;
+
+					if (Mana < MaxMana) StartPowerRegeneration();
+					else if (Mana > MaxMana) Mana = MaxMana;
+
+					if (Endurance < MaxEndurance) StartEnduranceRegeneration();
+					else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
+				}
+			}
+		}
+
+		#endregion
+
+		#region ReceiveItem/DropItem/PickupObject
+		/// <summary>
+		/// Receive an item from another living
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="item"></param>
+		/// <returns>true if player took the item</returns>
+		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		{
+			if (item == null) return false;
+
+			if (!Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+				return false;
+			InventoryLogging.LogInventoryAction(source, this, eInventoryActionType.Trade, item.Template, item.Count);
+
+			if (source == null)
+			{
+				Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.Receive", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+if (source is GameNPC)
+Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.ReceiveFrom", item.GetName(0, false), source.GetName(0, false, Client.Account.Language, (source as GameNPC)))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+else
+Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.ReceiveFrom", 

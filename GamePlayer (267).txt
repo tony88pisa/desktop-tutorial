@@ -1,0 +1,45 @@
+﻿			get { return m_climbing; }
+			set
+			{
+				if (value == m_climbing) return;
+				m_climbing = value;
+			}
+		}
+
+		protected bool m_swimming;
+		/// <summary>
+		/// Gets/sets the current swimming state
+		/// </summary>
+		public virtual bool IsSwimming
+		{
+			get { return m_swimming; }
+			set
+			{
+				if (value == m_swimming) return;
+				m_swimming = value;
+				Notify(GamePlayerEvent.SwimmingStatus, this);
+				//Handle Lava Damage
+				if (m_swimming && CurrentZone.IsLava == true)
+				{
+					if (m_lavaBurningTimer == null)
+					{
+						m_lavaBurningTimer = new RegionTimer(this);
+						m_lavaBurningTimer.Callback = new RegionTimerCallback(LavaBurnTimerCallback);
+						m_lavaBurningTimer.Interval = 2000;
+						m_lavaBurningTimer.Start(1);
+					}
+				}
+				if (!m_swimming && CurrentZone.IsLava == true && m_lavaBurningTimer != null)
+				{
+					m_lavaBurningTimer.Stop();
+					m_lavaBurningTimer = null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// The stuck state of this player
+		/// </summary>
+		private bool m_stuckFlag = false;
+
+		/// <summary>

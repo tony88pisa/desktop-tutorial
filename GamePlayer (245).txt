@@ -1,0 +1,40 @@
+﻿			if (IsIgnoring(source))
+				return true;
+			if (GameServer.ServerRules.IsAllowedToUnderstand(source, this) || Properties.ENABLE_DEBUG)
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SayReceive.Says", source.GetName(0, false), str),
+				                eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			else
+				Out.SendMessage(
+					LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SayReceive.FalseLanguage", source.GetName(0, false)),
+					eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			return true;
+		}
+
+		/// <summary>
+		/// Call this function to make the player say something
+		/// </summary>
+		/// <param name="str">string to say</param>
+		/// <returns>true if said successfully</returns>
+		public override bool Say(string str)
+		{
+			if (!GameServer.ServerRules.IsAllowedToSpeak(this, "talk"))
+				return false;
+			if (!base.Say(str))
+				return false;
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Say.YouSay", str), eChatType.CT_Say,
+			                eChatLoc.CL_ChatWindow);
+			return true;
+		}
+
+		/// <summary>
+		/// This function is called when the player hears a yell
+		/// </summary>
+		/// <param name="source">the source living yelling</param>
+		/// <param name="str">string that was yelled</param>
+		/// <returns>true if received successfully</returns>
+		public override bool YellReceive(GameLiving source, string str)
+		{
+			if (!base.YellReceive(source, str))
+				return false;
+			if (IsIgnoring(source))
+				return true;

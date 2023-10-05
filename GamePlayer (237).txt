@@ -1,0 +1,40 @@
+﻿					Out.SendMessage("Charge effect ID " + spell.ID + " is not implemented yet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+			else
+			{
+				if (type == 1)
+				{
+					Out.SendMessage("Charge effect ID " + useItem.SpellID + " not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					Out.SendMessage("Charge effect ID " + useItem.SpellID1 + " not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+		}
+
+
+		/// <summary>
+		/// Use a magical item's spell.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="type"></param>
+		protected virtual bool UseMagicalItem(InventoryItem item, int type)
+		{
+			if (item == null)
+				return false;
+
+			int cooldown = item.CanUseAgainIn;
+			if (cooldown > 0 && Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+			{
+				int minutes = cooldown / 60;
+				int seconds = cooldown % 60;
+				Out.SendMessage(String.Format("You must wait {0} to discharge this item!",
+				                              (minutes <= 0)
+				                              ? String.Format("{0} more seconds", seconds)
+				                              : String.Format("{0} more minutes and {1} seconds",
+				                                              minutes, seconds)),
+				                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+				return false;

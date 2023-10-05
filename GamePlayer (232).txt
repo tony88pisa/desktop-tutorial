@@ -1,0 +1,41 @@
+﻿						bag = eHorseSaddleBag.LeftFront;
+					}
+					else
+					{
+						Out.SendMessage("This saddlebag requires Champion Level 2!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					}
+					break;
+				case eInventorySlot.RightFrontSaddleBag:
+					if (ChampionLevel >= 3)
+					{
+						bag = eHorseSaddleBag.RightFront;
+					}
+					else
+					{
+						Out.SendMessage("This saddlebag requires Champion Level 3!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					}
+					break;
+				case eInventorySlot.LeftRearSaddleBag:
+					if (ChampionLevel >= 4)
+					{
+						bag = eHorseSaddleBag.LeftRear;
+					}
+					else
+					{
+						Out.SendMessage("This saddlebag requires Champion Level 4!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					}
+					break;
+				case eInventorySlot.RightRearSaddleBag:
+					if (ChampionLevel >= 5)
+					{
+						bag = eHorseSaddleBag.RightRear;
+					}
+					else
+					{
+						Out.SendMessage("This saddlebag requires Champion Level 5!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					}
+					break;
+			}
+
+			if (bag != eHorseSaddleBag.None)
+			{

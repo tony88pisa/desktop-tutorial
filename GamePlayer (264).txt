@@ -1,0 +1,50 @@
+﻿		/// </summary>
+		public override int Y
+		{
+			set
+			{
+				base.Y = value;
+				if (DBCharacter != null) DBCharacter.Ypos = base.Y;
+			}
+		}
+
+		/// <summary>
+		/// Gets the current position of this player
+		/// </summary>
+		public override int Z
+		{
+			set
+			{
+				base.Z = value;
+				if (DBCharacter != null) DBCharacter.Zpos = base.Z;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the current speed of this player
+		/// </summary>
+		public override short CurrentSpeed
+		{
+			set
+			{
+				base.CurrentSpeed = value;
+				if (value != 0)
+				{
+					OnPlayerMove();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the region of this player
+		/// </summary>
+		public override Region CurrentRegion
+		{
+			set
+			{
+				base.CurrentRegion = value;
+				if (DBCharacter != null) DBCharacter.Region = CurrentRegionID;
+			}
+		}
+
+		/// <summary>

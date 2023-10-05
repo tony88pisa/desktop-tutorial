@@ -1,0 +1,43 @@
+﻿		/// Gets/sets the current stuck state
+		/// </summary>
+		public virtual bool Stuck
+		{
+			get { return m_stuckFlag; }
+			set
+			{
+				if (value == m_stuckFlag) return;
+				m_stuckFlag = value;
+			}
+		}
+
+
+		public enum waterBreath : byte
+		{
+			Normal = 0,
+			Holding = 1,
+			Drowning = 2,
+		}
+
+		protected long m_beginDrowningTick;
+		protected waterBreath m_currentWaterBreathState;
+
+		protected int DrowningTimerCallback(RegionTimer callingTimer)
+		{
+			if (!IsAlive || ObjectState != eObjectState.Active)
+				return 0;
+			if (this.Client.Account.PrivLevel == 1)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				if (CurrentRegion.Time - m_beginDrowningTick > 15000) // 15 sec
+				{
+					TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
+					Out.SendCloseTimerWindow();
+					return 0;
+				}
+				else
+					TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
+			}
+			return 3000;
+		}
+

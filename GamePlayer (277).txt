@@ -1,0 +1,40 @@
+﻿
+			if (Steed != null || IsOnHorse)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.MustDismount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (sit)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.YouSitDown"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.YouStandUp"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+
+			//Stop attack if you sit down while attacking
+			if (sit && AttackState)
+			{
+				StopAttack();
+			}
+
+			if (!sit)
+			{
+				//Stop quit sequence if you stand up
+				if (m_quitTimer != null)
+				{
+					m_quitTimer.Stop();
+					m_quitTimer = null;
+					Stuck = false;
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.NoLongerWaitingQuit"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				//Stop praying if the player stands up...
+				if (IsPraying)
+				{
+					m_prayAction.Stop();
+				}
+			}
+			//Update the client
+			if (sit && !IsSitting)

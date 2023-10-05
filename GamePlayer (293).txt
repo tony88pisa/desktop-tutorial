@@ -1,0 +1,44 @@
+﻿								add = false;
+							}
+							break;
+							default: break;
+					}
+				}
+
+				if (!add) continue;
+				if (item is IGameInventoryItem)
+				{
+					(item as IGameInventoryItem).CheckValid(this);
+				}
+
+				if (item.IsMagical)
+				{
+					if (item.Bonus1 != 0)
+					{
+						ItemBonus[item.Bonus1Type] += item.Bonus1;
+					}
+					if (item.Bonus2 != 0)
+					{
+						ItemBonus[item.Bonus2Type] += item.Bonus2;
+					}
+					if (item.Bonus3 != 0)
+					{
+						ItemBonus[item.Bonus3Type] += item.Bonus3;
+					}
+					if (item.Bonus4 != 0)
+					{
+						ItemBonus[item.Bonus4Type] += item.Bonus4;
+					}
+					if (item.Bonus5 != 0)
+					{
+						ItemBonus[item.Bonus5Type] += item.Bonus5;
+					}
+					if (item.Bonus6 != 0)
+					{
+						ItemBonus[item.Bonus6Type] += item.Bonus6;
+					}
+					if (item.Bonus7 != 0)
+					{
+						ItemBonus[item.Bonus7Type] += item.Bonus7;
+					}
+					if (item.Bonus8 != 0)

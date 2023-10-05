@@ -1,0 +1,44 @@
+﻿		/// by someone sending something
+		/// </summary>
+		public delegate bool SendReceiveHandler(GamePlayer source, GamePlayer receiver, string str);
+
+		/// <summary>
+		/// Delegate to be called when this player is about to send a text
+		/// </summary>
+		public delegate bool SendHandler(GamePlayer source, GamePlayer receiver, string str);
+
+		/// <summary>
+		/// Event that is fired when the Player is about to send a text
+		/// </summary>
+		public event SendHandler OnSend;
+
+		/// <summary>
+		/// Event that is fired when the Player receives a Send text
+		/// </summary>
+		public event SendReceiveHandler OnSendReceive;
+
+		/// <summary>
+		/// Clears all send event handlers
+		/// </summary>
+		public void ClearOnSend()
+		{
+			OnSend = null;
+		}
+
+		/// <summary>
+		/// Clears all OnSendReceive event handlers
+		/// </summary>
+		public void ClearOnSendReceive()
+		{
+			OnSendReceive = null;
+		}
+
+		/// <summary>
+		/// This function is called when the Player receives a sent text
+		/// </summary>
+		/// <param name="source">GamePlayer that was sending</param>
+		/// <param name="str">string that was sent</param>
+		/// <returns>true if the string was received successfully, false if it was not received</returns>
+		public virtual bool PrivateMessageReceive(GamePlayer source, string str)
+		{
+			var onSendReceive = OnSendReceive;

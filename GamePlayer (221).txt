@@ -1,0 +1,30 @@
+﻿							StopCurrentSpellcast();
+							StartAttack(TargetObject);
+							newAttack = true;
+						}
+
+						//Clean up range attack state/type if we are not in combat mode
+						//anymore
+						if (!AttackState)
+						{
+							RangedAttackState = eRangedAttackState.None;
+							RangedAttackType = eRangedAttackType.Normal;
+						}
+						if (!newAttack && RangedAttackState != eRangedAttackState.None)
+						{
+							if (RangedAttackState == eRangedAttackState.ReadyToFire)
+							{
+								RangedAttackState = eRangedAttackState.Fire;
+								StopCurrentSpellcast();
+								m_attackAction.Start(1);
+							}
+							else if (RangedAttackState == eRangedAttackState.Aim)
+							{
+								if (!TargetInView)
+								{
+									// Don't store last target if it's not visible
+									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+								else
+								{
+									if (m_rangeAttackTarget.Target == null)

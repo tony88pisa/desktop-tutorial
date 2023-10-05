@@ -1,0 +1,40 @@
+﻿		public virtual void UseSlot(eInventorySlot slot, eUseType type)
+		{
+			UseSlot((int)slot, (int)type);
+		}
+
+		public virtual void UseSlot(int slot, int type)
+		{
+			if (!IsAlive)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			lock (Inventory)
+			{
+				InventoryItem useItem = Inventory.GetItem((eInventorySlot)slot);
+				UseItem = useItem;
+
+				if (useItem == null)
+				{
+					if ((slot >= Slot.FIRSTQUIVER) && (slot <= Slot.FOURTHQUIVER))
+					{
+						Out.SendMessage("The quiver slot " + (slot - (Slot.FIRSTQUIVER) + 1) + " is empty!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+					else
+					{
+						// don't allow using empty slots
+						Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.IllegalSourceObject", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+					return;
+				}
+
+				if (useItem is IGameInventoryItem)
+				{
+					if ((useItem as IGameInventoryItem).Use(this))
+					{
+						return;
+					}
+				}
+

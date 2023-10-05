@@ -1,0 +1,39 @@
+﻿				gameItem = (item as IGameInventoryItem).Drop(this);
+			}
+			else
+			{
+				gameItem = new WorldInventoryItem(item);
+
+				Point2D itemloc = this.GetPointFromHeading(this.Heading, 30);
+				gameItem.X = itemloc.X;
+				gameItem.Y = itemloc.Y;
+				gameItem.Z = Z;
+				gameItem.Heading = Heading;
+				gameItem.CurrentRegionID = CurrentRegionID;
+
+				gameItem.AddOwner(this);
+				gameItem.AddToWorld();
+			}
+
+			return gameItem;
+		}
+		/// <summary>
+		/// Called when the player picks up an item from the ground
+		/// </summary>
+		/// <param name="floorObject"></param>
+		/// <param name="checkRange"></param>
+		/// <returns></returns>
+		public virtual bool PickupObject(GameObject floorObject, bool checkRange)
+		{
+			if (floorObject == null)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.MustHaveTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			if (floorObject.ObjectState != eObjectState.Active)
+				return false;
+
+			if (floorObject is GameStaticItemTimed && ((GameStaticItemTimed)floorObject).IsOwner(this) == false && Client.Account.PrivLevel == (int)ePrivLevel.Player)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.LootDoesntBelongYou"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;

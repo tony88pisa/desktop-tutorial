@@ -1,0 +1,46 @@
+﻿				Out.SendStatusUpdate(2);// unknown why on begin sit it send 2 in sitting flag like player begin sitting
+			IsSitting = sit;
+			UpdatePlayerStatus();
+		}
+
+		/// <summary>
+		/// Sets the Living's ground-target Coordinates inside the current Region
+		/// </summary>
+		public override void SetGroundTarget(int groundX, int groundY, int groundZ)
+		{
+			base.SetGroundTarget(groundX, groundY, groundZ);
+			Out.SendMessage(String.Format("You ground-target {0},{1},{2}", groundX, groundY, groundZ), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (SiegeWeapon != null)
+				SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
+		}
+
+		/// <summary>
+		/// Holds unique locations array
+		/// </summary>
+		protected readonly GameLocation[] m_lastUniqueLocations;
+
+		/// <summary>
+		/// Gets unique locations array
+		/// </summary>
+		public GameLocation[] LastUniqueLocations
+		{
+			get { return m_lastUniqueLocations; }
+		}
+
+		/// <summary>
+		/// Updates Health, Mana, Sitting, Endurance, Concentration and Alive status to client
+		/// </summary>
+		public void UpdatePlayerStatus()
+		{
+			Out.SendStatusUpdate();
+		}
+		#endregion
+
+		#region Equipment/Encumberance
+
+		/// <summary>
+		/// Gets the total possible Encumberance
+		/// </summary>
+		public virtual int MaxEncumberance
+		{
+			get

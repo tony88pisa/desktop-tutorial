@@ -1,0 +1,48 @@
+﻿						if (AttackWeapon.Object_Type == (int)eObjectType.Thrown)
+							attackTypeMsg = "throw";
+						Out.SendMessage("You move and interrupt your " + attackTypeMsg + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						StopAttack();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the max speed of this player
+		/// (delegate to PlayerCharacter)
+		/// </summary>
+		public override short MaxSpeedBase
+		{
+			get { return (short)(DBCharacter != null ? DBCharacter.MaxSpeed : base.MaxSpeedBase); }
+			set
+			{
+				base.MaxSpeedBase = value;
+				if (DBCharacter != null) DBCharacter.MaxSpeed = value;
+			}
+		}
+
+		/// <summary>
+		/// the moving state of this player
+		/// </summary>
+		public override bool IsMoving
+		{
+			get { return base.IsMoving || IsStrafing; }
+		}
+		/// <summary>
+		/// The sprint effect of this player
+		/// </summary>
+		protected SprintEffect m_sprintEffect = null;
+		/// <summary>
+		/// Gets sprinting flag
+		/// </summary>
+		public bool IsSprinting
+		{
+			get { return m_sprintEffect != null; }
+		}
+		/// <summary>
+		/// Change sprint state of this player
+		/// </summary>
+		/// <param name="state">new state</param>
+		/// <returns>sprint state after command</returns>
+		public virtual bool Sprint(bool state)
+		{

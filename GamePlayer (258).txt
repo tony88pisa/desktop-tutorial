@@ -1,0 +1,42 @@
+﻿
+		/// <summary>
+		/// Refresh all objects around the player
+		/// </summary>
+		public virtual void RefreshWorld()
+		{
+			foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE * 2))
+			{
+				Out.SendNPCCreate(npc);
+				if (npc.Inventory != null)
+					Out.SendLivingEquipmentUpdate(npc);
+			}
+
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player != null && player != this)
+				{
+					if (IsStealthed == false || player.CanDetect(this))
+					{
+						player.Out.SendPlayerCreate(this);
+					}
+
+					if (player.IsStealthed == false || CanDetect(player))
+					{
+						Out.SendPlayerCreate(player);
+						Out.SendLivingEquipmentUpdate(player);
+					}
+				}
+			}
+		}
+
+		//Eden - Move to bind, and check if the loc is allowed
+		public virtual bool MoveToBind()
+		{
+			Region rgn = WorldMgr.GetRegion((ushort)BindRegion);
+			if (rgn == null || rgn.GetZone(BindXpos, BindYpos) == null)
+			{
+				if (log.IsErrorEnabled)
+					log.Error("Player: " + Name + " unknown bind point : (R/X/Y) " + BindRegion + "/" + BindXpos + "/" + BindYpos);
+				//Kick the player, avoid server freeze
+				Client.Out.SendPlayerQuit(true);
+				SaveIntoDatabase();

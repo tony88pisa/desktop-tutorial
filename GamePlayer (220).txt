@@ -1,0 +1,32 @@
+﻿								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+								m_whistleMountTimer = new RegionTimer(this);
+								m_whistleMountTimer.Callback = new RegionTimerCallback(WhistleMountTimerCallback);
+								m_whistleMountTimer.Start(5000);
+							}
+						}
+						break;
+					case Slot.RIGHTHAND:
+					case Slot.LEFTHAND:
+						if (type != 0) break;
+						if (ActiveWeaponSlot == eActiveWeaponSlot.Standard)
+							break;
+						SwitchWeapon(eActiveWeaponSlot.Standard);
+						Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
+						return;
+
+					case Slot.TWOHAND:
+						if (type != 0) break;
+						if (ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
+							break;
+						SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+						Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
+						return;
+
+					case Slot.RANGED:
+						bool newAttack = false;
+						if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+						{
+							SwitchWeapon(eActiveWeaponSlot.Distance);
+						}
+						else if (!AttackState)
+						{

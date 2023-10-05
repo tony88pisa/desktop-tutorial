@@ -1,0 +1,44 @@
+﻿		/// Clears all MountSteed handlers
+		/// </summary>
+		public void ClearMountSteedHandlers()
+		{
+			OnMountSteed = null;
+		}
+
+		/// <summary>
+		/// Mounts the player onto a steed
+		/// </summary>
+		/// <param name="steed">the steed to mount</param>
+		/// <param name="forced">true if the mounting can not be prevented by handlers</param>
+		/// <returns>true if mounted successfully or false if not</returns>
+		public virtual bool MountSteed(GameNPC steed, bool forced)
+		{
+			// Sanity 'coherence' checks
+			if (Steed != null)
+				if (!DismountSteed(forced))
+					return false;
+
+			if (IsOnHorse)
+				IsOnHorse = false;
+			
+			if (!steed.RiderMount(this, forced) && !forced)
+				return false;
+			
+			if (OnMountSteed != null && !OnMountSteed(this, steed, forced) && !forced)
+				return false;
+
+			// Standard checks, as specified in rules
+			if (GameServer.ServerRules.ReasonForDisallowMounting(this) != string.Empty && !forced)
+				return false;
+			
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null) continue;
+				player.Out.SendRiding(this, steed, false);
+			}
+			
+			return true;
+		}
+
+		/// <summary>
+		/// Delegate callback to be called whenever the player tries

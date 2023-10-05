@@ -1,0 +1,38 @@
+﻿				return false;
+			}
+			if (!HasAbilityToUseItem(toItem.Template))
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantPoisonWeapon"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			if (envenomSpec < poisonPotion.Level)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantUsePoison"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			if (InCombat)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantApplyRecentCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (toItem.PoisonSpellID != 0)
+			{
+				bool canApply = false;
+				SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
+				if (poisonLine != null)
+				{
+					List<Spell> spells = SkillBase.GetSpellList(poisonLine.KeyName);
+					foreach (Spell spl in spells)
+					{
+						if (spl.ID == toItem.PoisonSpellID)
+						{
+							canApply = true;
+							break;
+						}
+					}
+				}
+				if (canApply == false)
+				{
+					Out.SendMessage(string.Format("You can't poison your {0}!", toItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;

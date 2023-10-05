@@ -1,0 +1,49 @@
+﻿		/// Gets or sets the database guildid of this player
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public string GuildID
+		{
+			get { return DBCharacter != null ? DBCharacter.GuildID : string.Empty; }
+			set { if (DBCharacter != null) DBCharacter.GuildID = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the player's guild flag
+		/// (delegate to DBCharacter)
+		/// </summary>
+		public bool ClassNameFlag
+		{
+			get { return DBCharacter != null ? DBCharacter.FlagClassName : false; }
+			set { if (DBCharacter != null) DBCharacter.FlagClassName = value; }
+		}
+
+		/// <summary>
+		/// true if this player is looking for a group
+		/// </summary>
+		protected bool m_lookingForGroup;
+		/// <summary>
+		/// true if this player want to receive loot with autosplit between members of group
+		/// </summary>
+		protected bool m_autoSplitLoot = true;
+
+		/// <summary>
+		/// Gets or sets the LookingForGroup flag in this player
+		/// </summary>
+		public bool LookingForGroup
+		{
+			get { return m_lookingForGroup; }
+			set { m_lookingForGroup = value; }
+		}
+		/// <summary>
+		/// Gets/sets the autosplit for loot
+		/// </summary>
+		public bool AutoSplitLoot
+		{
+			get { return m_autoSplitLoot; }
+			set { m_autoSplitLoot = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the IgnoreList of a Player
+		/// (delegate to PlayerCharacter)
+		/// </summary>

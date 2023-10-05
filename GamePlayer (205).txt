@@ -1,0 +1,25 @@
+﻿									cloneSpell.InChamber = true;
+									cloneSpell.CostPower = false;
+									chamber.PrimarySpell = cloneSpell;
+									chamber.PrimarySpellLine = line;
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellInChamber", spell.Name, ((ChamberSpellHandler)m_runningSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SelectSecondSpell", ((ChamberSpellHandler)m_runningSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+								else
+								{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellNotInChamber"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								}
+							}
+							else if (spell.IsSecondary)
+							{
+								if (chamber.PrimarySpell != null)
+								{
+									if (chamber.SecondarySpell == null)
+									{
+										Spell cloneSpell = spell.Copy();
+										cloneSpell.CostPower = false;
+										cloneSpell.InChamber = true;
+										cloneSpell.OverrideRange = chamber.PrimarySpell.Range;
+										chamber.SecondarySpell = cloneSpell;
+										chamber.SecondarySpellLine = line;
+

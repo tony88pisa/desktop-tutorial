@@ -1,0 +1,34 @@
+﻿			{
+				ItemBonus[item.Bonus10Type] += item.Bonus10;
+				if (item.Bonus10Type < 20)
+					Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus10Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+			}
+			if (item.ExtraBonus != 0)
+			{
+				ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
+				//if (item.ExtraBonusType < 20)
+				//Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.ExtraBonusType))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+			}
+			//Check null on client.player bypass region change
+			if (Client.Account.PrivLevel == (uint)ePrivLevel.Player && Client.Player != null && Client.Player.ObjectState == eObjectState.Active)
+				if (item.SpellID > 0 || item.SpellID1 > 0)
+					TempProperties.setProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
+
+			if (ObjectState == eObjectState.Active)
+			{
+				// TODO: remove when properties system is finished
+				Out.SendCharStatsUpdate();
+				Out.SendCharResistsUpdate();
+				Out.SendUpdateWeaponAndArmorStats();
+				Out.SendUpdateMaxSpeed();
+				Out.SendEncumberance();
+				Out.SendUpdatePlayerSkills();
+				UpdatePlayerStatus();
+
+
+				if (IsAlive)
+				{
+					if (Health < MaxHealth) StartHealthRegeneration();
+					else if (Health > MaxHealth) Health = MaxHealth;
+
+					if (Mana < MaxMana) StartPowerRegeneration();

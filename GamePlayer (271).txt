@@ -1,0 +1,38 @@
+﻿
+		protected int LavaBurnTimerCallback(RegionTimer callingTimer)
+		{
+			if (!IsAlive || ObjectState != eObjectState.Active || !IsSwimming)
+				return 0;
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.LavaBurnTimerCallback.YourInLava"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.LavaBurnTimerCallback.Take34%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+			if (Client.Account.PrivLevel == 1)
+			{
+				TakeDamage(null, eDamageType.Natural, (int)(MaxHealth * 0.34), 0);
+
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendCombatAnimation(null, this, 0x0000, 0x0000, 0x00, 0x00, 0x14, HealthPercent);
+			}
+			return 2000;
+		}
+
+		/// <summary>
+		/// The sitting state of this player
+		/// </summary>
+		protected bool m_sitting;
+		/// <summary>
+		/// Gets/sets the current sit state
+		/// </summary>
+		public override bool IsSitting
+		{
+			get { return m_sitting; }
+			set
+			{
+				m_sitting = value;
+				if (value)
+				{
+					if (IsCasting)
+						m_runningSpellHandler.CasterMoves();
+					if (AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+					{
+						string attackTypeMsg = "shot";

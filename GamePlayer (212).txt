@@ -1,0 +1,36 @@
+﻿		/// <summary>
+		/// Called when this player receives a trade item
+		/// </summary>
+		/// <param name="source">the source of the item</param>
+		/// <param name="item">the item</param>
+		/// <returns>true to accept, false to deny the item</returns>
+		public virtual bool ReceiveTradeItem(GamePlayer source, InventoryItem item)
+		{
+			if (source == null || item == null || source == this)
+				return false;
+
+			lock (m_LockObject)
+			{
+				lock (source)
+				{
+					if ((TradeWindow != null && source != TradeWindow.Partner) || (TradeWindow == null && !OpenTrade(source)))
+					{
+						if (TradeWindow != null)
+						{
+							GamePlayer partner = TradeWindow.Partner;
+							if (partner == null)
+							{
+								source.Out.SendMessage(Name + " is still selfcrafting.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+							else
+							{
+								source.Out.SendMessage(Name + " is still trading with " + partner.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+						}
+						else if (source.TradeWindow != null)
+						{
+							GamePlayer sourceTradePartner = source.TradeWindow.Partner;
+							if (sourceTradePartner == null)
+							{
+								source.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveTradeItem.StillSelfcrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}

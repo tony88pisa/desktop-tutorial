@@ -1,0 +1,50 @@
+﻿		protected int HoldingBreathTimerCallback(RegionTimer callingTimer)
+		{
+			m_holdBreathTimer = null;
+			Diving(waterBreath.Drowning);
+			return 0;
+		}
+
+		protected RegionTimer m_drowningTimer;
+		protected RegionTimer m_holdBreathTimer;
+		protected RegionTimer m_lavaBurningTimer;
+		/// <summary>
+		/// The diving state of this player
+		/// </summary>
+		protected bool m_diving;
+		/// <summary>
+		/// Gets/sets the current diving state
+		/// </summary>
+		public bool IsDiving
+		{
+			get { return m_diving; }
+			set
+			{
+				if (m_diving != value)
+					if (value && !CanBreathUnderWater)
+						Diving(waterBreath.Holding);
+					else
+						Diving(waterBreath.Normal);
+				m_diving = value;
+			}
+		}
+
+		protected bool m_canBreathUnderwater;
+		public bool CanBreathUnderWater
+		{
+			get { return m_canBreathUnderwater; }
+			set
+			{
+				m_canBreathUnderwater = value;
+				if (!value && IsDiving)
+					Diving(waterBreath.Holding);
+				else
+					Diving(waterBreath.Normal);
+			}
+		}
+
+		public void Diving(waterBreath state)
+		{
+			//bool changeSpeed = false;
+			if (m_currentWaterBreathState != state)
+			{

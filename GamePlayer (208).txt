@@ -1,0 +1,26 @@
+﻿							else if (m_runningSpellHandler != null)
+							{
+								if (m_runningSpellHandler.Spell.IsPrimary)
+								{
+									lock (m_spellQueueAccessMonitor)
+									{
+										if (SpellQueue && !(m_runningSpellHandler is ChamberSpellHandler))
+										{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.PrepareSecondarySpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+											m_nextSpell = spell;
+											spell.OverrideRange = m_runningSpellHandler.Spell.Range;
+											m_nextSpellLine = line;
+											casted = true;
+										}
+									}
+								}
+								else if (!(m_runningSpellHandler is ChamberSpellHandler))
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.CantSpellDirectly"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+
+							}
+							else if (effect != null)
+							{
+								Spell cloneSpell = null;
+								if (effect.SpellHandler is PowerlessSpellHandler)
+								{
+									cloneSpell = spell.Copy();

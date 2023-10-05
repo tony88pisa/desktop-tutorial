@@ -1,0 +1,44 @@
+﻿			if (IsOnHorse)
+				IsOnHorse = false;
+			//Get the destination region based on the ID
+			Region rgn = WorldMgr.GetRegion(regionID);
+			//If the region doesn't exist, return false or if they aren't allowed to zone here
+			if (rgn == null || !GameServer.ServerRules.IsAllowedToZone(this, rgn))
+				return false;
+			//If the x,y inside this region doesn't point to a zone
+			//return false
+			if (rgn.GetZone(x, y) == null)
+				return false;
+
+			Diving(waterBreath.Normal);
+
+			if (SiegeWeapon != null)
+				SiegeWeapon.ReleaseControl();
+
+			if (regionID != CurrentRegionID)
+			{
+				GameEventMgr.Notify(GamePlayerEvent.RegionChanging, this);
+				if (!RemoveFromWorld())
+					return false;
+				//notify event
+				CurrentRegion.Notify(RegionEvent.PlayerLeave, CurrentRegion, new RegionPlayerEventArgs(this));
+
+				CancelAllConcentrationEffects(true);
+				if (ControlledBrain != null)
+					CommandNpcRelease();
+			}
+			else
+			{
+				//Just remove the player visible, but leave his OID intact!
+				//If player doesn't change region
+				if (Steed != null)
+					DismountSteed(true);
+
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					if (player != this)
+					{
+						player.Out.SendObjectRemove(this);
+					}
+				}

@@ -1,0 +1,47 @@
+﻿
+		#region Realm Abilities
+		/// <summary>
+		/// This is the timer used to count time when a player casts a RA
+		/// </summary>
+		private RegionTimer m_realmAbilityCastTimer;
+
+		/// <summary>
+		/// Get and set the RA cast timer
+		/// </summary>
+		public RegionTimer RealmAbilityCastTimer
+		{
+			get { return m_realmAbilityCastTimer; }
+			set { m_realmAbilityCastTimer = value; }
+		}
+
+		/// <summary>
+		/// Does the player is casting a realm ability
+		/// </summary>
+		public bool IsCastingRealmAbility
+		{
+			get { return (m_realmAbilityCastTimer != null && m_realmAbilityCastTimer.IsAlive); }
+		}
+		#endregion
+
+		#region Vault/Money/Items/Trading/UseSlot/ApplyPoison
+
+		private IGameInventoryObject m_activeInventoryObject;
+
+		/// <summary>
+		/// The currently active InventoryObject
+		/// This is new and will probably replace the above Active methods in time.
+		/// </summary>
+		public IGameInventoryObject ActiveInventoryObject
+		{
+			get { return m_activeInventoryObject; }
+			set	{ m_activeInventoryObject = value; }
+		}
+
+		/// <summary>
+		/// Property that holds tick when charged item was used last time
+		/// </summary>
+		public const string LAST_CHARGED_ITEM_USE_TICK = "LastChargedItemUsedTick";
+		public const string ITEM_USE_DELAY = "ItemUseDelay";
+		public const string NEXT_POTION_AVAIL_TIME = "LastPotionItemUsedTick";
+		public const string NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION = "SpellAvailableTime";
+

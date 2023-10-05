@@ -1,0 +1,42 @@
+﻿			{
+				if (value == null)
+				{
+					// remove this player from the online list of their current guild
+					m_guild.RemoveOnlineMember(this);
+				}
+
+				m_guild = value;
+
+				//update guild name for all players if client is playing
+				if (ObjectState == eObjectState.Active)
+				{
+					Out.SendUpdatePlayer();
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					{
+						if (player == null) continue;
+						if (player != this)
+						{
+							player.Out.SendObjectRemove(this);
+							player.Out.SendPlayerCreate(this);
+							player.Out.SendLivingEquipmentUpdate(this);
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the player's guild rank
+		/// </summary>
+		public DBRank GuildRank
+		{
+			get { return m_guildRank; }
+			set
+			{
+				m_guildRank = value;
+				if (value != null && DBCharacter != null)
+					DBCharacter.GuildRank = value.RankLevel;//maybe mistake here and need to change and make an index var
+			}
+		}
+
+		/// <summary>

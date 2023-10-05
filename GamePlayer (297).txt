@@ -1,0 +1,40 @@
+﻿		{
+			droppedItem = null;
+			if (slot_pos >= eInventorySlot.FirstBackpack && slot_pos <= eInventorySlot.LastBackpack)
+			{
+				lock (Inventory)
+				{
+					InventoryItem item = Inventory.GetItem(slot_pos);
+					if (!item.IsDropable)
+					{
+						Out.SendMessage(item.GetName(0, true) + " can not be dropped!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return false;
+					}
+
+					if (!Inventory.RemoveItem(item)) return false;
+					InventoryLogging.LogInventoryAction(this, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+
+					droppedItem = CreateItemOnTheGround(item);
+
+					if (droppedItem != null)
+					{
+						Notify(PlayerInventoryEvent.ItemDropped, this, new ItemDroppedEventArgs(item, droppedItem));
+					}
+
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// called to make an item on the ground with owner is player
+		/// </summary>
+		/// <param name="item">the item to create on the ground</param>
+		/// <returns>the GameInventoryItem on the ground</returns>
+		public virtual WorldInventoryItem CreateItemOnTheGround(InventoryItem item)
+		{
+			WorldInventoryItem gameItem = null;
+
+			if (item is IGameInventoryItem)
+			{

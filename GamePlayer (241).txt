@@ -1,0 +1,42 @@
+﻿				}
+			}
+
+			// Apply poison effect to weapon
+			if (poisonPotion.PoisonSpellID != 0)
+			{
+				toItem.PoisonCharges = poisonPotion.PoisonCharges;
+				toItem.PoisonMaxCharges = poisonPotion.PoisonMaxCharges;
+				toItem.PoisonSpellID = poisonPotion.PoisonSpellID;
+			}
+			else
+			{
+				toItem.PoisonCharges = poisonPotion.Template.PoisonCharges;
+				toItem.PoisonMaxCharges = poisonPotion.Template.PoisonMaxCharges;
+				toItem.PoisonSpellID = poisonPotion.Template.PoisonSpellID;
+			}
+			Inventory.RemoveCountFromStack(poisonPotion, 1);
+			InventoryLogging.LogInventoryAction(this, "(poison)", eInventoryActionType.Other, poisonPotion.Template);
+			Out.SendMessage(string.Format("You apply {0} to {1}.", poisonPotion.GetName(0, false), toItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			return true;
+		}
+
+		#endregion
+
+		#region Send/Say/Yell/Whisper/Messages
+
+		public bool IsIgnoring(GameLiving source)
+		{
+			if (source is GamePlayer)
+			{
+				var sender = source as GamePlayer;
+				foreach (string Name in IgnoreList)
+				{
+					if (sender.Name == Name && sender.Client.Account.PrivLevel < 2)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Delegate to be called when this player receives a text

@@ -1,0 +1,38 @@
+﻿							else
+							{
+								source.Out.SendMessage("You are still trading with " + sourceTradePartner.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							}
+						}
+						return false;
+					}
+					if (item.IsTradable == false && source.CanTradeAnyItem == false && TradeWindow.Partner.CanTradeAnyItem == false)
+					{
+						source.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveTradeItem.CantTrade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return false;
+					}
+
+					if (!source.TradeWindow.AddItemToTrade(item))
+					{
+						source.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveTradeItem.CantTrade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+					return true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Called when the player receives trade money
+		/// </summary>
+		/// <param name="source">the source</param>
+		/// <param name="money">the money value</param>
+		/// <returns>true to accept, false to deny</returns>
+		public virtual bool ReceiveTradeMoney(GamePlayer source, long money)
+		{
+			if (source == null || source == this || money == 0)
+				return false;
+
+			lock (m_LockObject)
+			{
+				lock (source)
+				{
+					if ((TradeWindow != null && source != TradeWindow.Partner) || (TradeWindow == null && !OpenTrade(source)))

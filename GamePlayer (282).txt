@@ -1,0 +1,33 @@
+﻿			if (BonusType == 14) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus14");//Energy
+			if (BonusType == 15) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus15");//Heat
+			if (BonusType == 16) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus16");//Matter
+			if (BonusType == 17) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus17");//Slash
+			if (BonusType == 18) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus18");//Spirit
+			if (BonusType == 19) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus19");//Thrust
+			return BonusName;
+		}
+
+		/// <summary>
+		/// Adds magical bonuses whenever item was equipped
+		/// </summary>
+		/// <param name="e"></param>
+		/// <param name="sender">inventory</param>
+		/// <param name="arguments"></param>
+		protected virtual void OnItemEquipped(DOLEvent e, object sender, EventArgs arguments)
+		{
+			if (arguments is ItemEquippedArgs == false) return;
+			InventoryItem item = ((ItemEquippedArgs)arguments).Item;
+			if (item == null) return;
+
+			if (item is IGameInventoryItem)
+			{
+				(item as IGameInventoryItem).OnEquipped(this);
+			}
+
+			if (item.Item_Type >= Slot.RIGHTHAND && item.Item_Type <= Slot.RANGED)
+			{
+				if (item.Hand == 1) // 2h
+				{
+					Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.WieldBothHands", item.GetName(0, false))), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else if (item.SlotPosition == Slot.LEFTHAND)

@@ -1,0 +1,42 @@
+﻿		[Obsolete("Use DOL.GS.Money.GetPlatinum(long) instead.")]
+public virtual int Platinum => Money.GetPlatinum(CopperBalance);
+		[Obsolete("Use DOL.GS.Money.GetGold(long) instead.")]
+public virtual int Gold => Money.GetGold(CopperBalance);
+		[Obsolete("Use DOL.GS.Money.GetSilver(long) instead.")]
+public virtual int Silver => Money.GetSilver(CopperBalance);
+		[Obsolete("Use DOL.GS.Money.GetCopper(long) instead.")]
+public virtual int Copper => Money.GetCopper(CopperBalance);
+
+private Wallet Wallet { get; }
+
+public DOL.GS.Finance.Money GetBalance(Currency currency) => Wallet.GetBalance(currency);
+public long CopperBalance => GetBalance(Currency.Copper).Amount;
+public long BountyPointBalance => GetBalance(Currency.BountyPoints).Amount;
+
+public void AddMoney(DOL.GS.Finance.Money money) => Wallet.AddMoney(money);
+public bool RemoveMoney(DOL.GS.Finance.Money money) => Wallet.RemoveMoney(money);
+
+[Obsolete("Use CopperBalance instead.")]
+public virtual long GetCurrentMoney() => CopperBalance;
+
+[Obsolete("Use AddMoney(Money) instead.")]
+public virtual void AddMoney(long copperAmount)
+{
+if (copperAmount >= 0) AddMoney(Currency.Copper.Mint(copperAmount));
+else RemoveMoney(Currency.Copper.Mint(-copperAmount));
+}
+
+[Obsolete("Use AddMoney(Money) and SendSystemMessage(string) instead.")]
+public virtual void AddMoney(long copperAmount, string message)
+{
+AddMoney(copperAmount);
+if (message != null) SendSystemMessage(string.Format(message, Money.GetString(copperAmount)));
+}
+
+[Obsolete("Use AddMoney(Money) and SendMessage(string,eChatType,eChatLoc) instead.")]
+public virtual void AddMoney(long copperAmount, string messageFormat, eChatType ct, eChatLoc cl)
+{
+AddMoney(copperAmount);
+if (messageFormat != null) SendMessage(string.Format(messageFormat, Money.GetString(copperAmount)), ct, cl);
+}
+

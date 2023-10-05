@@ -1,0 +1,41 @@
+﻿				ChatUtil.SendDebugMessage(this, "CanSeeInventory: " + ex.Message);
+			}
+
+			Out.SendMessage("You can't use this inventory.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			return false;
+		}
+
+
+		/// <summary>
+		/// Use a charged ability on an item
+		/// </summary>
+		/// <param name="useItem"></param>
+		/// <param name="type">1 == use1, 2 == use2</param>
+		protected virtual void UseItemCharge(InventoryItem useItem, int type)
+		{
+			int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
+
+			if (requiredLevel > Level)
+			{
+				Out.SendMessage("You are not powerful enough to use this item's spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			SpellLine chargeEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+			Spell spell = null;
+
+			if (type == 1)
+			{
+				spell = SkillBase.FindSpell(useItem.SpellID, chargeEffectLine);
+			}
+			else
+			{
+				spell = SkillBase.FindSpell(useItem.SpellID1, chargeEffectLine);
+			}
+
+			if (spell != null)
+			{
+				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);
+				if (spellHandler != null)
+				{
+					if (IsOnHorse && !spellHandler.HasPositiveEffect)

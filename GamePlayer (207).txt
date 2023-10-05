@@ -1,0 +1,31 @@
+﻿							casted = spellhandler.CastSpell();
+						}
+						else
+						{
+							if (spellhandler is ChamberSpellHandler && m_runningSpellHandler == null)
+							{
+								((ChamberSpellHandler)spellhandler).EffectSlot = ChamberSpellHandler.GetEffectSlot(spellhandler.Spell.Name);
+								m_runningSpellHandler = spellhandler;
+								m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+								casted = spellhandler.CastSpell();
+							}
+							else if (m_runningSpellHandler == null)
+							{
+								m_runningSpellHandler = spellhandler;
+								m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+								casted = spellhandler.CastSpell();
+							}
+						}
+					}
+					else
+					{
+						if (spell.IsSecondary)
+						{
+							GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "Powerless");
+							if (effect == null)
+								effect = SpellHandler.FindEffectOnTarget(this, "Range");
+							if (effect == null)
+								effect = SpellHandler.FindEffectOnTarget(this, "Uninterruptable");
+
+							if (m_runningSpellHandler == null && effect == null)
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.CantSpellDirectly"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);

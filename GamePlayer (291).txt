@@ -1,0 +1,40 @@
+﻿				(item as IGameInventoryItem).OnUnEquipped(this);
+			}
+
+			if (ObjectState == eObjectState.Active)
+			{
+				// TODO: remove when properties system is finished
+				Out.SendCharStatsUpdate();
+				Out.SendCharResistsUpdate();
+				Out.SendUpdateWeaponAndArmorStats();
+				Out.SendUpdateMaxSpeed();
+				Out.SendEncumberance();
+				Out.SendUpdatePlayerSkills();
+				UpdatePlayerStatus();
+
+				if (IsAlive)
+				{
+					if (Health < MaxHealth) StartHealthRegeneration();
+					else if (Health > MaxHealth) Health = MaxHealth;
+
+					if (Mana < MaxMana) StartPowerRegeneration();
+					else if (Mana > MaxMana) Mana = MaxMana;
+
+					if (Endurance < MaxEndurance) StartEnduranceRegeneration();
+					else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
+				}
+			}
+		}
+
+		public virtual void RefreshItemBonuses()
+		{
+			m_itemBonus = new PropertyIndexer();
+			string slotToLoad = "";
+			switch (VisibleActiveWeaponSlots)
+			{
+					case 16: slotToLoad = "rightandleftHandSlot"; break;
+					case 18: slotToLoad = "leftandtwoHandSlot"; break;
+					case 31: slotToLoad = "leftHandSlot"; break;
+					case 34: slotToLoad = "twoHandSlot"; break;
+					case 51: slotToLoad = "distanceSlot"; break;
+					case 240: slotToLoad = "righttHandSlot"; break;

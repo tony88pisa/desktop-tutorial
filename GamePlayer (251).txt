@@ -1,0 +1,46 @@
+﻿		public virtual bool IsRiding
+		{
+			get { return Steed != null; }
+		}
+
+		public void SwitchSeat(int slot)
+		{
+			if (Steed == null)
+				return;
+
+			if (Steed.Riders[slot] != null)
+				return;
+
+			Out.SendMessage("You switch to seat " + slot + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+			GameNPC steed = Steed;
+			steed.RiderDismount(true, this);
+			steed.RiderMount(this, true, slot);
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null) continue;
+				player.Out.SendRiding(this, steed, false);
+			}
+		}
+
+		#endregion
+
+		#region Add/Move/Remove
+
+		/// <summary>
+		/// Called to create an player in the world and send the other
+		/// players around this player an update
+		/// </summary>
+		/// <returns>true if created, false if creation failed</returns>
+		public override bool AddToWorld()
+		{
+			if (!base.AddToWorld())
+			{
+				log.Error("Failed to add player to world: " + Name);
+				return false;
+			}
+
+			IsJumping = false;
+			m_invulnerabilityTick = 0;
+			m_healthRegenerationTimer = new RegionTimer(this);
+			m_powerRegenerationTimer = new RegionTimer(this);

@@ -1,0 +1,29 @@
+﻿							InventoryItem leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+							if (mainHand != null && mainHand.PoisonSpellID == 0)
+							{
+								ApplyPoison(useItem, mainHand);
+							}
+							else if (leftHand != null && leftHand.PoisonSpellID == 0)
+							{
+								ApplyPoison(useItem, leftHand);
+							}
+						}
+						else if (useItem.SpellID > 0 && useItem.Charges > 0 && useItem.Object_Type == (int)eObjectType.Magical && (useItem.Item_Type == (int)eInventorySlot.FirstBackpack || useItem.Item_Type == 41))
+						{
+							SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
+
+							if (useItem.Item_Type == 41)
+							{
+								potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+							}
+
+							Spell spell = SkillBase.FindSpell(useItem.SpellID, potionEffectLine);
+
+							if (spell != null)
+							{
+								// For potions most can be used by any player level except a few higher level ones.
+								// So for the case of potions we will only restrict the level of usage if LevelRequirement is >0 for the item
+
+								long nextPotionAvailTime = TempProperties.getProperty<long>(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup));
+
+								if (Client.Account.PrivLevel == 1 && nextPotionAvailTime > CurrentRegion.Time)

@@ -1,0 +1,30 @@
+﻿Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellInChamber", spell.Name, ((ChamberSpellHandler)m_runningSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									}
+									else
+									{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.AlreadyChosenSpells"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+									}
+								}
+								else
+								{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.PrimarySpellFirst"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								}
+							}
+
+						}
+						else if (!(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType == "Chamber")
+						{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.NotAFollowSpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							return false;
+						}
+					}
+				}
+				ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
+				if (spellhandler != null)
+				{
+					if (spell.CastTime > 0)
+					{
+						GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "Chamber", spell.Name);
+
+						if (effect != null && spell.Name == effect.Spell.Name)
+						{

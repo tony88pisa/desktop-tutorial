@@ -1,0 +1,41 @@
+﻿				Out.SendMessage(source.GetName(0, false) + " whispers something in a language you don't understand.",
+				                eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			return true;
+		}
+
+		/// <summary>
+		/// Call this function to make the player whisper to someone
+		/// </summary>
+		/// <param name="target">GameLiving to whisper to</param>
+		/// <param name="str">string to whisper</param>
+		/// <returns>true if whispered successfully</returns>
+		public override bool Whisper(GameObject target, string str)
+		{
+			if (target == null)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Whisper.SelectTarget"), eChatType.CT_System,
+				                eChatLoc.CL_ChatWindow);
+				return false;
+			}
+			if (!GameServer.ServerRules.IsAllowedToSpeak(this, "whisper"))
+				return false;
+			if (!base.Whisper(target, str))
+				return false;
+			if (target is GamePlayer)
+				Out.SendMessage("You whisper, \"" + str + "\" to " + target.GetName(0, false), eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			return true;
+		}
+
+		/// <summary>
+		/// A message to this player from some piece of code (message to ourself)
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="chatType"></param>
+		public override void MessageToSelf(string message, eChatType chatType)
+		{
+			Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
+		}
+
+		/// <summary>
+		/// A message from something we control, usually a pet
+		/// </summary>

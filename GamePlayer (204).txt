@@ -1,0 +1,28 @@
+﻿										cloneSpell.CostPower = false;
+										m_nextSpell = cloneSpell;
+										m_nextSpellLine = line;
+										casted = true;
+									}
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.PrepareSecondarySpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								}
+								return casted;
+							}
+						}
+						else if (m_runningSpellHandler is ChamberSpellHandler)
+						{
+							ChamberSpellHandler chamber = (ChamberSpellHandler)m_runningSpellHandler;
+							if (IsMoving || IsStrafing)
+							{
+								m_runningSpellHandler = null;
+								return false;
+							}
+							if (spell.IsPrimary)
+							{
+								if (spell.SpellType == "Bolt" && !chamber.Spell.AllowBolt)
+								{
+Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellNotInChamber"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+									return false;
+								}
+								if (chamber.PrimarySpell == null)
+								{
+									Spell cloneSpell = spell.Copy();

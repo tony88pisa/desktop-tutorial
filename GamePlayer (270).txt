@@ -1,0 +1,42 @@
+﻿				//changeSpeed = true;
+				Out.SendCloseTimerWindow();
+			}
+
+			if (m_holdBreathTimer != null)
+			{
+				m_holdBreathTimer.Stop();
+				m_holdBreathTimer = null;
+			}
+			if (m_drowningTimer != null)
+			{
+				m_drowningTimer.Stop();
+				m_drowningTimer = null;
+			}
+			switch (state)
+			{
+				case waterBreath.Normal:
+					break;
+				case waterBreath.Holding:
+					if (m_holdBreathTimer == null)
+					{
+						Out.SendTimerWindow("Holding Breath", 30);
+						m_holdBreathTimer = new RegionTimer(this);
+						m_holdBreathTimer.Callback = new RegionTimerCallback(HoldingBreathTimerCallback);
+						m_holdBreathTimer.Start(30001);
+					}
+					break;
+				case waterBreath.Drowning:
+					m_beginDrowningTick = CurrentRegion.Time;
+					if (m_drowningTimer == null)
+					{
+						Out.SendTimerWindow("Drowning", 15);
+						m_drowningTimer = new RegionTimer(this);
+						m_drowningTimer.Callback = new RegionTimerCallback(DrowningTimerCallback);
+						m_drowningTimer.Start(1);
+					}
+					break;
+			}
+			m_currentWaterBreathState = state;
+			//if (changeSpeed)
+			//	Out.SendUpdateMaxSpeed();
+		}

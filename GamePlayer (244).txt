@@ -1,0 +1,41 @@
+﻿		/// <summary>
+		/// Sends a text to a target
+		/// </summary>
+		/// <param name="target">The target of the send</param>
+		/// <param name="str">string to send (without any "xxx sends:" in front!!!)</param>
+		/// <returns>true if text was sent successfully</returns>
+		public virtual bool SendPrivateMessage(GamePlayer target, string str)
+		{
+			if (target == null || str == null)
+				return false;
+
+			SendHandler onSend = OnSend;
+			if (onSend != null && !onSend(this, target, str))
+				return false;
+
+			if (!target.PrivateMessageReceive(this, str))
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Send.target.DontUnderstandYou", target.Name),
+				                eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+				return false;
+			}
+
+			if (Client.Account.PrivLevel == 1 && target.Client.Account.PrivLevel > 1 && target.IsAnonymous)
+				return true;
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Send.YouSendTo", str, target.Name), eChatType.CT_Send,
+			                eChatLoc.CL_ChatWindow);
+
+			return true;
+		}
+
+		/// <summary>
+		/// This function is called when the Player receives a Say text!
+		/// </summary>
+		/// <param name="source">The source living saying something</param>
+		/// <param name="str">the text that was said</param>
+		/// <returns>true if received successfully</returns>
+		public override bool SayReceive(GameLiving source, string str)
+		{
+			if (!base.SayReceive(source, str))
+				return false;

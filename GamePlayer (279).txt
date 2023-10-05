@@ -1,0 +1,47 @@
+﻿			{
+				double enc = (double)Strength;
+				RAPropertyEnhancer ab = GetAbility<LifterAbility>();
+				if (ab != null)
+					enc *= 1 + ((double)ab.Amount / 100);
+
+				// Apply Sojourner ability
+				if (this.GetSpellLine("Sojourner") != null)
+				{
+					enc *= 1.25;
+				}
+
+				// Apply Walord effect
+				GameSpellEffect iBaneLordEffect = SpellHandler.FindEffectOnTarget(this, "Oppression");
+				if (iBaneLordEffect != null)
+					enc *= 1.00 - (iBaneLordEffect.Spell.Value * 0.01);
+
+				// Apply Mythirian Bonus
+				if (GetModified(eProperty.MythicalDiscumbering) > 0)
+				{
+					enc += GetModified(eProperty.MythicalDiscumbering);
+				}
+
+				return (int)enc;
+			}
+		}
+
+		/// <summary>
+		/// Gets the current Encumberance
+		/// </summary>
+		public virtual int Encumberance
+		{
+			get { return Inventory.InventoryWeight; }
+		}
+
+		/// <summary>
+		/// The Encumberance state of this player
+		/// </summary>
+		protected bool m_overencumbered = true;
+
+		/// <summary>
+		/// Gets/Set the players Encumberance state
+		/// </summary>
+		public bool IsOverencumbered
+		{
+			get { return m_overencumbered; }
+			set { m_overencumbered = value; }
